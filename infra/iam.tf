@@ -63,7 +63,7 @@ data "aws_iam_policy_document" "deploy" {
     actions = ["cloudfront:CreateInvalidation"]
     resources = [
       aws_cloudfront_distribution.site.arn,
-      "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/${var.uploads_distribution_id}",
+      aws_cloudfront_distribution.uploads.arn,
     ]
   }
 

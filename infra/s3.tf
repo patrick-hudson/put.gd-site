@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "site_bucket" {
     condition {
       test     = "StringEquals"
       variable = "AWS:SourceArn"
-      values   = concat([aws_cloudfront_distribution.site.arn], var.extra_reader_distribution_arns)
+      values   = [aws_cloudfront_distribution.site.arn, aws_cloudfront_distribution.uploads.arn]
     }
   }
 }

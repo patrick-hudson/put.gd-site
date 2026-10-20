@@ -71,3 +71,8 @@ import {
   to = aws_iam_role_policy.deploy
   id = "putgd-site-deploy:deploy-site"
 }
+
+import {
+  to = aws_cloudfront_distribution.uploads
+  id = "E2UO5E3WJ8BRV9"
+}

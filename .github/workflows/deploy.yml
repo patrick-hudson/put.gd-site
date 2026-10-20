@@ -35,7 +35,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 tools/releases.py --out public/_site/releases.json
 
-      - name: Check the page and the CloudFront functions
+      - name: Check the page and the CloudFront function
         run: |
           python3 - <<'EOF'
           import html.parser, pathlib, sys
@@ -50,7 +50,6 @@ jobs:
           if missing: sys.exit("missing files referenced from index.html: " + ", ".join(missing))
           print(f"{len(p.refs)} local references, all present")
           EOF
-          node --check cloudfront/root-router.js
           node --check cloudfront/download-redirect.js
 
       - name: Configure AWS credentials

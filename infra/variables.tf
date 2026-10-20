@@ -49,17 +49,7 @@ variable "github_environment" {
   default     = "production"
 }
 
-variable "uploads_distribution_id" {
-  description = "The existing put.gd distribution in front of the uploads bucket. The deploy role may invalidate it, for the day its root is routed to this site."
-  type        = string
-  default     = "E2UO5E3WJ8BRV9"
-}
 
-variable "extra_reader_distribution_arns" {
-  description = "Other CloudFront distributions allowed to read the site bucket (the put.gd distribution once its root serves the page)."
-  type        = list(string)
-  default     = []
-}
 
 variable "tags" {
   description = "Tags on every resource."

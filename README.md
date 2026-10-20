@@ -15,8 +15,8 @@ JavaScript; no build step.
 | `tools/releases.py` | Builds `releases.json` from the GitHub releases: `stable` is the newest non-prerelease, `nightly` the newest `-nightly.` prerelease. |
 | `tools/update-kvs.py` | Writes the `/dl/<channel>/<package>` redirect targets into the CloudFront KeyValueStore. |
 | `cloudfront/download-redirect.js` | CloudFront Function on app.put.gd: `/` to `index.html`, `/dl/...` to the current asset. |
-| `cloudfront/root-router.js` | CloudFront Function on put.gd: only the bare `/` goes to the page; every upload key keeps working. |
 | `.github/workflows/deploy.yml` | Publishes to S3, refreshes the permalinks, invalidates CloudFront. |
+| `infra/` | Terraform for both distributions, the bucket, the role and DNS. On put.gd only `/` (default root object) and `/_site/*` reach the site bucket; every upload key keeps going to the uploads bucket. |
 
 ## Working on it
 
