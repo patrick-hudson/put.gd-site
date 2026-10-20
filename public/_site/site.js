@@ -77,6 +77,9 @@
   const note = document.getElementById("channelNote");
   if (table && line && channel && "fetch" in window) {
     const RELEASES = "https://github.com/patrick-hudson/put.gd-desktop/releases";
+    // Permanent links, served by the app.put.gd function; absolute because the page is also served at put.gd/.
+    const DL = "https://app.put.gd/dl";
+    const slug = (key) => (key === ".AppImage" ? "appimage" : key);
     const fmtDate = (iso) => new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
     const fmtSize = (bytes) => `${(bytes / 1048576).toFixed(1)} MB`;
 
@@ -88,10 +91,10 @@
         const file = tr.querySelector(".file");
         const asset = rel && rel.assets[tr.dataset.match];
         if (asset) {
-          a.href = asset.url; a.setAttribute("download", ""); a.textContent = "Download";
+          a.href = `${DL}/${name}/${slug(tr.dataset.match)}`; a.textContent = "Download";
           file.innerHTML = `${asset.name}<span class="size">${fmtSize(asset.size)}</span>`;
         } else {
-          a.href = rel ? rel.html_url : RELEASES; a.removeAttribute("download"); a.textContent = "Release page";
+          a.href = rel ? rel.html_url : RELEASES; a.textContent = "Release page";
           file.textContent = file.textContent.replace(/<span.*$/, "");
         }
       });
@@ -105,7 +108,7 @@
       }
       note.hidden = name !== "nightly";
       if (name === "nightly") note.textContent = "Nightlies pass the full test suites and package audits on every build, but are not desktop-certified. Stable releases are.";
-      const sums = rel.checksums ? ` and <a href="${rel.checksums}">SHA256SUMS</a>` : "";
+      const sums = rel.checksums ? ` and <a href="${DL}/${name}/checksums">SHA256SUMS</a>` : "";
       line.innerHTML = `${name === "stable" ? "Stable" : "Nightly"} <a href="${rel.html_url}">${rel.tag}</a>, published ${fmtDate(rel.published_at)}. Every file, the build receipts${sums} are on the release page.`;
     };
 
