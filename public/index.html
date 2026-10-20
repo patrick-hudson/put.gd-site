@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>put.gd for Linux</title>
+<meta name="description" content="put.gd is a tray app for Linux. It captures a region, window, desktop or screen recording, or takes files, an image or text from the clipboard, uploads it to an S3 bucket or Proton Drive you control, and puts the link on your clipboard.">
+<meta name="theme-color" content="#0a0d13">
+<link rel="canonical" href="https://app.put.gd/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="put.gd for Linux">
+<meta property="og:description" content="Anything you capture or copy, uploaded to storage you control. Native on Cinnamon, GNOME and KDE Plasma.">
+<meta property="og:url" content="https://app.put.gd/">
+<meta property="og:image" content="https://app.put.gd/_site/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/_site/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/_site/site.css">
+<script src="/_site/site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <a class="brand" href="/" aria-label="put.gd home">
+    <img src="/_site/logo.svg" alt="" width="30" height="30">
+    <span>put.gd</span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="#pipeline">How it works</a>
+    <a href="#script">Scripting</a>
+    <a href="https://github.com/patrick-hudson/put.gd-desktop">Source</a>
+    <a href="#install">Install</a>
+  </nav>
+</header>
+
+<main id="main">
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-text">
+    <h1 id="hero-title">Anything you capture or copy, uploaded to storage you control.</h1>
+    <div class="hero-side">
+      <p>put.gd is a tray app for Linux. Press a key and drag a region, record the screen, or hand it whatever is on the clipboard: files, an image, text. It goes to your S3 bucket or Proton Drive, and the link comes back to the clipboard. Capture uses each desktop's own screenshot service on Cinnamon, GNOME 50 and KDE Plasma 6, on X11 and Wayland.</p>
+      <p class="actions">
+        <a class="btn btn-primary" href="#install">Install for Linux</a>
+        <a class="btn" href="https://github.com/patrick-hudson/put.gd-desktop">Source on GitHub</a>
+      </p>
+    </div>
+  </div>
+
+  <figure class="stage-wrap">
+    <div class="stage" id="stage" role="img" aria-label="Animation: Ctrl+Shift+1 is pressed, a region around a failing test is selected, the capture flies to the put.gd tray icon, and a notification confirms the link was copied.">
+      <div class="desk" id="desk">
+        <div class="win term">
+          <div class="win-bar"><span>~/src/api: make test</span><i></i><i></i><i></i></div>
+          <pre class="term-body"><span class="dim">$</span> make test
+collected 215 items
+
+tests/test_auth.py <span class="ok">........</span>          [  4%]
+tests/test_billing.py <span class="ok">..........</span>     [  9%]
+tests/test_upload.py <span class="ok">....</span><span class="bad">F</span><span class="ok">.....</span>   [ 13%]
+tests/test_webhooks.py <span class="ok">.......</span>      [ 16%]
+<span class="fail" id="fail">FAILED tests/test_upload.py::test_retry
+  AssertionError: expected 201, got 503
+<span class="bad">1 failed</span>, <span class="ok">214 passed</span> in 8.31s</span></pre>
+        </div>
+        <div class="win chart">
+          <div class="win-bar"><span>p95 latency, api</span><i></i><i></i><i></i></div>
+          <svg viewBox="0 0 300 140" preserveAspectRatio="none" aria-hidden="true">
+            <g class="grid"><path d="M0 35H300M0 70H300M0 105H300"/></g>
+            <path class="area" d="M0 110 L30 104 L60 108 L90 100 L120 103 L150 96 L175 98 L195 40 L210 22 L225 64 L245 92 L270 96 L300 94 V140 H0Z"/>
+            <path class="line" d="M0 110 L30 104 L60 108 L90 100 L120 103 L150 96 L175 98 L195 40 L210 22 L225 64 L245 92 L270 96 L300 94"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="keys" id="keys" aria-hidden="true"><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>1</kbd></div>
+
+      <div class="sel" id="sel" aria-hidden="true">
+        <svg class="ants" preserveAspectRatio="none"><rect x="0.75" y="0.75" width="calc(100% - 1.5px)" height="calc(100% - 1.5px)"/></svg>
+        <b class="h nw"></b><b class="h n"></b><b class="h ne"></b><b class="h e"></b><b class="h se"></b><b class="h s"></b><b class="h sw"></b><b class="h w"></b>
+        <span class="readout" id="readout">0 × 0</span>
+      </div>
+
+      <div class="shot" aria-hidden="true"><pre>FAILED tests/test_upload.py::test_retry
+  AssertionError: expected 201, got 503
+1 failed, 214 passed in 8.31s</pre></div>
+
+      <svg class="cursor" id="cursor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2v7M12 15v7M2 12h7M15 12h7" /><circle cx="12" cy="12" r="1.4"/></svg>
+
+      <div class="panel" aria-hidden="true">
+        <span class="launcher"></span>
+        <span class="tray">
+          <svg viewBox="0 0 24 24"><path d="M3 9a13 13 0 0 1 18 0M6.5 12.5a8 8 0 0 1 11 0M10 16a3 3 0 0 1 4 0"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6"/></svg>
+          <span class="tray-putgd" id="trayIcon"><svg viewBox="0 0 24 24"><path class="base" d="M2 13H6V18Q6 19 7 19H17Q18 19 18 18V13H22V18Q22 23 17 23H7Q2 23 2 18Z"/><path class="arrow" d="M12 2L20 10H15V16H9V10H4Z"/></svg></span>
+          <time>17:26</time>
+        </span>
+      </div>
+
+      <div class="toast" id="toast" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11"/><path d="M7 12.5l3.2 3.2L17 9"/></svg>
+        <div><strong>Link copied</strong><span>put.gd/1760918223.png</span></div>
+      </div>
+    </div>
+    <figcaption>The region hotkey, a drag around the failing test, the upload to the tray, the receipt. On a real desktop this takes about as long as it does here.</figcaption>
+  </figure>
+</section>
+
+<section class="pipeline" id="pipeline" aria-labelledby="pipeline-title">
+  <header class="section-head">
+    <h2 id="pipeline-title">What happens between the key and the link</h2>
+    <p>Every source, including a finished recording, goes through the same five stops. The windows below are the current nightly build on the lab desktops, not mockups.</p>
+  </header>
+
+  <ol class="stops">
+    <li class="stop">
+      <div class="stop-text">
+        <h3>Trigger</h3>
+        <p>A global hotkey, the tray menu, or <code>putgd-cli action.invoke</code>. Three keys are bound out of the box and every action can be rebound. Each row in Settings reports whether the desktop actually granted the key, because on Wayland that is not a given.</p>
+        <dl class="keymap">
+          <div><dt><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>1</kbd></dt><dd>Capture region</dd></div>
+          <div><dt><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>2</kbd></dt><dd>Capture window</dd></div>
+          <div><dt><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>3</kbd></dt><dd>Capture desktop</dd></div>
+        </dl>
+      </div>
+      <figure class="plate">
+        <div class="plate-frame"><img src="/_site/shots/tray-trio.webp" width="922" height="420" loading="lazy" alt="The put.gd tray menu on Cinnamon, GNOME and KDE Plasma, each listing capture region, region and edit, window, desktop, screen recording, edit image and upload clipboard."></div>
+        <figcaption>The same tray menu on Cinnamon, GNOME and Plasma.</figcaption>
+      </figure>
+    </li>
+
+    <li class="stop">
+      <div class="stop-text">
+        <h3>Capture</h3>
+        <p>A region drawn over the live desktop, the focused window with its frame, every enabled monitor, whatever is on the clipboard (files, an image, or text), or a screen recording. Cinnamon is captured through the compositor's screenshot service, GNOME through a small Shell extension the packages install, and Plasma through KWin's ScreenShot2 with layer-shell overlays. There is no portal picker for regions and no XWayland workaround.</p>
+      </div>
+      <figure class="plate">
+        <div class="plate-frame"><img src="/_site/shots/review-plasma.webp" width="904" height="726" loading="lazy" alt="The recording review window on KDE Plasma with playback, trim, blur and solid masks, and the output format."></div>
+        <figcaption>Stop on a recording opens this review. Trim, add timed blur or solid masks, choose MP4, WebM, GIF or WebP, then Upload or Discard.</figcaption>
+      </figure>
+    </li>
+
+    <li class="stop">
+      <div class="stop-text">
+        <h3>Edit, if you want to</h3>
+        <p>Capture region &amp; edit opens an editor before anything is stored. Redact removes the covered pixels from the file rather than blurring them. Crop, arrow, rectangle, highlight and text, with undo and a 100% zoom to check edges. Nothing leaves the machine until you press Upload, and Cancel stores nothing.</p>
+      </div>
+      <figure class="plate">
+        <div class="plate-frame"><img src="/_site/shots/editor-gnome.webp" width="1344" height="998" loading="lazy" alt="The put.gd editor on GNOME: a photo of Earth with a rectangle, a highlight, a solid redaction box, an arrow and a caption."></div>
+        <figcaption>The editor on GNOME. The black box is a redaction; those pixels are gone from the upload.</figcaption>
+      </figure>
+    </li>
+
+    <li class="stop">
+      <div class="stop-text">
+        <h3>Upload</h3>
+        <p>Any S3-compatible bucket with your own link domain, or Proton Drive through the official SDK. Public-read or private is chosen per destination and per action; a private upload makes no link and leaves the clipboard alone. Credentials live in the system keychain or for the session only, never in a file, and the CLI refuses them on the command line. Test connection uploads a sample object, checks the public link, then deletes it.</p>
+      </div>
+      <figure class="plate">
+        <div class="plate-frame"><img src="/_site/shots/destinations-plasma.webp" width="1322" height="908" loading="lazy" alt="The Destinations page on KDE Plasma: an S3 bucket with region, endpoint, link domain and access policy."></div>
+        <figcaption>A destination: bucket, region, link domain and access policy up front; endpoints, addressing and timeouts under Advanced.</figcaption>
+      </figure>
+    </li>
+
+    <li class="stop">
+      <div class="stop-text">
+        <h3>Receipt</h3>
+        <p>The link is on the clipboard, a notification says so, and History gets an entry with a thumbnail, the size and the outcome. History works offline: it never lists or fetches anything from the bucket to show you what you have. From there you can copy the link again, re-edit the local copy, or delete the remote object after reviewing exactly what will be removed. An interrupted upload is recorded as unknown, never as a made-up URL.</p>
+      </div>
+      <figure class="plate">
+        <div class="plate-frame"><img src="/_site/shots/history-plasma.webp" width="1322" height="908" loading="lazy" alt="History in gallery view on KDE Plasma, showing region captures, desktop captures and a screen recording with Copy result buttons."></div>
+        <figcaption>History in gallery view. The list view has the same rows with search and filters.</figcaption>
+      </figure>
+    </li>
+  </ol>
+</section>
+
+<section class="script" id="script" aria-labelledby="script-title">
+  <div class="script-text">
+    <h2 id="script-title">The same actions from a script</h2>
+    <p>The resident speaks newline-delimited JSON over an owner-only Unix socket. The tray, the windows and <code>putgd-cli</code> all call the same methods, so anything you can click, a script can do. Every call returns an operation ID you can inspect for the phase, the bytes, the link and the outcome.</p>
+    <p>An optional MCP helper wraps the CLI with typed tools for Claude Code, Claude Desktop or any stdio MCP client.</p>
+    <p class="links"><a href="https://github.com/patrick-hudson/put.gd-desktop/blob/main/docs/cli.md">CLI reference</a> <a href="https://github.com/patrick-hudson/put.gd-desktop/blob/main/docs/mcp.md">MCP helper</a></p>
+  </div>
+  <div class="console" aria-label="Example putgd-cli session">
+    <div class="win-bar"><span>putgd-cli</span><i></i><i></i><i></i></div>
+    <pre id="console"><code><span class="dim">$</span> putgd-cli capabilities
+<span class="dim"># what this desktop actually supports</span>
+<span class="dim">$</span> putgd-cli action.invoke '{"action":"region"}'
+<span class="dim"># returns an operation id right away</span>
+<span class="dim">$</span> putgd-cli operation.inspect '{"id":"OPERATION-ID"}'
+<span class="dim"># phase, bytes, link, outcome</span>
+<span class="dim">$</span> putgd-cli history.list '{"limit":5,"category":"images"}'
+<span class="dim">$</span> putgd-cli recording.prepare '{"target":{"kind":"region"},"format":"mp4"}'</code></pre>
+  </div>
+</section>
+
+<section class="install" id="install" aria-labelledby="install-title">
+  <header class="section-head">
+    <h2 id="install-title">Install</h2>
+    <p id="releaseLine">x86_64 packages for each supported release are on the <a href="https://github.com/patrick-hudson/put.gd-desktop/releases">releases page</a>, with <code>SHA256SUMS</code> and build receipts next to them.</p>
+  </header>
+
+  <div class="channel" role="group" aria-label="Release channel" id="channel" hidden>
+    <button type="button" data-channel="stable" aria-pressed="true">Stable</button>
+    <button type="button" data-channel="nightly" aria-pressed="false">Nightly</button>
+  </div>
+  <p class="channel-note" id="channelNote" hidden></p>
+
+  <table class="packages" id="packages">
+    <thead><tr><th scope="col">You run</th><th scope="col">File</th><th scope="col">Qt</th><th scope="col"><span class="visually-hidden">Download</span></th></tr></thead>
+    <tbody>
+      <tr data-match="ubuntu24.04"><th scope="row">Ubuntu 24.04, Linux Mint 22</th><td class="file">putgd-VERSION-ubuntu24.04-x86_64.deb</td><td>distro Qt 6.4</td><td><a href="https://github.com/patrick-hudson/put.gd-desktop/releases">Download</a></td></tr>
+      <tr data-match="ubuntu26.04"><th scope="row">Ubuntu 26.04, Kubuntu 26.04</th><td class="file">putgd-VERSION-ubuntu26.04-x86_64.deb</td><td>distro Qt and LayerShellQt</td><td><a href="https://github.com/patrick-hudson/put.gd-desktop/releases">Download</a></td></tr>
+      <tr data-match="debian13"><th scope="row">Debian 13</th><td class="file">putgd-VERSION-debian13-x86_64.deb</td><td>distro Qt 6.8 and LayerShellQt</td><td><a href="https://github.com/patrick-hudson/put.gd-desktop/releases">Download</a></td></tr>
+      <tr data-match="fedora44"><th scope="row">Fedora 44</th><td class="file">putgd-VERSION-fedora44-x86_64.rpm</td><td>distro Qt and LayerShellQt</td><td><a href="https://github.com/patrick-hudson/put.gd-desktop/releases">Download</a></td></tr>
+      <tr data-match=".AppImage"><th scope="row">Anything else with glibc 2.39 or newer</th><td class="file">putgd-VERSION-x86_64.AppImage</td><td>bundled Qt 6.8.3</td><td><a href="https://github.com/patrick-hudson/put.gd-desktop/releases">Download</a></td></tr>
+    </tbody>
+  </table>
+
+  <div class="commands">
+    <div class="snippet">
+      <p>Debian, Ubuntu and Mint</p>
+      <pre><code>sudo apt install ./putgd-*.deb</code></pre>
+      <button type="button" class="copy">Copy</button>
+    </div>
+    <div class="snippet">
+      <p>Fedora</p>
+      <pre><code>sudo dnf install ./putgd-*.rpm</code></pre>
+      <button type="button" class="copy">Copy</button>
+    </div>
+    <div class="snippet">
+      <p>AppImage</p>
+      <pre><code>chmod +x putgd-*.AppImage &amp;&amp; ./putgd-*.AppImage</code></pre>
+      <button type="button" class="copy">Copy</button>
+    </div>
+  </div>
+
+  <p class="permalinks">For scripts and docs, <code>https://app.put.gd/dl/stable/fedora44</code> always redirects to the current stable RPM. The same pattern works for <code>ubuntu24.04</code>, <code>ubuntu26.04</code>, <code>debian13</code>, <code>appimage</code> and <code>checksums</code>, and with <code>nightly</code> in place of <code>stable</code>.</p>
+  <p class="note">Each DEB installs only on the release it names, because it links that release's FFmpeg. On GNOME 50, run <code>gnome-extensions enable putgd@put.gd</code> once and log back in so the capture extension loads. Then add a destination under Destinations, store the credentials in the keychain, and press <kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>1</kbd>.</p>
+</section>
+
+<section class="details" aria-labelledby="details-title">
+  <h2 id="details-title">Details</h2>
+  <dl>
+    <div><dt>Desktops</dt><dd>Cinnamon on X11; GNOME 50 and KDE Plasma 6 on Wayland</dd></div>
+    <div><dt>Storage</dt><dd>Any S3-compatible bucket; Proton Drive (experimental)</dd></div>
+    <div><dt>Recording formats</dt><dd>MP4 (H.264, H.265), WebM (VP9), GIF, animated WebP; VA-API and NVENC where available</dd></div>
+    <div><dt>Idle footprint</dt><dd>One resident process; under 40 MiB with helpers started on demand</dd></div>
+    <div><dt>Network</dt><dd>Talks to your storage endpoint and nothing else</dd></div>
+    <div><dt>Built with</dt><dd>C++20 and Qt 6, MIT licensed</dd></div>
+  </dl>
+</section>
+
+</main>
+
+<footer class="foot">
+  <a class="brand" href="/"><img src="/_site/logo.svg" alt="" width="24" height="24"><span>put.gd</span></a>
+  <nav aria-label="Footer">
+    <a href="https://github.com/patrick-hudson/put.gd-desktop">Source</a>
+    <a href="https://github.com/patrick-hudson/put.gd-desktop/releases">Releases</a>
+    <a href="https://github.com/patrick-hudson/put.gd-desktop/blob/main/docs/user-guide.md">User guide</a>
+    <a href="https://github.com/patrick-hudson/put.gd-desktop/issues">Issues</a>
+  </nav>
+</footer>
+</body>
+</html>

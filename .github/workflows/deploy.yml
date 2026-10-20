@@ -1,0 +1,82 @@
+name: Deploy
+
+# Publishes the site and refreshes the download links. Runs on every push to main,
+# when put.gd-desktop publishes a release (repository_dispatch from its workflow),
+# on a schedule as a backstop, and by hand.
+on:
+  push:
+    branches: [main]
+  repository_dispatch:
+    types: [release-published]
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: us-east-2
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build releases.json from GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tools/releases.py --out public/_site/releases.json
+
+      - name: Check the page and the CloudFront functions
+        run: |
+          python3 - <<'EOF'
+          import html.parser, pathlib, sys
+          class P(html.parser.HTMLParser):
+              def __init__(self): super().__init__(); self.refs = []
+              def handle_starttag(self, tag, attrs):
+                  for k, v in attrs:
+                      if k in ("src", "href") and v and v.startswith("/_site/"):
+                          self.refs.append(v)
+          p = P(); p.feed(pathlib.Path("public/index.html").read_text())
+          missing = [r for r in p.refs if not pathlib.Path("public" + r).exists()]
+          if missing: sys.exit("missing files referenced from index.html: " + ", ".join(missing))
+          print(f"{len(p.refs)} local references, all present")
+          EOF
+          node --check cloudfront/root-router.js
+          node --check cloudfront/download-redirect.js
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Upload the site
+        run: |
+          # Assets under /_site/ get a day of caching, the page and releases.json five minutes. All are invalidated below.
+          aws s3 sync public/_site/ "s3://${{ vars.SITE_BUCKET }}/_site/" --delete --exclude releases.json \
+            --cache-control "public, max-age=86400, stale-while-revalidate=604800"
+          aws s3 cp public/_site/releases.json "s3://${{ vars.SITE_BUCKET }}/_site/releases.json" \
+            --cache-control "public, max-age=300" --content-type "application/json"
+          aws s3 cp public/index.html "s3://${{ vars.SITE_BUCKET }}/index.html" \
+            --cache-control "public, max-age=300, stale-while-revalidate=86400" --content-type "text/html; charset=utf-8"
+          aws s3 cp public/robots.txt "s3://${{ vars.SITE_BUCKET }}/robots.txt" --cache-control "public, max-age=3600"
+          aws s3 cp public/sitemap.xml "s3://${{ vars.SITE_BUCKET }}/sitemap.xml" --cache-control "public, max-age=3600"
+          aws s3 cp public/404.html "s3://${{ vars.SITE_BUCKET }}/404.html" --cache-control "public, max-age=3600" --content-type "text/html; charset=utf-8"
+
+      - name: Point the /dl/ permalinks at the current releases
+        run: python3 tools/update-kvs.py --kvs-arn "${{ vars.CLOUDFRONT_KVS_ARN }}" --releases public/_site/releases.json
+
+      - name: Refresh the CDN
+        run: |
+          for id in ${{ vars.CLOUDFRONT_DISTRIBUTION_IDS }}; do
+            aws cloudfront create-invalidation --distribution-id "$id" --paths "/" "/index.html" "/_site/*" "/robots.txt" "/sitemap.xml"
+          done
