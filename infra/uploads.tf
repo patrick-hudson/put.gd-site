@@ -14,14 +14,11 @@ resource "aws_cloudfront_distribution" "uploads" {
   is_ipv6_enabled     = true
   price_class         = "PriceClass_100"
 
-  # Uploads bucket, public-read objects, legacy S3 origin without OAI.
+  # Uploads bucket, public-read objects, legacy S3 origin without OAI or OAC. The provider reads
+  # the live origin's empty S3 config as none at all, so none is declared here.
   origin {
     origin_id   = "S3-put.gd"
     domain_name = "put.gd.s3.amazonaws.com"
-
-    s3_origin_config {
-      origin_access_identity = ""
-    }
   }
 
   # Landing page: the private site bucket through the same OAC app.put.gd uses.
