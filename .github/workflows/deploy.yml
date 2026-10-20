@@ -30,10 +30,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build releases.json from GitHub
+      - name: Test the release tools
+        run: python3 -m unittest discover -s tools -v
+
+      - name: Build releases.json and the update feeds from GitHub
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 tools/releases.py --out public/_site/releases.json
+        run: python3 tools/releases.py --out public/_site/releases.json --feed-dir public/update/v1
 
       - name: Check the page and the CloudFront function
         run: |
@@ -79,6 +82,11 @@ jobs:
           aws s3 cp public/robots.txt "s3://${{ vars.SITE_BUCKET }}/robots.txt" --cache-control "public, max-age=3600"
           aws s3 cp public/sitemap.xml "s3://${{ vars.SITE_BUCKET }}/sitemap.xml" --cache-control "public, max-age=3600"
           aws s3 cp public/404.html "s3://${{ vars.SITE_BUCKET }}/404.html" --cache-control "public, max-age=3600" --content-type "text/html; charset=utf-8"
+          # Update feed v1 (put.gd-desktop #293): the app reads these, at most once a day per install.
+          for feed in public/update/v1/*.json; do
+            aws s3 cp "$feed" "s3://${{ vars.SITE_BUCKET }}/update/v1/$(basename "$feed")" \
+              --cache-control "public, max-age=300" --content-type "application/json"
+          done
 
       - name: Point the /dl/ permalinks at the current releases
         run: python3 tools/update-kvs.py --kvs-arn "${{ vars.CLOUDFRONT_KVS_ARN }}" --releases public/_site/releases.json
@@ -86,5 +94,5 @@ jobs:
       - name: Refresh the CDN
         run: |
           for id in ${{ vars.CLOUDFRONT_DISTRIBUTION_IDS }}; do
-            aws cloudfront create-invalidation --distribution-id "$id" --paths "/" "/index.html" "/404.html" "/_site/*" "/robots.txt" "/sitemap.xml"
+            aws cloudfront create-invalidation --distribution-id "$id" --paths "/" "/index.html" "/404.html" "/_site/*" "/update/*" "/robots.txt" "/sitemap.xml"
           done
