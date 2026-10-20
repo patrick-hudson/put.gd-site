@@ -58,6 +58,15 @@ jobs:
           role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Stamp asset links with the commit
+        # Assets are browser-cached for a day without a fingerprint, so the pages reference them
+        # with ?v=<sha>. CloudFront ignores the query string in its cache key; browsers do not.
+        run: |
+          for page in public/index.html public/404.html; do
+            sed -i -E "s#(/_site/[A-Za-z0-9_./-]+\.(css|js|svg|webp|png))\"#\1?v=${GITHUB_SHA::12}\"#g" "$page"
+          done
+          grep -c "?v=${GITHUB_SHA::12}" public/index.html
+
       - name: Upload the site
         run: |
           # Assets under /_site/ get a day of caching, the page and releases.json five minutes. All are invalidated below.
@@ -77,5 +86,5 @@ jobs:
       - name: Refresh the CDN
         run: |
           for id in ${{ vars.CLOUDFRONT_DISTRIBUTION_IDS }}; do
-            aws cloudfront create-invalidation --distribution-id "$id" --paths "/" "/index.html" "/_site/*" "/robots.txt" "/sitemap.xml"
+            aws cloudfront create-invalidation --distribution-id "$id" --paths "/" "/index.html" "/404.html" "/_site/*" "/robots.txt" "/sitemap.xml"
           done
