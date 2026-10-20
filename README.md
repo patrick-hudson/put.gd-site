@@ -32,7 +32,12 @@ Then open <http://127.0.0.1:4411/>. The hero animation is pure CSS on a 9 s loop
 
 Every push to `main` deploys. The workflow also runs when put.gd-desktop publishes a release
 (`repository_dispatch` with type `release-published`), every six hours as a backstop, and by hand
-from the Actions tab. It assumes an AWS role through GitHub OIDC; no long-lived keys are stored.
+from the Actions tab. It assumes an AWS role through GitHub OIDC; no long-lived keys are stored. The repository uses
+GitHub's immutable OIDC subject, so the role trusts `repo:patrick-hudson@5728403/put.gd-site@1426482917:environment:production`
+(see `infra/iam.tf`).
+
+The AWS side is described in `infra/` (Terraform, state in the `putgd-site-terraform-state` bucket):
+`terraform -chdir=infra plan` should be clean; `apply` after changing anything there.
 
 Repository variables: `AWS_DEPLOY_ROLE_ARN`, `SITE_BUCKET`, `CLOUDFRONT_DISTRIBUTION_IDS`
 (space separated), `CLOUDFRONT_KVS_ARN`. The `production` environment gates the deploy job.

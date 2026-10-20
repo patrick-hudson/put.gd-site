@@ -28,6 +28,21 @@ variable "github_repository" {
   default     = "patrick-hudson/put.gd-site"
 }
 
+# The repository uses GitHub's immutable OIDC subject, so the token's "sub" carries the owner and
+# repository ids: repo:OWNER@OWNER_ID/REPO@REPO_ID:environment:NAME. Read them with
+# `gh api users/patrick-hudson -q .id` and `gh api repos/patrick-hudson/put.gd-site -q .id`.
+variable "github_owner_id" {
+  description = "Numeric id of the GitHub account that owns the repository."
+  type        = number
+  default     = 5728403
+}
+
+variable "github_repository_id" {
+  description = "Numeric id of the GitHub repository."
+  type        = number
+  default     = 1426482917
+}
+
 variable "github_environment" {
   description = "GitHub Actions environment the deploy job runs in."
   type        = string

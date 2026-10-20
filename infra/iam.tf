@@ -5,6 +5,13 @@ data "aws_iam_openid_connect_provider" "github" {
 
 data "aws_caller_identity" "current" {}
 
+locals {
+  # owner@OWNER_ID/repo@REPO_ID, the immutable form GitHub puts in the OIDC subject for this repository.
+  github_subject_repo = format("%s@%d/%s@%d",
+    split("/", var.github_repository)[0], var.github_owner_id,
+  split("/", var.github_repository)[1], var.github_repository_id)
+}
+
 data "aws_iam_policy_document" "deploy_trust" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -24,8 +31,8 @@ data "aws_iam_policy_document" "deploy_trust" {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:${var.github_repository}:environment:${var.github_environment}",
-        "repo:${var.github_repository}:ref:refs/heads/main",
+        "repo:${local.github_subject_repo}:environment:${var.github_environment}",
+        "repo:${local.github_subject_repo}:ref:refs/heads/main",
       ]
     }
   }
