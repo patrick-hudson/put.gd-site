@@ -46,6 +46,26 @@ resource "aws_cloudfront_distribution" "site" {
     origin_access_control_id = aws_cloudfront_origin_access_control.site.id
   }
 
+  # Update feed v1 (put.gd-desktop #293): the package signer writes update/v1/<channel>.json and
+  # its .minisig to the pkg bucket only after the apt and dnf repositories carry the release, so
+  # the URL phase 1 builds read now comes from there.
+  origin {
+    origin_id                = "pkg"
+    domain_name              = aws_s3_bucket.pkg.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.pkg.id
+  }
+
+  ordered_cache_behavior {
+    path_pattern               = "/update/*"
+    target_origin_id           = "pkg"
+    viewer_protocol_policy     = "redirect-to-https"
+    allowed_methods            = ["GET", "HEAD"]
+    cached_methods             = ["GET", "HEAD"]
+    compress                   = true
+    cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
+    response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers.id
+  }
+
   default_cache_behavior {
     target_origin_id           = "site"
     viewer_protocol_policy     = "redirect-to-https"
