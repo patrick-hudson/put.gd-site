@@ -49,7 +49,17 @@ variable "github_environment" {
   default     = "production"
 }
 
+variable "pkg_domain" {
+  description = "Host name the package repositories, update feed and Flatpak repo are served on."
+  type        = string
+  default     = "pkg.put.gd"
+}
 
+variable "pkg_bucket_name" {
+  description = "Private bucket that holds the package repositories; only CloudFront reads it."
+  type        = string
+  default     = "putgd-pkg"
+}
 
 variable "tags" {
   description = "Tags on every resource."
