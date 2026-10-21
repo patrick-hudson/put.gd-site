@@ -150,10 +150,12 @@ resource "aws_cloudfront_distribution" "pkg" {
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers.id
   }
 
-  # A missing key comes back from S3 as 403 when the bucket cannot be listed; apt and dnf expect 404.
+  # A missing key comes back from S3 as 403 when the bucket cannot be listed; apt and dnf expect
+  # 404. CloudFront needs a page to rewrite the status; the signer uploads /404.txt.
   custom_error_response {
     error_code            = 403
     response_code         = 404
+    response_page_path    = "/404.txt"
     error_caching_min_ttl = 60
   }
 
