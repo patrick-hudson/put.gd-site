@@ -122,17 +122,14 @@ class FeedTest(unittest.TestCase):
 
 
 class PermalinkTest(unittest.TestCase):
-    def test_zsync_permalink_follows_the_asset(self):
-        data, _ = releases.build(TODAY, text_from(TODAY), NOW)
-        keys = update_kvs.wanted(data)
-        self.assertNotIn("nightly/appimage.zsync", keys)
-        self.assertFalse(any(k.startswith("stable/") for k in keys))
+    def test_zsync_permalink_is_not_a_redirect(self):
+        # The signer serves dl/<channel>/appimage.zsync from the pkg bucket (#293 phase 3).
         listing = TODAY + [release("v0.1.1-nightly.700", "2026-10-22T05:00:00Z", extra=["putgd-0.1.1-nightly.700-x86_64.AppImage.zsync"])]
         data, _ = releases.build(listing, text_from(listing), NOW)
         keys = update_kvs.wanted(data)
-        self.assertEqual(keys["nightly/appimage.zsync"], f"{DL}/v0.1.1-nightly.700/putgd-0.1.1-nightly.700-x86_64.AppImage.zsync")
+        self.assertNotIn("nightly/appimage.zsync", keys)
+        self.assertFalse(any(k.startswith("stable/") for k in keys))
         self.assertEqual(keys["nightly/appimage"], f"{DL}/v0.1.1-nightly.700/putgd-0.1.1-nightly.700-x86_64.AppImage")
-
 
 if __name__ == "__main__":
     unittest.main()

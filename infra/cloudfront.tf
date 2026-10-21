@@ -66,6 +66,21 @@ resource "aws_cloudfront_distribution" "site" {
     response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers.id
   }
 
+  # AppImage .zsync permalinks (put.gd-desktop #293 phase 3, #297): the package signer writes
+  # dl/<channel>/appimage.zsync to the pkg bucket only after it has mirrored the image the .zsync
+  # names (pkg.put.gd/releases/<tag>/), so AppImageUpdate, Gear Lever and put.gd's own updater never
+  # get a .zsync whose image isn't there. The object is served directly, without the router's 302.
+  ordered_cache_behavior {
+    path_pattern               = "/dl/*/appimage.zsync"
+    target_origin_id           = "pkg"
+    viewer_protocol_policy     = "redirect-to-https"
+    allowed_methods            = ["GET", "HEAD"]
+    cached_methods             = ["GET", "HEAD"]
+    compress                   = false
+    cache_policy_id            = data.aws_cloudfront_cache_policy.caching_optimized.id
+    response_headers_policy_id = data.aws_cloudfront_response_headers_policy.security_headers.id
+  }
+
   default_cache_behavior {
     target_origin_id           = "site"
     viewer_protocol_policy     = "redirect-to-https"

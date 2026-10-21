@@ -2,10 +2,11 @@
 """Sync the /dl/ permalink targets into the CloudFront KeyValueStore.
 
 Keys are "<channel>/<package>" where package is one of ubuntu24.04, ubuntu26.04,
-debian13, fedora44, appimage, appimage.zsync, checksums or release; values are
-the URLs from releases.json. Keys for a channel that has no release are removed, so
-/dl/stable/... answers 404 until the first stable ships; so is a key whose asset the
-release lacks, such as appimage.zsync before the release ships an .AppImage.zsync.
+debian13, fedora44, appimage, checksums or release; values are the URLs from
+releases.json. Keys for a channel that has no release are removed, so /dl/stable/...
+answers 404 until the first stable ships. /dl/<channel>/appimage.zsync is not a
+redirect any more: CloudFront serves the package signer's copy from the pkg bucket
+(put.gd-desktop #293 phase 3), so its old key is removed here too.
 
 Uses the AWS CLI (already authenticated in the workflow); stdlib only.
 """
@@ -30,8 +31,6 @@ def wanted(data):
         out[f"{channel}/release"] = rel["html_url"]
         if rel.get("checksums"):
             out[f"{channel}/checksums"] = rel["checksums"]
-        if rel.get("zsync"):
-            out[f"{channel}/appimage.zsync"] = rel["zsync"]
         for short, key in PACKAGES.items():
             asset = rel["assets"].get(key)
             if asset:
