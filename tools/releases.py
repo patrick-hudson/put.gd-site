@@ -28,6 +28,8 @@ import urllib.request
 REPO = "patrick-hudson/put.gd-desktop"
 KEYS = ["ubuntu24.04", "ubuntu26.04", "debian13", "fedora44", ".AppImage"]
 PACKAGE = re.compile(r"\.(deb|rpm|AppImage)$")
+# Nightly tags: vYY.MDD.N-nightly since put.gd-desktop #373, v0.Y.Z-nightly.N before.
+NIGHTLY = re.compile(r"-nightly(\.[1-9][0-9]*)?$")
 CHANNELS = ("stable", "nightly")
 FEED_SCHEMA = 1
 # Feed asset key for each releases.json key.
@@ -56,7 +58,7 @@ def pick(releases):
     """Return (stable, nightly) from a GitHub releases listing."""
     releases = sorted((r for r in releases if not r.get("draft")), key=lambda r: r["published_at"], reverse=True)
     stable = next((r for r in releases if not r["prerelease"]), None)
-    nightly = next((r for r in releases if r["prerelease"] and "-nightly." in r["tag_name"]), None)
+    nightly = next((r for r in releases if r["prerelease"] and NIGHTLY.search(r["tag_name"])), None)
     return stable, nightly
 
 
