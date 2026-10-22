@@ -4,6 +4,7 @@ data "aws_route53_zone" "zone" {
 
 resource "aws_route53_record" "pages" {
   for_each = {
+    admin = "putgd-admin.pages.dev"
     api   = "putgd-api.pages.dev"
     share = "putgd-share.pages.dev"
   }
