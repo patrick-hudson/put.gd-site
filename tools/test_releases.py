@@ -90,6 +90,19 @@ class FeedTest(unittest.TestCase):
         self.assertEqual(feeds["stable"]["release"]["version"], "0.1.1")
         self.assertEqual(feeds["nightly"]["release"]["version"], "0.1.1-nightly.588")
 
+    def test_calendar_versions_follow_the_pre_calendar_nightlies(self):
+        # put.gd-desktop #373: nightlies are tagged vYY.MDD.N-nightly, stable releases vYY.MDD.N.
+        listing = TODAY + [release("v26.1022.942-nightly", "2026-10-22T05:30:00Z")]
+        _, feeds = self.build(listing)
+        rel = feeds["nightly"]["release"]
+        self.assertEqual((rel["tag"], rel["version"]), ("v26.1022.942-nightly", "26.1022.942-nightly"))
+        self.assertEqual(rel["assets"]["appimage"]["name"], "putgd-26.1022.942-nightly-x86_64.AppImage")
+        self.assertIsNone(feeds["stable"]["release"])
+        listing += [release("v26.1101.960", "2026-11-02T00:00:00Z", prerelease=False)]
+        _, feeds = self.build(listing)
+        self.assertEqual(feeds["stable"]["release"]["version"], "26.1101.960")
+        self.assertEqual(feeds["nightly"]["release"]["version"], "26.1022.942-nightly")
+
     def test_unreadable_sums_omit_sha256(self):
         def fail(url):
             raise OSError("HTTP Error 502")
