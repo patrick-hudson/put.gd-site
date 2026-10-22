@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "types": ["vite/client", "node"],
+    "paths": {
+      "@putgd-enterprise/*": ["./src/main/typescript/com/putgd/enterprise/*"],
+      "@putgd-enterprise-resources/*": ["./src/main/resources/*"],
+      "@putgd-enterprise-test-resources/*": ["./src/test/resources/*"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

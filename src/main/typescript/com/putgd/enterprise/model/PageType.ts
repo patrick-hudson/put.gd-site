@@ -1,0 +1,4 @@
+export enum PageType {
+  LANDING_PAGE = "LANDING_PAGE",
+  NOT_FOUND_PAGE = "NOT_FOUND_PAGE",
+}

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+
+  <!-- Infrastructure services -->
+
+  <bean id="motionPreferenceDetectionService" class="com.putgd.enterprise.impl.services.MatchMediaMotionPreferenceDetectionServiceImpl">
+    <constructor-arg value="(prefers-reduced-motion: reduce)"/>
+  </bean>
+
+  <bean id="browserCapabilityDetectionService" class="com.putgd.enterprise.impl.services.GlobalScopeBrowserCapabilityDetectionServiceImpl">
+    <constructor-arg value="animation-timeline: view()"/>
+  </bean>
+
+  <bean id="browserLocationService" class="com.putgd.enterprise.impl.services.WindowLocationBrowserLocationServiceImpl"/>
+
+  <bean id="clipboardService" class="com.putgd.enterprise.impl.services.NavigatorClipboardServiceImpl"/>
+
+  <bean id="animationFrameScheduler" class="com.putgd.enterprise.impl.schedulers.WindowRequestAnimationFrameSchedulerImpl"/>
+
+  <bean id="delayedTaskScheduler" class="com.putgd.enterprise.impl.schedulers.WindowSetTimeoutDelayedTaskSchedulerImpl"/>
+
+  <bean id="assetPathResolver" class="com.putgd.enterprise.impl.resolvers.PrefixingAssetPathResolverImpl">
+    <constructor-arg value="/_site/"/>
+  </bean>
+
+  <bean id="externalUrlResolver" class="com.putgd.enterprise.impl.resolvers.EqualsSignDelimitedKeyValuePairExternalUrlResolverImpl">
+    <constructor-arg>
+      <list>
+        <value>SOURCE_REPOSITORY=https://github.com/patrick-hudson/put.gd-desktop</value>
+        <value>RELEASES_PAGE=https://github.com/patrick-hudson/put.gd-desktop/releases</value>
+        <value>USER_GUIDE=https://github.com/patrick-hudson/put.gd-desktop/blob/main/docs/user-guide.md</value>
+        <value>ISSUES=https://github.com/patrick-hudson/put.gd-desktop/issues</value>
+        <value>CLI_REFERENCE=https://github.com/patrick-hudson/put.gd-desktop/blob/main/docs/cli.md</value>
+        <value>MCP_HELPER=https://github.com/patrick-hudson/put.gd-desktop/blob/main/docs/mcp.md</value>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <!-- Page composition -->
+
+  <bean id="pageResolutionStrategy" class="com.putgd.enterprise.impl.strategies.AllowListPathnamePageResolutionStrategyImpl">
+    <constructor-arg>
+      <list>
+        <value>/</value>
+        <value>/index.html</value>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="pageComponentFactory" class="com.putgd.enterprise.impl.factories.EnumMappingPageComponentFactoryImpl"/>
+
+  <bean id="sectionOrderingStrategy" class="com.putgd.enterprise.impl.strategies.XmlConfiguredSectionOrderingStrategyImpl">
+    <constructor-arg>
+      <list>
+        <value>HERO</value>
+        <value>PIPELINE</value>
+        <value>SCRIPT</value>
+        <value>INSTALL</value>
+        <value>DETAILS</value>
+      </list>
+    </constructor-arg>
+  </bean>
+
+  <bean id="sectionComponentFactory" class="com.putgd.enterprise.impl.factories.EnumMappingSectionComponentFactoryImpl"/>
+
+  <!-- Content repositories -->
+
+  <bean id="primaryNavigationLinkRepository" class="com.putgd.enterprise.impl.repositories.HardcodedPrimaryNavigationLinkRepositoryImpl">
+    <constructor-arg ref="externalUrlResolver"/>
+  </bean>
+
+  <bean id="footerNavigationLinkRepository" class="com.putgd.enterprise.impl.repositories.HardcodedFooterNavigationLinkRepositoryImpl">
+    <constructor-arg ref="externalUrlResolver"/>
+  </bean>
+
+  <bean id="testRunnerProgressLineRepository" class="com.putgd.enterprise.impl.repositories.HardcodedTestRunnerProgressLineRepositoryImpl"/>
+  <bean id="pipelineStopRepository" class="com.putgd.enterprise.impl.repositories.HardcodedPipelineStopRepositoryImpl"/>
+  <bean id="consoleLineRepository" class="com.putgd.enterprise.impl.repositories.HardcodedConsoleLineRepositoryImpl"/>
+  <bean id="packageRowDescriptorRepository" class="com.putgd.enterprise.impl.repositories.HardcodedPackageRowDescriptorRepositoryImpl"/>
+  <bean id="installCommandSnippetRepository" class="com.putgd.enterprise.impl.repositories.HardcodedInstallCommandSnippetRepositoryImpl"/>
+  <bean id="productDetailEntryRepository" class="com.putgd.enterprise.impl.repositories.HardcodedProductDetailEntryRepositoryImpl"/>
+
+  <!-- Hero stage: selection readout -->
+
+  <bean id="quadraticEaseOutEasingStrategy" class="com.putgd.enterprise.impl.strategies.QuadraticEaseOutEasingStrategyImpl"/>
+
+  <bean id="unitIntervalClampingStrategy" class="com.putgd.enterprise.impl.strategies.ConfigurableBoundsClampingStrategyImpl">
+    <constructor-arg value="0" type="number"/>
+    <constructor-arg value="1" type="number"/>
+  </bean>
+
+  <bean id="animationLoopProgressCalculator" class="com.putgd.enterprise.impl.calculators.WebAnimationsApiAnimationLoopProgressCalculatorImpl"/>
+
+  <bean id="selectionReadoutDimensionCalculator" class="com.putgd.enterprise.impl.calculators.EasedSelectionReadoutDimensionCalculatorImpl">
+    <constructor-arg ref="quadraticEaseOutEasingStrategy"/>
+    <constructor-arg ref="unitIntervalClampingStrategy"/>
+    <constructor-arg value="612" type="number"/>
+    <constructor-arg value="133" type="number"/>
+    <constructor-arg value="0.20" type="number"/>
+    <constructor-arg value="0.32" type="number"/>
+  </bean>
+
+  <bean id="selectionReadoutDimensionsFormatter" class="com.putgd.enterprise.impl.formatters.SelectionReadoutDimensionsFormatterImpl">
+    <constructor-arg value=" &#215; "/>
+  </bean>
+
+  <!-- Hero stage: test runner terminal -->
+
+  <bean id="whitespaceSequenceGenerator" class="com.putgd.enterprise.impl.generators.SingleCharacterRepeatingSequenceGeneratorImpl">
+    <constructor-arg value=" "/>
+  </bean>
+
+  <bean id="passedTestMarkerSequenceGenerator" class="com.putgd.enterprise.impl.generators.SingleCharacterRepeatingSequenceGeneratorImpl">
+    <constructor-arg value="."/>
+  </bean>
+
+  <bean id="failedTestMarkerSequenceGenerator" class="com.putgd.enterprise.impl.generators.SingleCharacterRepeatingSequenceGeneratorImpl">
+    <constructor-arg value="F"/>
+  </bean>
+
+  <bean id="percentageColumnFormatter" class="com.putgd.enterprise.impl.formatters.BracketedPercentageColumnFormatterImpl">
+    <constructor-arg value="3" type="number"/>
+  </bean>
+
+  <!-- Pipeline plates -->
+
+  <bean id="plateRevealIntersectionObserverOptionsProvider" class="com.putgd.enterprise.impl.providers.ConfigurableIntersectionObserverOptionsProviderImpl">
+    <constructor-arg value="0px 0px -12% 0px"/>
+    <constructor-arg value="0.15" type="number"/>
+  </bean>
+
+  <bean id="plateRevealIntersectionObserverFactory" class="com.putgd.enterprise.impl.factories.OptionsProviderBackedIntersectionObserverFactoryImpl">
+    <constructor-arg ref="plateRevealIntersectionObserverOptionsProvider"/>
+  </bean>
+
+  <!-- Scripting console -->
+
+  <bean id="consoleIntersectionObserverOptionsProvider" class="com.putgd.enterprise.impl.providers.ConfigurableIntersectionObserverOptionsProviderImpl">
+    <constructor-arg value="0px"/>
+    <constructor-arg value="0.4" type="number"/>
+  </bean>
+
+  <bean id="consoleIntersectionObserverFactory" class="com.putgd.enterprise.impl.factories.OptionsProviderBackedIntersectionObserverFactoryImpl">
+    <constructor-arg ref="consoleIntersectionObserverOptionsProvider"/>
+  </bean>
+
+  <bean id="typewriterDelayCalculationStrategy" class="com.putgd.enterprise.impl.strategies.ExplanatoryCommentAwareTypewriterDelayCalculationStrategyImpl">
+    <constructor-arg value="300" type="number"/>
+    <constructor-arg value="260" type="number"/>
+    <constructor-arg value="520" type="number"/>
+  </bean>
+
+  <bean id="consoleSessionAccessibleLabelFormatter" class="com.putgd.enterprise.impl.formatters.ConsoleSessionAccessibleLabelFormatterImpl">
+    <constructor-arg value="Example putgd-cli session: "/>
+    <constructor-arg value="$"/>
+  </bean>
+
+  <bean id="consoleSessionStaticAccessibleLabelStringReturner" class="com.putgd.enterprise.impl.stringreturners.ConsoleSessionStaticAccessibleLabelStringReturnerImpl"/>
+
+  <!-- Copy buttons -->
+
+  <bean id="copyButtonIdleLabelStringReturner" class="com.putgd.enterprise.impl.stringreturners.CopyButtonIdleLabelStringReturnerImpl"/>
+  <bean id="copyButtonConfirmationLabelStringReturner" class="com.putgd.enterprise.impl.stringreturners.CopyButtonConfirmationLabelStringReturnerImpl"/>
+  <bean id="copyButtonClipboardUnavailableLabelStringReturner" class="com.putgd.enterprise.impl.stringreturners.CopyButtonClipboardUnavailableLabelStringReturnerImpl"/>
+  <bean id="copyButtonBaseClassNameStringReturner" class="com.putgd.enterprise.impl.stringreturners.CopyButtonBaseClassNameStringReturnerImpl"/>
+  <bean id="copyButtonConfirmationClassNameStringReturner" class="com.putgd.enterprise.impl.stringreturners.CopyButtonConfirmationClassNameStringReturnerImpl"/>
+
+  <bean id="copyButtonStateMachine" class="com.putgd.enterprise.impl.statemachines.CopyButtonStateMachineImpl"/>
+
+  <bean id="copyButtonStateToLabelConverter" class="com.putgd.enterprise.impl.converters.CopyButtonStateToLabelConverterImpl">
+    <constructor-arg ref="copyButtonIdleLabelStringReturner"/>
+    <constructor-arg ref="copyButtonConfirmationLabelStringReturner"/>
+    <constructor-arg ref="copyButtonClipboardUnavailableLabelStringReturner"/>
+  </bean>
+
+  <bean id="copyButtonStateToClassNameConverter" class="com.putgd.enterprise.impl.converters.CopyButtonStateToClassNameConverterImpl">
+    <constructor-arg ref="copyButtonBaseClassNameStringReturner"/>
+    <constructor-arg ref="copyButtonConfirmationClassNameStringReturner"/>
+  </bean>
+
+  <bean id="copyConfirmationDisplayDurationProvider" class="com.putgd.enterprise.impl.providers.ConfigurableDurationProviderImpl">
+    <constructor-arg value="1800" type="number"/>
+  </bean>
+
+  <!-- Install table -->
+
+  <bean id="releaseManifestRetrievalService" class="com.putgd.enterprise.impl.services.FetchApiReleaseManifestRetrievalServiceImpl">
+    <constructor-arg ref="assetPathResolver"/>
+    <constructor-arg value="releases.json"/>
+  </bean>
+
+  <bean id="initialReleaseChannelSelectionStrategy" class="com.putgd.enterprise.impl.strategies.LocationHashAwareInitialReleaseChannelSelectionStrategyImpl">
+    <constructor-arg ref="browserLocationService"/>
+    <constructor-arg value="#nightly"/>
+  </bean>
+
+  <bean id="releaseAssetMatchKeyToPermalinkSlugConverter" class="com.putgd.enterprise.impl.converters.AppImageAwareReleaseAssetMatchKeyToPermalinkSlugConverterImpl">
+    <constructor-arg value=".AppImage"/>
+    <constructor-arg value="appimage"/>
+  </bean>
+
+  <!-- Absolute because the page is also served at put.gd/. -->
+  <bean id="permalinkUrlFactory" class="com.putgd.enterprise.impl.factories.SlugConvertingPermalinkUrlFactoryImpl">
+    <constructor-arg value="https://app.put.gd/dl"/>
+    <constructor-arg ref="releaseAssetMatchKeyToPermalinkSlugConverter"/>
+    <constructor-arg value="checksums"/>
+  </bean>
+
+  <bean id="mebibyteByteSizeFormatter" class="com.putgd.enterprise.impl.formatters.MebibyteByteSizeFormatterImpl">
+    <constructor-arg value="1048576" type="number"/>
+    <constructor-arg value="1" type="number"/>
+    <constructor-arg value=" MB"/>
+  </bean>
+
+  <bean id="publicationDateFormatter" class="com.putgd.enterprise.impl.formatters.UserLocalePublicationDateFormatterImpl"/>
+
+  <bean id="downloadLinkLabelStringReturner" class="com.putgd.enterprise.impl.stringreturners.DownloadLinkLabelStringReturnerImpl"/>
+  <bean id="releasePageLinkLabelStringReturner" class="com.putgd.enterprise.impl.stringreturners.ReleasePageLinkLabelStringReturnerImpl"/>
+
+  <bean id="packageRowDescriptorVisitor" class="com.putgd.enterprise.impl.visitors.ReleaseAwarePackageRowDescriptorVisitorImpl">
+    <constructor-arg ref="permalinkUrlFactory"/>
+    <constructor-arg ref="mebibyteByteSizeFormatter"/>
+    <constructor-arg ref="downloadLinkLabelStringReturner"/>
+    <constructor-arg ref="releasePageLinkLabelStringReturner"/>
+    <constructor-arg ref="externalUrlResolver"/>
+  </bean>
+
+  <bean id="releaseChannelDisplayNameProvider" class="com.putgd.enterprise.impl.providers.EnumMappingReleaseChannelDisplayNameProviderImpl">
+    <constructor-arg value="Stable"/>
+    <constructor-arg value="Nightly"/>
+  </bean>
+
+  <bean id="releaseLineViewModelProvider" class="com.putgd.enterprise.impl.providers.DefaultReleaseLineViewModelProviderImpl">
+    <constructor-arg ref="permalinkUrlFactory"/>
+    <constructor-arg ref="publicationDateFormatter"/>
+    <constructor-arg ref="releaseChannelDisplayNameProvider"/>
+    <constructor-arg ref="externalUrlResolver"/>
+  </bean>
+
+  <bean id="channelNoteMessageProvider" class="com.putgd.enterprise.impl.providers.ReleaseAvailabilityAwareChannelNoteMessageProviderImpl">
+    <constructor-arg value="There is no stable release yet. The nightly channel has the current builds."/>
+    <constructor-arg value="No nightly build is published right now."/>
+    <constructor-arg value="Nightlies pass the full test suites and package audits on every build, but are not desktop-certified. Stable releases are."/>
+  </bean>
+
+  <bean id="booleanToAriaBooleanAttributeValueConverter" class="com.putgd.enterprise.impl.converters.BooleanToAriaBooleanAttributeValueConverterImpl"/>
+
+</beans>

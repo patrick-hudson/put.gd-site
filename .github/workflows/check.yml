@@ -1,7 +1,7 @@
 name: Check
 
-# Runs the release tool tests and a dry run of the generator on pull requests, so a broken
-# releases.json or update feed shows up before it reaches main (which deploys).
+# Runs the release tool tests, a dry run of the generator and the page build on pull requests, so a
+# broken releases.json, update feed or page shows up before it reaches main (which deploys).
 on:
   pull_request:
 
@@ -23,6 +23,17 @@ jobs:
         run: |
           python3 tools/releases.py --out "$RUNNER_TEMP/releases.json" --feed-dir "$RUNNER_TEMP/update/v1"
           cat "$RUNNER_TEMP"/update/v1/*.json
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Type-check, test and build the page
+        run: |
+          npm ci
+          npm test
+          npm run build
 
       - name: Check the CloudFront function
         run: node --check cloudfront/download-redirect.js

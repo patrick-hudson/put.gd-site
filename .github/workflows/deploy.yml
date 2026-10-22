@@ -38,6 +38,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 tools/releases.py --out public/_site/releases.json --feed-dir public/update/v1
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Test the page and build it into dist/
+        run: |
+          npm ci
+          npm test
+          npm run build
+
       - name: Check the page and the CloudFront function
         run: |
           python3 - <<'EOF'
@@ -48,8 +59,8 @@ jobs:
                   for k, v in attrs:
                       if k in ("src", "href") and v and v.startswith("/_site/"):
                           self.refs.append(v)
-          p = P(); p.feed(pathlib.Path("public/index.html").read_text())
-          missing = [r for r in p.refs if not pathlib.Path("public" + r).exists()]
+          p = P(); p.feed(pathlib.Path("dist/index.html").read_text())
+          missing = [r for r in p.refs if not pathlib.Path("dist" + r).exists()]
           if missing: sys.exit("missing files referenced from index.html: " + ", ".join(missing))
           print(f"{len(p.refs)} local references, all present")
           EOF
@@ -65,23 +76,23 @@ jobs:
         # Assets are browser-cached for a day without a fingerprint, so the pages reference them
         # with ?v=<sha>. CloudFront ignores the query string in its cache key; browsers do not.
         run: |
-          for page in public/index.html public/404.html; do
+          for page in dist/index.html dist/404.html; do
             sed -i -E "s#(/_site/[A-Za-z0-9_./-]+\.(css|js|svg|webp|png))\"#\1?v=${GITHUB_SHA::12}\"#g" "$page"
           done
-          grep -c "?v=${GITHUB_SHA::12}" public/index.html
+          grep -c "?v=${GITHUB_SHA::12}" dist/index.html
 
       - name: Upload the site
         run: |
           # Assets under /_site/ get a day of caching, the page and releases.json five minutes. All are invalidated below.
-          aws s3 sync public/_site/ "s3://${{ vars.SITE_BUCKET }}/_site/" --delete --exclude releases.json \
+          aws s3 sync dist/_site/ "s3://${{ vars.SITE_BUCKET }}/_site/" --delete --exclude releases.json \
             --cache-control "public, max-age=86400, stale-while-revalidate=604800"
-          aws s3 cp public/_site/releases.json "s3://${{ vars.SITE_BUCKET }}/_site/releases.json" \
+          aws s3 cp dist/_site/releases.json "s3://${{ vars.SITE_BUCKET }}/_site/releases.json" \
             --cache-control "public, max-age=300" --content-type "application/json"
-          aws s3 cp public/index.html "s3://${{ vars.SITE_BUCKET }}/index.html" \
+          aws s3 cp dist/index.html "s3://${{ vars.SITE_BUCKET }}/index.html" \
             --cache-control "public, max-age=300, stale-while-revalidate=86400" --content-type "text/html; charset=utf-8"
-          aws s3 cp public/robots.txt "s3://${{ vars.SITE_BUCKET }}/robots.txt" --cache-control "public, max-age=3600"
-          aws s3 cp public/sitemap.xml "s3://${{ vars.SITE_BUCKET }}/sitemap.xml" --cache-control "public, max-age=3600"
-          aws s3 cp public/404.html "s3://${{ vars.SITE_BUCKET }}/404.html" --cache-control "public, max-age=3600" --content-type "text/html; charset=utf-8"
+          aws s3 cp dist/robots.txt "s3://${{ vars.SITE_BUCKET }}/robots.txt" --cache-control "public, max-age=3600"
+          aws s3 cp dist/sitemap.xml "s3://${{ vars.SITE_BUCKET }}/sitemap.xml" --cache-control "public, max-age=3600"
+          aws s3 cp dist/404.html "s3://${{ vars.SITE_BUCKET }}/404.html" --cache-control "public, max-age=3600" --content-type "text/html; charset=utf-8"
           # Update feed v1 (put.gd-desktop #293) is published by the package signer to the pkg bucket,
           # after the apt and dnf repositories carry the release; /update/* routes there. The feeds
           # built above are only a contract cross-check and are not uploaded.
