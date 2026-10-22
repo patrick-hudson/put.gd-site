@@ -2,6 +2,19 @@ data "aws_route53_zone" "zone" {
   name = var.zone_name
 }
 
+resource "aws_route53_record" "pages" {
+  for_each = {
+    api   = "putgd-api.pages.dev"
+    share = "putgd-share.pages.dev"
+  }
+
+  zone_id = data.aws_route53_zone.zone.zone_id
+  name    = "${each.key}.${trimsuffix(var.zone_name, ".")}"
+  type    = "CNAME"
+  ttl     = 300
+  records = [each.value]
+}
+
 resource "aws_acm_certificate" "site" {
   provider          = aws.us_east_1
   domain_name       = var.domain
