@@ -1,0 +1,25 @@
+{
+  "f44": {
+    "description": "Fedora 44 Workstation, GNOME 50 on Wayland (physical lab desktop)",
+    "physical": true,
+    "address": "192.168.68.70",
+    "user": "patrick",
+    "identity": "~/.ssh/awskey_110724",
+    "knownHosts": "{PUTGD_REPO}/work/remote-builders/f44/known_hosts",
+    "vncPort": 5970,
+    "vncService": "putgd-fedora-vnc.service",
+    "wallTile": "Fedora 44 GNOME - build server",
+    "lockName": "f44",
+    "desktop": "gnome",
+    "package": {"asset": "fedora44-x86_64.rpm", "manager": "dnf", "name": "putgd"},
+    "viewer": ["loupe"],
+    "player": ["dbus-run-session", "--", "showtime"],
+    "playerNote": "Showtime 50 deadlocks when GNOME Shell queries its MPRIS volume while the video prerolls; a private session bus avoids that.",
+    "relogin": "gdm",
+    "wallpaper": {
+      "picture-uri": "'file:///usr/share/backgrounds/f44/default/f44-01-day.jxl'",
+      "picture-uri-dark": "'file:///usr/share/backgrounds/f44/default/f44-01-night.jxl'",
+      "picture-options": "'zoom'"
+    }
+  }
+}

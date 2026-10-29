@@ -24,5 +24,7 @@ jobs:
           python3 tools/releases.py --out "$RUNNER_TEMP/releases.json" --feed-dir "$RUNNER_TEMP/update/v1"
           cat "$RUNNER_TEMP"/update/v1/*.json
 
-      - name: Check the CloudFront function
-        run: node --check cloudfront/download-redirect.js
+      - name: Render the page and check its references
+        run: |
+          python3 tools/render.py --releases "$RUNNER_TEMP/releases.json"
+          node --check cloudfront/download-redirect.js

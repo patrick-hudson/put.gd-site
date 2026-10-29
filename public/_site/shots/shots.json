@@ -1,0 +1,310 @@
+{
+  "shots": {
+    "history": {
+      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1029.2229-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            624,
+            404
+          ],
+          "2x": [
+            1248,
+            808
+          ]
+        },
+        "dark-mobile": {
+          "1x": [
+            288,
+            280
+          ],
+          "2x": [
+            576,
+            560
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            624,
+            404
+          ],
+          "2x": [
+            1248,
+            808
+          ]
+        },
+        "light-mobile": {
+          "1x": [
+            288,
+            280
+          ],
+          "2x": [
+            576,
+            560
+          ]
+        }
+      }
+    },
+    "capture": {
+      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1029.2229-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            460,
+            345
+          ],
+          "2x": [
+            920,
+            690
+          ]
+        },
+        "dark-mobile": {
+          "1x": [
+            440,
+            330
+          ],
+          "2x": [
+            880,
+            660
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            460,
+            345
+          ],
+          "2x": [
+            920,
+            690
+          ]
+        },
+        "light-mobile": {
+          "1x": [
+            440,
+            330
+          ],
+          "2x": [
+            880,
+            660
+          ]
+        }
+      }
+    },
+    "edit": {
+      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1029.2229-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            620,
+            465
+          ],
+          "2x": [
+            1240,
+            930
+          ]
+        },
+        "dark-mobile": {
+          "1x": [
+            480,
+            360
+          ],
+          "2x": [
+            960,
+            720
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            620,
+            465
+          ],
+          "2x": [
+            1240,
+            930
+          ]
+        },
+        "light-mobile": {
+          "1x": [
+            480,
+            360
+          ],
+          "2x": [
+            960,
+            720
+          ]
+        }
+      }
+    },
+    "record": {
+      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1029.2229-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            520,
+            390
+          ],
+          "2x": [
+            1040,
+            780
+          ]
+        },
+        "dark-mobile": {
+          "1x": [
+            520,
+            390
+          ],
+          "2x": [
+            1040,
+            780
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            520,
+            390
+          ],
+          "2x": [
+            1040,
+            780
+          ]
+        },
+        "light-mobile": {
+          "1x": [
+            520,
+            390
+          ],
+          "2x": [
+            1040,
+            780
+          ]
+        }
+      }
+    },
+    "storage": {
+      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1029.2229-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            504,
+            378
+          ],
+          "2x": [
+            1008,
+            756
+          ]
+        },
+        "dark-mobile": {
+          "1x": [
+            400,
+            300
+          ],
+          "2x": [
+            800,
+            600
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            504,
+            378
+          ],
+          "2x": [
+            1008,
+            756
+          ]
+        },
+        "light-mobile": {
+          "1x": [
+            400,
+            300
+          ],
+          "2x": [
+            800,
+            600
+          ]
+        }
+      }
+    },
+    "desktop": {
+      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1029.2229-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            960,
+            540
+          ],
+          "2x": [
+            1920,
+            1080
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            960,
+            540
+          ],
+          "2x": [
+            1920,
+            1080
+          ]
+        }
+      }
+    }
+  },
+  "media": [
+    {
+      "title": "The aurora australis blends with Earth's atmospheric glow (iss072e011489)",
+      "credit": "NASA (photo: Matthew Dominick, International Space Station)",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "source": "https://images.nasa.gov/details/iss072e011489"
+    },
+    {
+      "title": "The Day the Earth Smiled (PIA17172)",
+      "credit": "NASA/JPL-Caltech/SSI",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "source": "https://images.nasa.gov/details/PIA17172"
+    },
+    {
+      "title": "The Apollo 11 lunar plaque (S69-38749)",
+      "credit": "NASA",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "source": "https://images.nasa.gov/details/S69-38749"
+    },
+    {
+      "title": "Sintel (trailer)",
+      "credit": "© copyright Blender Foundation | durian.blender.org",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "source": "https://commons.wikimedia.org/wiki/File:Sintel_trailer-1080p.ogv"
+    },
+    {
+      "title": "The Blue Marble (AS17-148-22727)",
+      "credit": "NASA (Apollo 17 crew)",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "source": "https://images.nasa.gov/details/as17-148-22727"
+    },
+    {
+      "title": "Earthrise (AS08-14-2383)",
+      "credit": "NASA (Apollo 8 crew)",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "source": "https://images.nasa.gov/details/as08-14-2383"
+    }
+  ]
+}

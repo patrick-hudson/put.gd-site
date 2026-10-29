@@ -1,0 +1,76 @@
+{
+  "assets": [
+    {
+      "id": "aurora",
+      "kind": "image",
+      "title": "The aurora australis blends with Earth's atmospheric glow (iss072e011489)",
+      "url": "https://images-assets.nasa.gov/image/iss072e011489/iss072e011489~large.jpg",
+      "sha256": "9359552937d1ff0b38b0b37d7ec0a49b477385bd112069f3961dd96545a1cb76",
+      "bytes": 96341,
+      "credit": "NASA (photo: Matthew Dominick, International Space Station)",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "page": "https://images.nasa.gov/details/iss072e011489"
+    },
+    {
+      "id": "saturn",
+      "kind": "image",
+      "title": "The Day the Earth Smiled (PIA17172)",
+      "url": "https://images-assets.nasa.gov/image/PIA17172/PIA17172~large.jpg",
+      "sha256": "c625643f23f1fa259f1487aaccca36dbe1d52de2753c97eb4f13441dbfa2d987",
+      "bytes": 57619,
+      "credit": "NASA/JPL-Caltech/SSI",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "page": "https://images.nasa.gov/details/PIA17172"
+    },
+    {
+      "id": "plaque",
+      "kind": "image",
+      "title": "The Apollo 11 lunar plaque (S69-38749)",
+      "url": "https://images-assets.nasa.gov/image/S69-38749/S69-38749~large.jpg",
+      "sha256": "04dad4d1c975e8290f52abc6eeed8672026c6dfef71e1aa814ef5318cfd823d5",
+      "bytes": 399586,
+      "credit": "NASA",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "page": "https://images.nasa.gov/details/S69-38749"
+    },
+    {
+      "id": "sintel",
+      "kind": "video",
+      "title": "Sintel (trailer)",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/06/Sintel_trailer-1080p.ogv",
+      "sha256": "771882048f062ab5668d34a2f1383a9d59b3bd87ee9247e5da6dd2d68f1f3236",
+      "bytes": 44448221,
+      "credit": "© copyright Blender Foundation | durian.blender.org",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+      "page": "https://commons.wikimedia.org/wiki/File:Sintel_trailer-1080p.ogv"
+    },
+    {
+      "id": "blue-marble",
+      "kind": "image",
+      "title": "The Blue Marble (AS17-148-22727)",
+      "url": "https://images-assets.nasa.gov/image/as17-148-22727/as17-148-22727~large.jpg",
+      "sha256": "36dad3314b64319ea75465c4293719eb131d943566eb462e8bac3281e02c3bd4",
+      "bytes": 350623,
+      "credit": "NASA (Apollo 17 crew)",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "page": "https://images.nasa.gov/details/as17-148-22727"
+    },
+    {
+      "id": "earthrise",
+      "kind": "image",
+      "title": "Earthrise (AS08-14-2383)",
+      "url": "https://images-assets.nasa.gov/image/as08-14-2383/as08-14-2383~large.jpg",
+      "sha256": "3263385f29f5f511a4b9cb081d9fbf73e4dbf708ca2d99c823247b675e223ae9",
+      "bytes": 139142,
+      "credit": "NASA (Apollo 8 crew)",
+      "license": "Public domain",
+      "licenseUrl": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+      "page": "https://images.nasa.gov/details/as08-14-2383"
+    }
+  ]
+}
