@@ -30,6 +30,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Pillow for the screenshot pipeline tests
+        run: python3 -m pip install --quiet --user --break-system-packages pillow
+
       - name: Test the release tools
         run: python3 -m unittest discover -s tools -v
 
