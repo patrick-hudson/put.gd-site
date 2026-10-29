@@ -38,21 +38,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 tools/releases.py --out public/_site/releases.json --feed-dir public/update/v1
 
-      - name: Check the page and the CloudFront function
+      - name: Keep the internal design codename off the site
+        # The word lives in a repository variable so it never appears in this repository.
+        env:
+          CODENAME: ${{ vars.SITE_CODENAME_GUARD }}
         run: |
-          python3 - <<'EOF'
-          import html.parser, pathlib, sys
-          class P(html.parser.HTMLParser):
-              def __init__(self): super().__init__(); self.refs = []
-              def handle_starttag(self, tag, attrs):
-                  for k, v in attrs:
-                      if k in ("src", "href") and v and v.startswith("/_site/"):
-                          self.refs.append(v)
-          p = P(); p.feed(pathlib.Path("public/index.html").read_text())
-          missing = [r for r in p.refs if not pathlib.Path("public" + r).exists()]
-          if missing: sys.exit("missing files referenced from index.html: " + ", ".join(missing))
-          print(f"{len(p.refs)} local references, all present")
-          EOF
+          if [ -z "$CODENAME" ]; then echo "SITE_CODENAME_GUARD is not set; skipping"; exit 0; fi
+          if grep -rIil -- "$CODENAME" public tools .github README.md; then
+            echo "::error::the files above mention the internal codename"; exit 1
+          fi
+
+      - name: Render the page and check its references
+        # Fills the release details into index.html, fails on any missing /_site/ file (src, href,
+        # srcset and CSS url()), then stamps asset URLs with ?v=<sha>: assets are browser-cached
+        # for a day, and CloudFront ignores the query string in its cache key while browsers do not.
+        run: |
+          python3 tools/render.py --stamp "${GITHUB_SHA::12}"
           node --check cloudfront/download-redirect.js
 
       - name: Configure AWS credentials
@@ -61,20 +62,16 @@ jobs:
           role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Stamp asset links with the commit
-        # Assets are browser-cached for a day without a fingerprint, so the pages reference them
-        # with ?v=<sha>. CloudFront ignores the query string in its cache key; browsers do not.
-        run: |
-          for page in public/index.html public/404.html; do
-            sed -i -E "s#(/_site/[A-Za-z0-9_./-]+\.(css|js|svg|webp|png))\"#\1?v=${GITHUB_SHA::12}\"#g" "$page"
-          done
-          grep -c "?v=${GITHUB_SHA::12}" public/index.html
-
       - name: Upload the site
         run: |
           # Assets under /_site/ get a day of caching, the page and releases.json five minutes. All are invalidated below.
           aws s3 sync public/_site/ "s3://${{ vars.SITE_BUCKET }}/_site/" --delete --exclude releases.json \
             --cache-control "public, max-age=86400, stale-while-revalidate=604800"
+          # The runner's MIME table may not know AVIF or WOFF2; set their types explicitly.
+          for type in "avif image/avif" "woff2 font/woff2"; do set -- $type
+            aws s3 cp public/_site/ "s3://${{ vars.SITE_BUCKET }}/_site/" --recursive --exclude "*" --include "*.$1" \
+              --content-type "$2" --cache-control "public, max-age=86400, stale-while-revalidate=604800"
+          done
           aws s3 cp public/_site/releases.json "s3://${{ vars.SITE_BUCKET }}/_site/releases.json" \
             --cache-control "public, max-age=300" --content-type "application/json"
           aws s3 cp public/index.html "s3://${{ vars.SITE_BUCKET }}/index.html" \

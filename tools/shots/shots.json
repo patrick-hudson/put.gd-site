@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "output": "public/_site/shots",
+  "pace": {"step": 2.0, "hold": 2.0},
+  "themes": {
+    "dark": {"backdrop": "#121212", "desktopScheme": "prefer-dark"},
+    "light": {"backdrop": "#EDEDEA", "desktopScheme": "default"}
+  },
+  "encode": {
+    "scales": {"2x": 1.0, "1x": 0.5},
+    "avif": {"crf": 30, "speed": 4},
+    "webp": {"quality": 82, "method": 6}
+  },
+  "budgets": {
+    "history-dark@2x.avif": 256000,
+    "history-light@2x.avif": 256000
+  },
+  "story": [
+    {"id": "aurora", "kind": "region-capture", "media": "aurora", "selection": [0.16, 0.1, 0.68, 0.42]},
+    {"id": "saturn", "kind": "region-capture", "media": "saturn", "selection": [0.2, 0.3, 0.6, 0.4]},
+    {"id": "edit", "kind": "edit", "media": "plaque", "redact": [0.36, 0.492, 0.37, 0.078]},
+    {"id": "record", "kind": "record", "media": "sintel", "clip": {"start": 24, "seconds": 16},
+     "area": [0.12, 0.14, 0.76, 0.72], "seconds": 6, "trim": [0.8, 5.2], "playhead": 2.6},
+    {"id": "upload", "kind": "file-upload", "media": "blue-marble", "filename": "blue-marble.jpg"},
+    {"id": "capture", "kind": "region-capture", "media": "earthrise", "selection": [0.381, 0.37, 0.378, 0.231], "hold": true},
+    {"id": "history", "kind": "history", "window": [1200, 760]},
+    {"id": "storage", "kind": "destinations"},
+    {"id": "desktop", "kind": "desktop", "window": [1200, 760]}
+  ],
+  "shots": [
+    {"name": "history", "step": "history", "tile": false, "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "pad": 24},
+     "mobile": {"anchor": "window", "rect": [240, 128, 576, 560]}},
+    {"name": "capture", "step": "capture", "tile": true, "themes": ["dark", "light"],
+     "desktop": {"anchor": "viewer", "rect": [5, -70, 920, 690], "clamp": "screen"},
+     "mobile": {"anchor": "viewer", "rect": [25, -60, 880, 660], "clamp": "screen"}},
+    {"name": "edit", "step": "edit", "tile": true, "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "rect": [0, 0, 1240, 930]},
+     "mobile": {"anchor": "window", "rect": [205, 0, 960, 720]}},
+    {"name": "record", "step": "record", "tile": true, "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "center": [0.5, 0.5], "size": [1040, 780], "clamp": "screen"},
+     "mobile": {"anchor": "window", "center": [0.5, 0.5], "size": [1040, 780], "clamp": "screen"}},
+    {"name": "storage", "step": "storage", "tile": true, "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "rect": [0, 0, 1008, 756]},
+     "mobile": {"anchor": "window", "rect": [216, 100, 800, 600]}},
+    {"name": "desktop", "step": "desktop", "tile": false, "aspect": "16:9", "themes": ["dark", "light"],
+     "desktop": {"anchor": "screen", "pad": 0}}
+  ]
+}
