@@ -46,3 +46,18 @@ output "pkg_signer_user" {
   description = "IAM user whose hand-made access key the signer's source profile holds."
   value       = aws_iam_user.pkg_signer.name
 }
+
+output "map_bucket" {
+  description = "Goes in put.gd-desktop's MAP_BUCKET repository variable."
+  value       = aws_s3_bucket.map.bucket
+}
+
+output "map_distribution_id" {
+  description = "Goes in put.gd-desktop's MAP_DISTRIBUTION_ID repository variable."
+  value       = aws_cloudfront_distribution.map.id
+}
+
+output "map_publish_role_arn" {
+  description = "Goes in put.gd-desktop's MAP_PUBLISH_ROLE_ARN repository variable."
+  value       = aws_iam_role.map_publish.arn
+}

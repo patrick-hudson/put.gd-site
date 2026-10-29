@@ -66,3 +66,28 @@ variable "tags" {
   type        = map(string)
   default     = { project = "put.gd-site" }
 }
+
+variable "map_domain" {
+  description = "Host name the put.gd-desktop surface map is served on."
+  type        = string
+  default     = "map.put.gd"
+}
+
+variable "map_bucket_name" {
+  description = "Private bucket behind map.put.gd; only CloudFront reads it."
+  type        = string
+  default     = "putgd-map"
+}
+
+variable "desktop_repository" {
+  description = "GitHub repository whose nightly workflow publishes the surface map."
+  type        = string
+  default     = "patrick-hudson/put.gd-desktop"
+}
+
+# `gh api repos/patrick-hudson/put.gd-desktop -q .id`
+variable "desktop_repository_id" {
+  description = "Numeric id of the desktop repository, for its immutable OIDC subject."
+  type        = number
+  default     = 1409524888
+}
