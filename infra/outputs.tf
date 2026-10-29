@@ -47,6 +47,11 @@ output "pkg_signer_user" {
   value       = aws_iam_user.pkg_signer.name
 }
 
+output "demo_bucket" {
+  description = "Bucket of the demo destination the site's screenshots upload to."
+  value       = aws_s3_bucket.demo.bucket
+}
+
 output "map_bucket" {
   description = "Goes in put.gd-desktop's MAP_BUCKET repository variable."
   value       = aws_s3_bucket.map.bucket
