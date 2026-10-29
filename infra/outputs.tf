@@ -46,3 +46,8 @@ output "pkg_signer_user" {
   description = "IAM user whose hand-made access key the signer's source profile holds."
   value       = aws_iam_user.pkg_signer.name
 }
+
+output "demo_bucket" {
+  description = "Bucket of the demo destination the site's screenshots upload to."
+  value       = aws_s3_bucket.demo.bucket
+}
