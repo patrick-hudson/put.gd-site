@@ -66,15 +66,3 @@ variable "tags" {
   type        = map(string)
   default     = { project = "put.gd-site" }
 }
-
-variable "demo_domain" {
-  description = "Link domain of the demo destination the site's screenshots upload to."
-  type        = string
-  default     = "demo.put.gd"
-}
-
-variable "demo_bucket_name" {
-  description = "Private bucket behind demo.put.gd; only CloudFront reads it."
-  type        = string
-  default     = "putgd-demo"
-}
