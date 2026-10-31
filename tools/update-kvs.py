@@ -3,8 +3,8 @@
 
 Keys are "<channel>/<package>" where package is one of ubuntu24.04, ubuntu26.04,
 debian13, fedora44, appimage, checksums or release; values are the URLs from
-releases.json. Keys for a channel that has no release are removed, so /dl/stable/...
-answers 404 until the first stable ships. /dl/<channel>/appimage.zsync is not a
+releases.json. Stable download links fall back to the newest nightly until a stable
+release exists. Keys are removed only when neither release is available. /dl/<channel>/appimage.zsync is not a
 redirect any more: CloudFront serves the package signer's copy from the pkg bucket
 (put.gd-desktop #293 phase 3), so its old key is removed here too.
 
@@ -25,7 +25,7 @@ def cli(*args):
 def wanted(data):
     out = {}
     for channel in ("stable", "nightly"):
-        rel = data.get(channel)
+        rel = data.get(channel) or (data.get("nightly") if channel == "stable" else None)
         if not rel:
             continue
         out[f"{channel}/release"] = rel["html_url"]

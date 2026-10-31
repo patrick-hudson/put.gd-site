@@ -45,8 +45,8 @@ def sums_for(rel):
 TODAY = [
     release("v0.1.1-rc.1", "2026-10-18T03:26:23Z", draft=True),
     release("v0.1.1-dev.309.20261018030128+gcb26dc713228", "2026-10-18T03:31:49Z"),
-    release("v0.1.1-nightly.428", "2026-10-19T06:44:04Z"),
-    release("v0.1.1-nightly.588", "2026-10-20T05:55:50Z"),
+    release("v26.1019.428-nightly", "2026-10-19T06:44:04Z"),
+    release("v26.1020.588-nightly", "2026-10-20T05:55:50Z"),
 ]
 
 
@@ -69,15 +69,15 @@ class FeedTest(unittest.TestCase):
     def test_nightly_follows_the_contract(self):
         _, feeds = self.build(TODAY)
         rel = feeds["nightly"]["release"]
-        self.assertEqual(rel["tag"], "v0.1.1-nightly.588")
-        self.assertEqual(rel["version"], "0.1.1-nightly.588")
+        self.assertEqual(rel["tag"], "v26.1020.588-nightly")
+        self.assertEqual(rel["version"], "26.1020.588-nightly")
         self.assertEqual(rel["publishedAt"], "2026-10-20T05:55:50Z")
-        self.assertEqual(rel["notesUrl"], "https://github.com/patrick-hudson/put.gd-desktop/releases/tag/v0.1.1-nightly.588")
+        self.assertEqual(rel["notesUrl"], "https://github.com/patrick-hudson/put.gd-desktop/releases/tag/v26.1020.588-nightly")
         self.assertEqual(list(rel["assets"]), ["ubuntu24.04", "ubuntu26.04", "debian13", "fedora44", "appimage"])
         appimage = rel["assets"]["appimage"]
         self.assertEqual(appimage, {
-            "name": "putgd-0.1.1-nightly.588-x86_64.AppImage",
-            "url": f"{DL}/v0.1.1-nightly.588/putgd-0.1.1-nightly.588-x86_64.AppImage",
+            "name": "putgd-26.1020.588-nightly-x86_64.AppImage",
+            "url": f"{DL}/v26.1020.588-nightly/putgd-26.1020.588-nightly-x86_64.AppImage",
             "size": 1004,
             "sha256": f"{4:064x}",
         })
@@ -85,12 +85,12 @@ class FeedTest(unittest.TestCase):
             self.assertEqual(set(asset), {"name", "url", "size", "sha256"})
 
     def test_newest_stable_is_picked_and_drafts_ignored(self):
-        listing = TODAY + [release("v0.1.1", "2026-10-21T00:00:00Z", prerelease=False), release("v0.1.2", "2026-10-22T00:00:00Z", prerelease=False, draft=True)]
+        listing = TODAY + [release("v26.1021.600", "2026-10-21T00:00:00Z", prerelease=False), release("v26.1022.610", "2026-10-22T00:00:00Z", prerelease=False, draft=True)]
         _, feeds = self.build(listing)
-        self.assertEqual(feeds["stable"]["release"]["version"], "0.1.1")
-        self.assertEqual(feeds["nightly"]["release"]["version"], "0.1.1-nightly.588")
+        self.assertEqual(feeds["stable"]["release"]["version"], "26.1021.600")
+        self.assertEqual(feeds["nightly"]["release"]["version"], "26.1020.588-nightly")
 
-    def test_calendar_versions_follow_the_pre_calendar_nightlies(self):
+    def test_newer_calendar_versions_are_selected(self):
         # put.gd-desktop #373: nightlies are tagged vYY.MDD.N-nightly, stable releases vYY.MDD.N.
         listing = TODAY + [release("v26.1022.942-nightly", "2026-10-22T05:30:00Z")]
         _, feeds = self.build(listing)
@@ -111,18 +111,18 @@ class FeedTest(unittest.TestCase):
             self.assertEqual(set(asset), {"name", "url", "size"})
 
     def test_missing_sums_asset_omits_sha256(self):
-        listing = [release("v0.1.1-nightly.600", "2026-10-21T05:00:00Z", sums=False)]
+        listing = [release("v26.1021.600-nightly", "2026-10-21T05:00:00Z", sums=False)]
         _, feeds = self.build(listing, lambda url: self.fail("nothing to fetch"))
         self.assertNotIn("sha256", feeds["nightly"]["release"]["assets"]["debian13"])
 
     def test_zsync_only_when_the_release_ships_one(self):
         _, feeds = self.build(TODAY)
         self.assertNotIn("zsync", feeds["nightly"]["release"]["assets"]["appimage"])
-        listing = TODAY + [release("v0.1.1-nightly.700", "2026-10-22T05:00:00Z", extra=["putgd-0.1.1-nightly.700-x86_64.AppImage.zsync"])]
+        listing = TODAY + [release("v26.1022.700-nightly", "2026-10-22T05:00:00Z", extra=["putgd-26.1022.700-nightly-x86_64.AppImage.zsync"])]
         data, feeds = self.build(listing)
         assets = feeds["nightly"]["release"]["assets"]
         self.assertEqual(assets["appimage"]["zsync"], "https://app.put.gd/dl/nightly/appimage.zsync")
-        self.assertEqual(assets["appimage"]["name"], "putgd-0.1.1-nightly.700-x86_64.AppImage")
+        self.assertEqual(assets["appimage"]["name"], "putgd-26.1022.700-nightly-x86_64.AppImage")
         self.assertNotIn("zsync", assets["debian13"])
 
     def test_check_feed_rejects_contract_breaks(self):
@@ -135,14 +135,36 @@ class FeedTest(unittest.TestCase):
 
 
 class PermalinkTest(unittest.TestCase):
+    def test_source_releases_never_steal_channels_and_stable_links_fall_back(self):
+        listing = TODAY + [release("proton-sources-0.22.2-crypto2.0.1-bun1.4.4", "2026-10-31T17:30:48Z", prerelease=False),
+                           release("sources-v26.1031.3384-nightly-files", "2026-10-31T06:43:34Z", prerelease=False),
+                           release("other-nightly", "2026-10-31T18:00:00Z"),
+                           release("v0.1.1", "2026-10-31T18:00:00Z", prerelease=False)]
+        data, feeds = releases.build(listing, text_from(listing), NOW)
+        self.assertIsNone(data["stable"])
+        self.assertIsNone(feeds["stable"]["release"])
+        self.assertEqual(data["nightly"]["tag"], "v26.1020.588-nightly")
+        keys = update_kvs.wanted(data)
+        for package in (*update_kvs.PACKAGES, "release", "checksums"):
+            self.assertEqual(keys[f"stable/{package}"], keys[f"nightly/{package}"])
+
+        listing.append(release("v26.1031.3400", "2026-10-31T19:00:00Z", prerelease=False))
+        data, _ = releases.build(listing, text_from(listing), NOW)
+        keys = update_kvs.wanted(data)
+        self.assertIn("/v26.1031.3400/", keys["stable/appimage"])
+        self.assertIn("/v26.1020.588-nightly/", keys["nightly/appimage"])
+
+    def test_no_releases_leaves_no_download_targets(self):
+        self.assertEqual(update_kvs.wanted({"stable": None, "nightly": None}), {})
+
     def test_zsync_permalink_is_not_a_redirect(self):
         # The signer serves dl/<channel>/appimage.zsync from the pkg bucket (#293 phase 3).
-        listing = TODAY + [release("v0.1.1-nightly.700", "2026-10-22T05:00:00Z", extra=["putgd-0.1.1-nightly.700-x86_64.AppImage.zsync"])]
+        listing = TODAY + [release("v26.1022.700-nightly", "2026-10-22T05:00:00Z", extra=["putgd-26.1022.700-nightly-x86_64.AppImage.zsync"])]
         data, _ = releases.build(listing, text_from(listing), NOW)
         keys = update_kvs.wanted(data)
         self.assertNotIn("nightly/appimage.zsync", keys)
-        self.assertFalse(any(k.startswith("stable/") for k in keys))
-        self.assertEqual(keys["nightly/appimage"], f"{DL}/v0.1.1-nightly.700/putgd-0.1.1-nightly.700-x86_64.AppImage")
+        self.assertNotIn("stable/appimage.zsync", keys)
+        self.assertEqual(keys["nightly/appimage"], f"{DL}/v26.1022.700-nightly/putgd-26.1022.700-nightly-x86_64.AppImage")
 
 if __name__ == "__main__":
     unittest.main()
