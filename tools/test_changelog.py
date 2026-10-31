@@ -31,7 +31,7 @@ class Changelog(unittest.TestCase):
         self.assertEqual([r["tag_name"] for r in releases], ["v26.1031.3384"])
         self.assertEqual([r["tag_name"] for r in nightly], [f"v26.1031.{n}-nightly" for n in range(9, 4, -1)])
 
-    def test_full_stable_notes_and_version_specific_downloads(self):
+    def test_stable_changes_and_version_specific_release_links(self):
         listing = [stable("v26.1030.3203", "2026-10-30T19:45:03Z"), stable(),
                    release("v26.1031.3384-nightly", "2026-10-31T06:43:58Z")]
         page = changelog.build(listing)
@@ -40,8 +40,8 @@ class Changelog(unittest.TestCase):
         self.assertIn('<h3>Fixed</h3>', page)
         self.assertIn('<strong>Capture</strong>', page)
         self.assertIn('href="/changelog#v26.1031.3384"', page)
-        self.assertIn('href="https://app.put.gd/dl/stable"', page)
-        self.assertIn(f'href="{changelog.RELEASES_URL}/tag/v26.1030.3203">Download 26.1030.3203', page)
+        for tag in ('v26.1030.3203', 'v26.1031.3384'):
+            self.assertIn(f'href="{changelog.RELEASES_URL}/tag/{tag}">Downloads, checksums and sources →', page)
         self.assertIn('<time datetime="2026-10-31">31 Oct 2026</time>', page)
 
     def test_empty_stable_and_compact_nightlies(self):
@@ -89,6 +89,48 @@ class Changelog(unittest.TestCase):
     def test_missing_notes_and_deterministic_output(self):
         self.assertIn("No release notes were provided.", changelog.build([stable(body=None)]))
         self.assertEqual(changelog.build([stable()]), changelog.build([stable()]))
+
+    def test_explicit_split_only_renders_changes(self):
+        body = ("Nightly 26.1031.3384 from commit abcdef.\n\n## What's changed\n\n"
+                "### Fixes\n\n- Better capture.\n\n## Downloads and sources\n\n"
+                "Full comparison: https://example.com/compare\n\nDownloads: packages\n\n"
+                "AppImage bundles Qt.\n\nDebug symbols are retained.")
+        page = changelog.build([stable(body=body)])
+        self.assertIn('Better capture.', page)
+        for text in ('from commit', 'Full comparison:', 'Downloads: packages', 'AppImage bundles Qt', 'Debug symbols'):
+            self.assertNotIn(text, page)
+        self.assertEqual(page.count('Downloads, checksums and sources →'), 1)
+
+    def test_legacy_notes_drop_commit_compare_and_known_boilerplate(self):
+        prefixes = ('Full comparison:', 'Downloads:', 'AppImage bundles dynamically linked Qt',
+                    'DEB/RPM use distro Qt', 'Unchanged Proton dependency sources',
+                    'Proton corresponding source', 'Debug symbols', 'The debug tar.zst',
+                    'Individual DEBs', 'Automated coverage:', 'Built and packaged by')
+        for prefix in prefixes:
+            with self.subTest(prefix=prefix):
+                body = ('Nightly 26.1031.3384 from commit abcdef.\n\n'
+                        '## Changes since v26.1031.3343-nightly\n\n### Fixed\n\n- Better capture.\n\n'
+                        + prefix + ' boilerplate\n\nMore boilerplate.')
+                self.assertEqual(changelog.changes(body), '### Fixed\n\n- Better capture.')
+        self.assertEqual(changelog.changes('- Changed capture.\n\nDownloads: packages'), '- Changed capture.')
+
+    def test_markdown_fences_and_nested_prose_are_not_boundaries(self):
+        body = ("## What's changed\n\nDownloads: the chooser is now faster.\n\n```md\n## Downloads and sources\nDownloads: example\n```\n\n"
+                "- Downloads: improved the chooser.\n\nMore changes.\n\n## Downloads and sources\n\nboilerplate")
+        extracted = changelog.changes(body)
+        self.assertIn('Downloads: example', extracted)
+        self.assertIn('Downloads: the chooser is now faster.', extracted)
+        self.assertIn('More changes.', extracted)
+        self.assertNotIn('boilerplate', extracted)
+
+    def test_uses_homepage_chrome_and_shared_styles(self):
+        page = changelog.build([])
+        self.assertIn('<link rel="stylesheet" href="/_site/tokens.css">', page)
+        self.assertIn('<link rel="stylesheet" href="/_site/site.css">', page)
+        self.assertNotIn('changelog.css', page)
+        self.assertIn('<footer class="foot">', page)
+        self.assertIn('<nav aria-label="Footer">', page)
+        self.assertIn('User guide', page)
 
     def test_standalone_has_no_external_asset_dependencies(self):
         page = changelog.standalone(changelog.build([stable()]))

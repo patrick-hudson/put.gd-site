@@ -154,3 +154,23 @@ code { font: 400 0.88em/1 var(--mono); }
   .pkg { padding: 16px; }
   .pkg .get { gap: 16px; }
 }
+
+/* Changelog: shared typography, surfaces and spacing; only prose layout is page-specific. */
+.changelog-release { max-width: 80ch; padding-top: 24px; border-top: 1px solid var(--border); }
+.changelog-release + .changelog-release { margin-top: 48px; }
+.changelog-release h2 a { text-decoration: none; }
+.changelog-notes { margin-top: 24px; overflow-wrap: anywhere; }
+.changelog-notes h3, .changelog-notes h4, .changelog-notes h5, .changelog-notes h6 { margin: 24px 0 12px; font-size: 20px; line-height: 28px; font-weight: 600; }
+.changelog-notes p, .changelog-notes ul, .changelog-notes ol, .changelog-notes pre, .changelog-notes blockquote, .changelog-notes table { margin: 12px 0; }
+.changelog-notes ul, .changelog-notes ol { padding-left: 24px; }
+.changelog-notes li + li { margin-top: 6px; }
+.changelog-notes pre { padding: 16px; overflow-x: auto; background: var(--well); border-radius: var(--radius); }
+.changelog-notes pre code { line-height: 1.5; }
+.changelog-notes blockquote { margin-left: 0; padding-left: 16px; border-left: 2px solid var(--border-strong); color: var(--text-secondary); }
+.changelog-notes table { display: block; overflow-x: auto; border-collapse: collapse; }
+.changelog-notes th, .changelog-notes td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
+.changelog-notes a { color: var(--link); }
+.changelog-nightlies { max-width: 80ch; list-style: none; margin-top: 24px; }
+.changelog-nightlies li { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; padding: 16px 0; border-top: 1px solid var(--border); }
+.changelog-nightlies .file { flex: 1; font-family: var(--mono); overflow-wrap: anywhere; }
+.changelog-nightlies time, .changelog-nightlies .permalink { font-size: 13px; color: var(--text-muted); }

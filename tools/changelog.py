@@ -19,7 +19,8 @@ from urllib.parse import urljoin
 from markdown_it import MarkdownIt
 import nh3
 
-from releases import REPO, fetch_releases
+from releases import REPO, channel, fetch_releases, pick
+import render
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "public"
@@ -28,6 +29,44 @@ NIGHTLY = re.compile(r"v\d{2}\.\d{3,4}\.\d+-nightly")
 NIGHTLY_LIMIT = 5
 RELEASES_URL = f"https://github.com/{REPO}/releases"
 MARKDOWN = MarkdownIt("js-default").enable(["table", "strikethrough"])
+BOILERPLATE = re.compile(
+    r"^(?:Downloads:|Full comparison:|This is the first release of its kind|"
+    r"AppImage (?:bundles|dynamically)|DEB/RPM use distro Qt|"
+    r"(?:Unchanged )?Proton (?:dependency|corresponding) source|Debug symbols|The debug tar|"
+    r"Individual DEBs|Automated coverage:|Built(?:, tested)? and packaged by|"
+    r"Channel/source and automated producer evidence:)", re.I,
+)
+
+
+def changes(body):
+    """Read the explicit changes section, falling back to old boilerplate boundaries.
+
+    Markdown block positions keep headings and paragraphs inside fenced code or
+    nested lists from accidentally cutting off genuine release changes.
+    """
+    if not body:
+        return "No release notes were provided."
+    lines = body.splitlines(keepends=True)
+    tokens = MARKDOWN.parse(body)
+    start = 0
+    headings = [(t, tokens[i + 1].content) for i, t in enumerate(tokens)
+                if t.type == "heading_open" and t.tag == "h2" and t.level == 0]
+    explicit = next((t for t, title in headings if title.replace("’", "'").lower() == "what's changed"), None)
+    legacy = next((t for t, title in headings if re.match(r"Changes (?:since|in)\b", title)), None)
+    if explicit or legacy:
+        start = (explicit or legacy).map[1]
+    elif re.match(r"^(?:Nightly|Stable) .*(?:from commit|release of commit)", lines[0]):
+        start = next((i for i, line in enumerate(lines) if not line.strip()), len(lines))
+    text = "".join(lines[start:])
+    tokens = MARKDOWN.parse(text)
+    for i, token in enumerate(tokens):
+        if token.level != 0:
+            continue
+        if token.type == "heading_open" and token.tag == "h2" and tokens[i + 1].content.lower() == "downloads and sources":
+            return "".join(text.splitlines(keepends=True)[:token.map[0]]).strip()
+        if explicit is None and token.type == "paragraph_open" and BOILERPLATE.match(tokens[i + 1].content):
+            return "".join(text.splitlines(keepends=True)[:token.map[0]]).strip()
+    return text.strip()
 
 
 def notes(body):
@@ -36,11 +75,11 @@ def notes(body):
     Images become their alt text; release notes cannot embed remote resources,
     scripts, styles, event handlers, arbitrary IDs, or executable URL schemes.
     """
-    tokens = MARKDOWN.parse(body or "No release notes were provided.")
+    tokens = MARKDOWN.parse(changes(body) or "No changes were listed.")
     for token in tokens:
         if token.type in {"heading_open", "heading_close"}:
             # The page owns h1/h2; release-note headings start at h3.
-            token.tag = f"h{min(max(int(token.tag[1:]) + 1, 3), 6)}"
+            token.tag = f"h{max(int(token.tag[1:]), 3)}"
         for child in token.children or []:
             if child.type == "link_open":
                 child.attrSet("href", urljoin(f"https://github.com/{REPO}/", child.attrGet("href")))
@@ -80,23 +119,17 @@ def date(release):
 
 def stable_entry(release, latest):
     tag = release["tag_name"]
-    download = "https://app.put.gd/dl/stable" if latest else release_url(release)
-    label = "Download latest stable" if latest else f"Download {tag[1:]}"
-    return f'''<article class="release" id="{tag}" aria-labelledby="title-{tag}">
-  <header class="release-heading">
-    <div><p class="eyebrow">Stable release{' · Latest' if latest else ''}</p>
-    <h2 id="title-{tag}"><a href="/changelog#{tag}" aria-label="Permalink to {tag}">{tag[1:]} <span aria-hidden="true">↗</span></a></h2></div>
-    {date(release)}
-  </header>
-  <div class="release-notes">{notes(release.get('body'))}</div>
-  <p class="release-links"><a class="download" href="{download}">{label} ↗</a>
-    <a href="{release_url(release)}">View on GitHub</a></p>
+    return f'''<article class="changelog-release" id="{tag}" aria-labelledby="title-{tag}">
+  <h2 id="title-{tag}"><a href="/changelog#{tag}" aria-label="Permalink to {tag}">{tag[1:]}</a></h2>
+  <p class="status">{date(release)} · Stable{' · Latest' if latest else ''}</p>
+  <div class="changelog-notes">{notes(release.get('body'))}</div>
+  <p class="actions"><a class="btn-quiet" href="{release_url(release)}">Downloads, checksums and sources →</a></p>
 </article>'''
 
 
 def nightly_entry(release):
     tag = release["tag_name"]
-    return f'''<li id="{tag}"><a class="nightly-version" href="{release_url(release)}">{tag[1:]} <span aria-hidden="true">↗</span></a>
+    return f'''<li id="{tag}"><a class="file" href="{release_url(release)}">{tag[1:]}</a>
     {date(release)}<a class="permalink" href="/changelog#{tag}" aria-label="Permalink to {tag}">#</a></li>'''
 
 
@@ -104,28 +137,36 @@ def build(listing):
     stable, nightly = select(listing)
     entries = "\n".join(stable_entry(r, i == 0) for i, r in enumerate(stable))
     if not stable:
-        entries = '''<div class="empty"><p class="eyebrow">Stable releases</p>
-<h2>The first stable release is on its way.</h2>
-<p>Its release notes will appear here when it is published. For now, explore the nightly builds below.</p></div>'''
-    nightlies = ('<ul class="nightly-list">' + "\n".join(map(nightly_entry, nightly)) + "</ul>"
-                 if nightly else '<p class="empty-nightly">No nightly builds are published yet.</p>')
+        entries = '''<h2>Stable releases</h2>
+<p class="install-line">The first stable release is on its way. Its release notes will appear here when it is published.</p>'''
+    nightlies = ('<ul class="changelog-nightlies">' + "\n".join(map(nightly_entry, nightly)) + "</ul>"
+                 if nightly else '<p class="install-line">No nightly builds are published yet.</p>')
+    # Share the homepage chrome itself, so future navigation/footer edits carry over.
+    home = (PUBLIC / "index.html").read_text()
+    header = re.search(r'<header class="top">.*?</header>', home, re.S)[0]
+    header = header.replace('href="#install"', 'href="https://app.put.gd/#install"')
+    footer = re.search(r'<footer class="foot">.*?</footer>', home, re.S)[0]
+    stable_release, nightly_release = pick(listing)
+    shots = json.loads((PUBLIC / "_site/shots/shots.json").read_text())
+    name, values = render.values({"stable": channel(stable_release), "nightly": channel(nightly_release)}, shots)
+    footer = render.render(footer, name, values)
     template = Template((ROOT / "tools/changelog.html").read_text())
-    return template.substitute(stable=entries, nightly=nightlies)
+    return template.substitute(header=header, footer=footer, stable=entries, nightly=nightlies)
 
 
 def standalone(page):
     """Inline only our trusted local stylesheet, fonts and logo for file:// review."""
-    css = (PUBLIC / "_site/changelog.css").read_text()
-
     def font(match):
         data = base64.b64encode((PUBLIC / match[1].lstrip("/")).read_bytes()).decode("ascii")
         return f'url("data:font/woff2;base64,{data}")'
 
-    css = re.sub(r'url\("(/_site/fonts/[^"?]+)(?:\?[^" ]*)?"\)', font, css)
-    page = page.replace('<link rel="stylesheet" href="/_site/changelog.css">', f"<style>{css}</style>")
+    for name in ("tokens.css", "site.css"):
+        css = (PUBLIC / "_site" / name).read_text()
+        css = re.sub(r'url\("(/_site/fonts/[^"?]+)(?:\?[^" ]*)?"\)', font, css)
+        page = page.replace(f'<link rel="stylesheet" href="/_site/{name}">', f"<style>{css}</style>")
     logo = base64.b64encode((PUBLIC / "_site/logo.svg").read_bytes()).decode("ascii")
     page = page.replace('/_site/logo.svg', f"data:image/svg+xml;base64,{logo}")
-    return page.replace('href="/changelog#', 'href="#')
+    return page.replace('href="/changelog#', 'href="#').replace('href="/"', 'href="https://app.put.gd/"')
 
 
 def main():
