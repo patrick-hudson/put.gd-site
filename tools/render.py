@@ -4,8 +4,7 @@ at deploy time, stamps asset URLs with the commit.
 
 The page marks each generated value as <!--r:KEY-->default<!--/r:KEY-->; the defaults
 read correctly on their own, so the committed page works before rendering too. Download
-links are absolute /dl/<channel>/ permalinks and follow the channel shown: stable once one
-exists, nightly until then.
+links use absolute /dl/stable/ permalinks, which fall back to nightly until stable exists.
 
     tools/render.py                    # render public/index.html in place, then check
     tools/render.py --stamp abc123     # also add ?v=abc123 to /_site/ asset URLs
@@ -56,7 +55,7 @@ def values(releases: dict, shots: dict | None) -> tuple[str | None, dict[str, st
                               '<a href="https://github.com/patrick-hudson/put.gd-desktop/releases">releases page</a>.')
             out["version"] = f"put.gd {ver}"
         else:
-            out["status"] = f"Nightly · Updated {day(rel['published_at'])}"
+            out["status"] = f"Nightly {ver} · Updated {day(rel['published_at'])}"
             out["channel"] = f'Nightly builds only for now. This is <a href="{url}">{ver}</a>.'
             out["version"] = f"put.gd {ver} nightly"
         for key, asset in rel["assets"].items():
@@ -126,7 +125,7 @@ def sized(page: str, shots: dict) -> str:
 def render(page: str, channel: str | None, vals: dict[str, str]) -> str:
     page = MARK.sub(lambda m: f"<!--r:{m[1]}-->{vals.get(m[1], m[2])}<!--/r:{m[1]}-->", page)
     if channel:
-        page = re.sub(r"(https://app\.put\.gd/dl/)(?:stable|nightly)/", rf"\g<1>{channel}/", page)
+        page = re.sub(r"(https://app\.put\.gd/dl/)(?:stable|nightly)/", r"\g<1>stable/", page)
     return page
 
 

@@ -2,8 +2,8 @@
 """Write public/_site/releases.json and the update feeds from the put.gd-desktop releases on GitHub.
 
 Two channels:
-  stable   the newest published release that is not a prerelease (GitHub's "Latest")
-  nightly  the newest published prerelease whose tag contains "-nightly."
+  stable   the newest published vYY.MDD.N non-prerelease
+  nightly  the newest published vYY.MDD.N-nightly prerelease
 
 releases.json lists each channel's package assets by the key the page uses in data-match
 (ubuntu24.04, ubuntu26.04, debian13, fedora44, .AppImage) with the direct download URL and
@@ -28,8 +28,8 @@ import urllib.request
 REPO = "patrick-hudson/put.gd-desktop"
 KEYS = ["ubuntu24.04", "ubuntu26.04", "debian13", "fedora44", ".AppImage"]
 PACKAGE = re.compile(r"\.(deb|rpm|AppImage)$")
-# Nightly tags: vYY.MDD.N-nightly since put.gd-desktop #373, v0.Y.Z-nightly.N before.
-NIGHTLY = re.compile(r"-nightly(\.[1-9][0-9]*)?$")
+STABLE = re.compile(r"v[0-9]{2}\.[0-9]{3,4}\.[0-9]+")
+NIGHTLY = re.compile(r"v[0-9]{2}\.[0-9]{3,4}\.[0-9]+-nightly")
 CHANNELS = ("stable", "nightly")
 FEED_SCHEMA = 1
 # Feed asset key for each releases.json key.
@@ -57,8 +57,8 @@ def fetch_text(url):
 def pick(releases):
     """Return (stable, nightly) from a GitHub releases listing."""
     releases = sorted((r for r in releases if not r.get("draft")), key=lambda r: r["published_at"], reverse=True)
-    stable = next((r for r in releases if not r["prerelease"]), None)
-    nightly = next((r for r in releases if r["prerelease"] and NIGHTLY.search(r["tag_name"])), None)
+    stable = next((r for r in releases if not r["prerelease"] and STABLE.fullmatch(r["tag_name"])), None)
+    nightly = next((r for r in releases if r["prerelease"] and NIGHTLY.fullmatch(r["tag_name"])), None)
     return stable, nightly
 
 
