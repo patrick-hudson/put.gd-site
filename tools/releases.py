@@ -54,6 +54,18 @@ def fetch_text(url):
         return resp.read().decode("utf-8")
 
 
+def fetch_releases(get=fetch):
+    """Read the complete listing, including stable releases beyond the first page."""
+    listing = []
+    page = 1
+    while True:
+        batch = get(f"https://api.github.com/repos/{REPO}/releases?per_page=100&page={page}")
+        listing.extend(batch)
+        if len(batch) < 100:
+            return listing
+        page += 1
+
+
 def pick(releases):
     """Return (stable, nightly) from a GitHub releases listing."""
     releases = sorted((r for r in releases if not r.get("draft")), key=lambda r: r["published_at"], reverse=True)
@@ -174,7 +186,7 @@ def build(releases, get_text, now):
 
 
 def write_json(path, data):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w") as fh:
         json.dump(data, fh, indent=2)
         fh.write("\n")
@@ -184,9 +196,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--out", default="public/_site/releases.json")
     parser.add_argument("--feed-dir", default="public/update/v1")
+    parser.add_argument("--listing-out", help="also write the complete API listing for the changelog build")
     args = parser.parse_args()
 
-    releases = fetch(f"https://api.github.com/repos/{REPO}/releases?per_page=40")
+    releases = fetch_releases()
+    if args.listing_out:
+        write_json(args.listing_out, releases)
     data, feeds = build(releases, fetch_text, dt.datetime.now(dt.timezone.utc))
     for doc in feeds.values():
         check_feed(doc)

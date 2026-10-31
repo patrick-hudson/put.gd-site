@@ -1,0 +1,82 @@
+@font-face { font-family: "Libre Franklin"; font-style: normal; font-weight: 100 900; font-display: swap; src: url("/_site/fonts/LibreFranklin-Latin.woff2") format("woff2"); }
+@font-face { font-family: "Courier Prime"; font-style: normal; font-weight: 400; font-display: swap; src: url("/_site/fonts/CourierPrime-Regular-Latin.woff2") format("woff2"); }
+
+:root { color-scheme: light; --desk: #dce1dc; --paper: #f9f8f2; --ink: #233c3c; --muted: #4e6462; --rule: #a4b3ac; --accent: #9b3b2d; --sans: "Libre Franklin", system-ui, sans-serif; --mono: "Courier Prime", ui-monospace, monospace; }
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 24px; }
+body { margin: 0; background: var(--desk); color: var(--ink); font: 400 16px/1.65 var(--sans); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, h5, h6, p { margin: 0; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+a:hover { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+.wrap { width: min(100% - 64px, 1040px); margin-inline: auto; }
+.skip { position: absolute; top: -80px; left: 16px; padding: 8px 16px; background: var(--paper); z-index: 1; }
+.skip:focus { top: 12px; }
+.top { border-bottom: 1px solid var(--rule); }
+.top-row { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; text-decoration: none; }
+.brand img { display: block; }
+nav { display: flex; gap: 24px; font-size: 13px; }
+nav a { text-decoration: none; }
+nav [aria-current] { text-decoration: underline; }
+.intro { padding-top: 72px; }
+.eyebrow { font: 400 13px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .07em; }
+h1 { margin-top: 12px; font-size: clamp(48px, 8vw, 88px); font-weight: 700; line-height: 1.05; letter-spacing: -.055em; }
+h1 span { color: var(--accent); }
+.lede { margin-top: 22px; font-size: 18px; color: var(--muted); }
+.index-line { display: flex; justify-content: space-between; gap: 24px; margin-top: 40px; padding-block: 14px; border-top: 2px solid var(--ink); border-bottom: 1px solid var(--rule); font: 400 13px/1.5 var(--mono); }
+.stable-releases { margin-block: 32px 64px; }
+.empty, .release { background: var(--paper); border: 1px solid #b9c2ba; box-shadow: 4px 4px 0 #bac5bd; padding: 40px; }
+.empty { border-top: 4px solid var(--ink); }
+.empty h2 { max-width: 22ch; margin-top: 20px; font-size: clamp(26px, 4vw, 36px); line-height: 1.2; letter-spacing: -.035em; }
+.empty > p:last-child { max-width: 59ch; margin-top: 20px; color: var(--muted); }
+.release + .release { margin-top: 32px; }
+.release-heading { display: flex; justify-content: space-between; gap: 24px; align-items: end; padding-bottom: 24px; border-bottom: 1px solid var(--rule); }
+.release h2 { margin-top: 8px; font-size: clamp(26px, 4vw, 36px); line-height: 1.2; letter-spacing: -.03em; }
+.release h2 a { text-decoration: none; }
+.release h2 span { font-size: 20px; color: var(--muted); }
+time { flex-shrink: 0; font: 400 14px/1.5 var(--mono); color: var(--muted); }
+.release-notes { padding-top: 28px; max-width: 76ch; overflow-wrap: anywhere; }
+.release-notes h3, .release-notes h4, .release-notes h5, .release-notes h6 { margin-top: 28px; font-size: 18px; line-height: 1.4; }
+.release-notes > :first-child { margin-top: 0; }
+.release-notes p, .release-notes ul, .release-notes ol, .release-notes pre, .release-notes blockquote, .release-notes table { margin: 16px 0 0; }
+.release-notes ul, .release-notes ol { padding-left: 24px; }
+.release-notes li + li { margin-top: 6px; }
+.release-notes li > p { margin-top: 6px; }
+code, pre { font-family: var(--mono); }
+code { font-size: .95em; }
+pre { padding: 16px; background: var(--desk); overflow-x: auto; }
+blockquote { padding-left: 20px; border-left: 3px solid var(--rule); color: var(--muted); }
+table { display: block; overflow-x: auto; border-collapse: collapse; }
+th, td { padding: 8px 12px; border: 1px solid var(--rule); text-align: left; }
+.release-links { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin-top: 32px; font-size: 13px; }
+.download { display: inline-block; background: var(--ink); color: var(--paper); padding: 10px 16px; text-decoration: none; font-weight: 600; }
+.download:hover { color: var(--paper); background: var(--accent); }
+.nightlies { border-top: 2px solid var(--ink); padding-top: 24px; }
+.nightly-heading h2 { margin-top: 8px; font-size: 28px; letter-spacing: -.03em; }
+.nightly-heading > p:last-child { max-width: 66ch; margin-top: 12px; font-size: 14px; color: var(--muted); }
+.nightly-list { list-style: none; margin: 24px 0 0; padding: 0; border-top: 1px solid var(--rule); }
+.nightly-list li { display: flex; align-items: center; gap: 16px; padding-block: 16px; border-bottom: 1px solid var(--rule); }
+.nightly-version { flex: 1; font: 400 16px/1.4 var(--mono); text-decoration: none; overflow-wrap: anywhere; }
+.nightly-version span { margin-left: 8px; color: var(--muted); }
+.permalink { font-family: var(--mono); color: var(--muted); }
+.empty-nightly { margin-top: 24px; }
+.footer { display: flex; justify-content: space-between; gap: 24px; margin-top: 72px; padding-block: 24px; border-top: 1px solid var(--rule); font: 400 13px/1.5 var(--mono); color: var(--muted); }
+@media (max-width: 640px) {
+  .wrap { width: calc(100% - 32px); }
+  .top-row { min-height: 64px; gap: 12px; }
+  nav { gap: 14px; font-size: 12px; }
+  .brand { font-size: 17px; gap: 6px; }
+  .brand img { width: 20px; height: 20px; }
+  .intro { padding-top: 40px; }
+  .lede { font-size: 16px; }
+  .index-line { margin-top: 28px; flex-wrap: wrap; gap: 8px; }
+  .empty, .release { padding: 24px; }
+  .release-heading { flex-direction: column; align-items: start; gap: 12px; }
+  .nightly-list li { flex-wrap: wrap; gap: 4px 12px; }
+  .nightly-version { flex-basis: calc(100% - 32px); }
+  .nightly-list time { order: 1; flex-basis: 100%; }
+  .footer { margin-top: 48px; flex-wrap: wrap; gap: 8px; }
+}
+/* Self-hosted Latin subsets from google/fonts commit 6c1dbe27dcf7d817d4b62cec033ba77fa8e2a5ec,
+   ofl/librefranklin and ofl/courierprime. Respective OFL licenses live alongside the fonts. */

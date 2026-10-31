@@ -20,8 +20,8 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "public"
-PAGES = ["index.html", "404.html"]
-STYLES = ["_site/site.css"]
+PAGES = ["index.html", "404.html", "changelog.html"]
+STYLES = ["_site/site.css", "_site/changelog.css"]
 MARK = re.compile(r"<!--r:([^>]+?)-->(.*?)<!--/r:\1-->", re.S)
 ASSET = re.compile(r"(/_site/[A-Za-z0-9_./@-]+\.(?:css|js|svg|webp|avif|png|woff2))(?![?\w])")
 REF_ATTR = re.compile(r'\b(?:src|href|srcset)="([^"]*)"')

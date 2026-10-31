@@ -59,6 +59,27 @@ def text_from(listing):
 
 
 class FeedTest(unittest.TestCase):
+    def test_source_only_releases_never_become_download_channels(self):
+        listing = TODAY + [release("proton-sources-0.22.2", "2026-10-31T17:30:48Z", prerelease=False),
+                           release("sources-v26.1031.3384-nightly-files", "2026-10-31T06:43:34Z")]
+        data, _ = self.build(listing)
+        self.assertIsNone(data["stable"])
+        self.assertEqual(data["nightly"]["tag"], "v0.1.1-nightly.588")
+
+    def test_listing_paginates_to_older_stable_releases(self):
+        urls = []
+        old = release("v26.1020.600", "2026-10-20T06:00:00Z", prerelease=False)
+
+        def fetch_page(url):
+            urls.append(url)
+            return [TODAY[-1]] * 100 if len(urls) == 1 else [old]
+
+        listing = releases.fetch_releases(fetch_page)
+        self.assertEqual(len(listing), 101)
+        self.assertTrue(urls[0].endswith("per_page=100&page=1"))
+        self.assertTrue(urls[1].endswith("per_page=100&page=2"))
+        self.assertEqual(releases.pick(listing)[0], old)
+
     def build(self, listing, get_text=None):
         data, feeds = releases.build(listing, get_text or text_from(listing), NOW)
         for doc in feeds.values():

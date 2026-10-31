@@ -1,6 +1,6 @@
 name: Deploy
 
-# Publishes the site and refreshes the download links. Runs on every push to main,
+# Publishes the site, changelog and download links. Runs on every push to main,
 # when put.gd-desktop publishes a release (repository_dispatch from its workflow),
 # on a schedule as a backstop, and by hand.
 on:
@@ -33,13 +33,18 @@ jobs:
       - name: Install Pillow for the screenshot pipeline tests
         run: python3 -m pip install --quiet --user --break-system-packages pillow
 
+      - name: Install the static changelog renderer
+        run: python3 -m pip install --quiet --user --break-system-packages -r tools/requirements-changelog.txt
+
       - name: Test the release tools
         run: python3 -m unittest discover -s tools -v
 
       - name: Build releases.json and the update feeds from GitHub
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python3 tools/releases.py --out public/_site/releases.json --feed-dir public/update/v1
+        run: |
+          python3 tools/releases.py --out public/_site/releases.json --feed-dir public/update/v1 --listing-out "$RUNNER_TEMP/github-releases.json"
+          python3 tools/changelog.py --releases "$RUNNER_TEMP/github-releases.json"
 
       - name: Keep the internal design codename off the site
         # The word lives in a repository variable so it never appears in this repository.
@@ -79,6 +84,10 @@ jobs:
             --cache-control "public, max-age=300" --content-type "application/json"
           aws s3 cp public/index.html "s3://${{ vars.SITE_BUCKET }}/index.html" \
             --cache-control "public, max-age=300, stale-while-revalidate=86400" --content-type "text/html; charset=utf-8"
+          # Serve the exact /changelog key through the existing site behavior. CloudFront's
+          # default root object does not resolve subdirectories; no router/infra change needed.
+          aws s3 cp public/changelog.html "s3://${{ vars.SITE_BUCKET }}/changelog" \
+            --cache-control "public, max-age=300" --content-type "text/html; charset=utf-8"
           aws s3 cp public/robots.txt "s3://${{ vars.SITE_BUCKET }}/robots.txt" --cache-control "public, max-age=3600"
           aws s3 cp public/sitemap.xml "s3://${{ vars.SITE_BUCKET }}/sitemap.xml" --cache-control "public, max-age=3600"
           aws s3 cp public/404.html "s3://${{ vars.SITE_BUCKET }}/404.html" --cache-control "public, max-age=3600" --content-type "text/html; charset=utf-8"
@@ -92,5 +101,5 @@ jobs:
       - name: Refresh the CDN
         run: |
           for id in ${{ vars.CLOUDFRONT_DISTRIBUTION_IDS }}; do
-            aws cloudfront create-invalidation --distribution-id "$id" --paths "/" "/index.html" "/404.html" "/_site/*" "/robots.txt" "/sitemap.xml"
+            aws cloudfront create-invalidation --distribution-id "$id" --paths "/" "/index.html" "/changelog" "/404.html" "/_site/*" "/robots.txt" "/sitemap.xml"
           done
