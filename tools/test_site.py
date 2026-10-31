@@ -35,7 +35,9 @@ class Render(unittest.TestCase):
         self.assertIn("Nightly builds only for now.", vals["channel"])
         self.assertEqual(vals["size:.AppImage"], "118.6 MB · x86_64")
         self.assertEqual(vals["version"], "put.gd 26.1029.2229 nightly")
-        self.assertIn("https://app.put.gd/dl/stable/appimage", render.render(PAGE, channel, vals))
+        out = render.render(PAGE.replace("/dl/nightly/", "/dl/stable/"), channel, vals)
+        self.assertIn("https://app.put.gd/dl/nightly/appimage", out)
+        self.assertNotIn("/dl/stable/", out)
 
     def test_first_stable_takes_over(self):
         channel, vals = render.values({"stable": STABLE, "nightly": NIGHTLY}, None)

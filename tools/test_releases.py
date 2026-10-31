@@ -5,9 +5,12 @@ Run: python3 -m unittest discover -s tools
 """
 import datetime as dt
 import importlib.util
+import json
 import pathlib
 import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -135,7 +138,7 @@ class FeedTest(unittest.TestCase):
 
 
 class PermalinkTest(unittest.TestCase):
-    def test_source_releases_never_steal_channels_and_stable_links_fall_back(self):
+    def test_source_releases_never_steal_channels_and_stable_links_require_stable(self):
         listing = TODAY + [release("proton-sources-0.22.2-crypto2.0.1-bun1.4.4", "2026-10-31T17:30:48Z", prerelease=False),
                            release("sources-v26.1031.3384-nightly-files", "2026-10-31T06:43:34Z", prerelease=False),
                            release("other-nightly", "2026-10-31T18:00:00Z"),
@@ -145,8 +148,10 @@ class PermalinkTest(unittest.TestCase):
         self.assertIsNone(feeds["stable"]["release"])
         self.assertEqual(data["nightly"]["tag"], "v26.1020.588-nightly")
         keys = update_kvs.wanted(data)
+        self.assertFalse(any(key.startswith("stable/") for key in keys))
+        self.assertEqual(len(keys), 7)
         for package in (*update_kvs.PACKAGES, "release", "checksums"):
-            self.assertEqual(keys[f"stable/{package}"], keys[f"nightly/{package}"])
+            self.assertIn(f"nightly/{package}", keys)
 
         listing.append(release("v26.1031.3400", "2026-10-31T19:00:00Z", prerelease=False))
         data, _ = releases.build(listing, text_from(listing), NOW)
@@ -156,6 +161,24 @@ class PermalinkTest(unittest.TestCase):
 
     def test_no_releases_leaves_no_download_targets(self):
         self.assertEqual(update_kvs.wanted({"stable": None, "nightly": None}), {})
+
+    def test_sync_deletes_preexisting_stable_aliases_without_a_stable_release(self):
+        data, _ = releases.build(TODAY, text_from(TODAY), NOW)
+        target = update_kvs.wanted(data)
+        current = {**target, **{key.replace("nightly/", "stable/"): url for key, url in target.items()}}
+        with tempfile.TemporaryDirectory() as directory:
+            path = pathlib.Path(directory) / "releases.json"
+            path.write_text(json.dumps(data))
+            with patch.object(sys, "argv", ["update-kvs.py", "--kvs-arn", "fixture", "--releases", str(path)]), \
+                 patch.object(update_kvs, "cli", side_effect=[
+                     {"Items": [{"Key": key, "Value": url} for key, url in current.items()]},
+                     {"ETag": "fixture-etag"}, {},
+                 ]) as cli:
+                self.assertEqual(update_kvs.main(), 0)
+        command = cli.call_args.args
+        deleted = json.loads(command[command.index("--deletes") + 1])
+        self.assertEqual({item["Key"] for item in deleted}, {key for key in current if key.startswith("stable/")})
+        self.assertNotIn("--puts", command)
 
     def test_zsync_permalink_is_not_a_redirect(self):
         # The signer serves dl/<channel>/appimage.zsync from the pkg bucket (#293 phase 3).
