@@ -93,19 +93,19 @@ code { font: 400 0.88em/1 var(--mono); }
 .install h2 { font-size: 32px; line-height: 40px; font-weight: 600; letter-spacing: -0.01em; }
 .install-line { margin-top: 8px; color: var(--text-secondary); }
 .picker { margin-top: 24px; max-width: 720px; }
-.picker fieldset {
+.picker fieldset, .install-method:not([hidden]) {
   display: inline-flex; flex-wrap: wrap; gap: 2px; border: 1px solid var(--border);
   border-radius: var(--radius-container); background: var(--surface); padding: 4px;
 }
-.picker input { position: absolute; opacity: 0; pointer-events: none; }
-.picker label {
+.picker input, .install-method input { position: absolute; opacity: 0; pointer-events: none; }
+.picker label, .install-method label {
   padding: 7px 14px; border-radius: var(--radius); font-size: 15px; line-height: 22px;
   color: var(--text-secondary); cursor: pointer; white-space: nowrap;
 }
-.picker label:hover { color: var(--text); }
+.picker label:hover, .install-method label:hover { color: var(--text); }
 .picker label span { margin-left: 6px; font-size: 12px; font-weight: 400; color: var(--accent); }
-.picker input:checked + label { background: var(--selected); color: var(--text); font-weight: 600; }
-.picker input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 0; }
+.picker input:checked + label, .install-method input:checked + label { background: var(--selected); color: var(--text); font-weight: 600; }
+.picker input:focus-visible + label, .install-method input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 0; }
 
 .pkg { margin-top: 16px; padding: 24px; border: 1px solid var(--border); border-radius: var(--radius-container); background: var(--surface); }
 .pkg .file { font: 400 15px/22px var(--mono); overflow-wrap: anywhere; }
@@ -126,9 +126,11 @@ code { font: 400 0.88em/1 var(--mono); }
 .install-command { margin-top: 24px; max-width: 720px; min-width: 0; }
 .install-command .cmd { margin-top: 0; border: 1px solid var(--border); }
 .install-command .cmd code { white-space: normal; overflow-wrap: anywhere; }
-.install-hint { margin-top: 8px; font-size: 13px; line-height: 20px; color: var(--text-muted); }
+.install-options { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 8px; }
+.install-method label { padding: 3px 10px; font-size: 13px; line-height: 20px; }
+.install-hint { font-size: 13px; line-height: 20px; color: var(--text-muted); }
 .install-hint code { white-space: nowrap; }
-.install-hint span { margin: 0 6px; }
+.install-hint [aria-hidden] { margin: 0 6px; }
 
 /* Without :has(), every package stays visible; with it, only the chosen one. */
 @supports selector(:has(*)) {

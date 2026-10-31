@@ -47,7 +47,14 @@
     </p>
     <div class="install-command">
       <div class="cmd"><code>curl -fsSL https://app.put.gd/install | sh</code><button type="button" class="copy" aria-label="Copy install command">Copy</button></div>
-      <p class="install-hint">AppImage: <code>… | sh -s -- --appimage</code> <span aria-hidden="true">·</span> <a href="https://github.com/patrick-hudson/put.gd-desktop/blob/nightly/packaging/install.sh">Read the script</a></p>
+      <div class="install-options">
+        <fieldset class="install-method" hidden>
+          <legend class="visually-hidden">Installation method</legend>
+          <input type="radio" name="install-hero" id="install-hero-package" value="package" checked><label for="install-hero-package">Package</label>
+          <input type="radio" name="install-hero" id="install-hero-appimage" value="appimage"><label for="install-hero-appimage">AppImage</label>
+        </fieldset>
+        <p class="install-hint"><span class="install-fallback">AppImage: <code>… | sh -s -- --appimage</code> <span aria-hidden="true">·</span> </span><a href="https://github.com/patrick-hudson/put.gd-desktop/blob/nightly/packaging/install.sh">Read the script</a></p>
+      </div>
     </div>
   </div>
   <p class="status"><span class="dot" aria-hidden="true"></span><!--r:status-->Nightly · Updated 29 Oct<!--/r:status--></p>
@@ -147,7 +154,14 @@
   <p class="install-line"><!--r:channel-->Nightly builds only for now. This is <a href="https://github.com/patrick-hudson/put.gd-desktop/releases/tag/v26.1029.2229-nightly">26.1029.2229</a>.<!--/r:channel--></p>
   <div class="install-command">
     <div class="cmd"><code>curl -fsSL https://app.put.gd/install | sh</code><button type="button" class="copy" aria-label="Copy install command">Copy</button></div>
-    <p class="install-hint">AppImage: <code>… | sh -s -- --appimage</code> <span aria-hidden="true">·</span> <a href="https://github.com/patrick-hudson/put.gd-desktop/blob/nightly/packaging/install.sh">Read the script</a></p>
+    <div class="install-options">
+      <fieldset class="install-method" hidden>
+        <legend class="visually-hidden">Installation method</legend>
+        <input type="radio" name="install-section" id="install-section-package" value="package" checked><label for="install-section-package">Package</label>
+        <input type="radio" name="install-section" id="install-section-appimage" value="appimage"><label for="install-section-appimage">AppImage</label>
+      </fieldset>
+      <p class="install-hint"><span class="install-fallback">AppImage: <code>… | sh -s -- --appimage</code> <span aria-hidden="true">·</span> </span><a href="https://github.com/patrick-hudson/put.gd-desktop/blob/nightly/packaging/install.sh">Read the script</a></p>
+    </div>
   </div>
 
   <form class="picker" aria-label="Your system" onsubmit="return false">
