@@ -170,8 +170,3 @@ code { font: 400 0.88em/1 var(--mono); }
 .changelog-notes table { display: block; overflow-x: auto; border-collapse: collapse; }
 .changelog-notes th, .changelog-notes td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
 .changelog-notes a { color: var(--link); }
-.changelog-nightlies { list-style: none; }
-.changelog-nightlies li { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: baseline; padding: 16px 0; }
-.changelog-nightlies li + li { border-top: 1px solid var(--border); }
-.changelog-nightlies .file { flex: 1; }
-.changelog-nightlies time, .changelog-nightlies .permalink { font-size: 13px; color: var(--text-muted); }

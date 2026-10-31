@@ -1,6 +1,8 @@
 """Changelog selection, Markdown security and offline draft regression tests."""
 import unittest
+import os
 from html.parser import HTMLParser
+from unittest.mock import patch
 
 import changelog
 from test_releases import release
@@ -44,14 +46,32 @@ class Changelog(unittest.TestCase):
             self.assertIn(f'href="{changelog.RELEASES_URL}/tag/{tag}">Downloads, checksums and sources →', page)
         self.assertIn('<time datetime="2026-10-31">31 Oct 2026</time>', page)
 
-    def test_empty_stable_and_compact_nightlies(self):
-        r = dict(release("v26.1031.3384-nightly", "2026-10-31T06:43:58Z"), body="DO NOT RENDER NIGHTLY BODY")
+    def test_empty_stable_and_nightly_notes(self):
+        r = dict(release("v26.1031.3384-nightly", "2026-10-31T06:43:58Z"), body="## What's changed\n\n- Better capture.\n\n## Downloads and sources\n\nDebug symbols boilerplate")
         page = changelog.build([r])
         self.assertIn("The first stable release is on its way.", page)
-        self.assertNotIn("DO NOT RENDER NIGHTLY BODY", page)
+        self.assertIn("Better capture.", page)
+        self.assertNotIn("Debug symbols boilerplate", page)
+        self.assertIn('href="https://app.put.gd/dl/nightly/appimage"', page)
         self.assertIn('id="v26.1031.3384-nightly"', page)
         self.assertIn(f'href="{r["html_url"]}"', page)
         self.assertIn("No nightly builds are published yet.", changelog.build([]))
+
+    def test_five_nightly_cards_render_newest_first_after_stable(self):
+        listing = [dict(release(f"v26.1031.{n}-nightly", f"2026-10-31T0{n}:00:00Z"),
+                        body=f"## What's changed\n\n- **Nightly change {n}**.\n\n## Downloads and sources\n\nDownloads: packages")
+                   for n in range(7)]
+        listing.append(stable())
+        page = changelog.build(listing)
+        self.assertIn('href="https://app.put.gd/dl/stable/appimage"', page)
+        cards = [attrs for tag, attrs in Elements(page).elements if tag == 'article']
+        self.assertEqual([card['id'] for card in cards], ['v26.1031.3384'] + [f'v26.1031.{n}-nightly' for n in range(6, 1, -1)])
+        for n in range(2, 7):
+            self.assertIn(f'<strong>Nightly change {n}</strong>', page)
+        self.assertNotIn('Nightly change 0', page)
+        self.assertNotIn('Nightly change 1', page)
+        self.assertNotIn('Downloads: packages', page)
+        self.assertEqual(page.count('Downloads, checksums and sources →'), 6)
 
     def test_markdown_prose_features(self):
         rendered = changelog.notes("# News\n\nA [link](https://example.com) and `code`.\n\n"
@@ -89,6 +109,13 @@ class Changelog(unittest.TestCase):
     def test_missing_notes_and_deterministic_output(self):
         self.assertIn("No release notes were provided.", changelog.build([stable(body=None)]))
         self.assertEqual(changelog.build([stable()]), changelog.build([stable()]))
+
+    def test_historical_titles_respect_existing_site_wording_guard(self):
+        with patch.dict(os.environ, {"CODENAME": "internal-theme-name"}):
+            page = changelog.build([dict(release("v26.1031.3384-nightly", "2026-10-31T06:43:58Z"),
+                                        body="## What's changed\n\n- Retire INTERNAL-THEME-NAME names.")])
+        self.assertIn('Retire app theme names.', page)
+        self.assertNotIn('INTERNAL-THEME-NAME', page)
 
     def test_explicit_split_only_renders_changes(self):
         body = ("Nightly 26.1031.3384 from commit abcdef.\n\n## What's changed\n\n"

@@ -11,6 +11,7 @@ import argparse
 import base64
 import datetime as dt
 import json
+import os
 import pathlib
 import re
 from string import Template
@@ -75,7 +76,13 @@ def notes(body):
     Images become their alt text; release notes cannot embed remote resources,
     scripts, styles, event handlers, arbitrary IDs, or executable URL schemes.
     """
-    tokens = MARKDOWN.parse(changes(body) or "No changes were listed.")
+    text = changes(body) or "No changes were listed."
+    # Historical PR titles can contain a design codename forbidden by the site's
+    # existing deploy guard. Keep the entry, using the public-facing term instead.
+    guarded = os.environ.get("CODENAME", "")
+    if guarded:
+        text = re.sub(re.escape(guarded), "app theme", text, flags=re.I)
+    tokens = MARKDOWN.parse(text)
     for token in tokens:
         if token.type in {"heading_open", "heading_close"}:
             # The page owns h1/h2; release-note headings start at h3.
@@ -117,29 +124,24 @@ def date(release):
     return f'<time datetime="{value.isoformat()}">{value.day} {value:%b %Y}</time>'
 
 
-def stable_entry(release, latest):
+def release_entry(release, latest):
     tag = release["tag_name"]
+    label = "Nightly" if tag.endswith("-nightly") else "Stable"
     return f'''<article class="pkg changelog-release" id="{tag}" aria-labelledby="title-{tag}">
   <h2 id="title-{tag}"><a href="/changelog#{tag}" aria-label="Permalink to {tag}">{tag[1:]}</a></h2>
-  <p class="status">{date(release)} · Stable{' · Latest' if latest else ''}</p>
+  <p class="status">{date(release)} · {label}{' · Latest' if latest else ''}</p>
   <div class="changelog-notes">{notes(release.get('body'))}</div>
   <p class="get"><a class="btn btn-primary" href="{release_url(release)}">Downloads, checksums and sources →</a></p>
 </article>'''
 
 
-def nightly_entry(release):
-    tag = release["tag_name"]
-    return f'''<li id="{tag}"><a class="file" href="{release_url(release)}">{tag[1:]}</a>
-    <span class="meta">{date(release)}</span><a class="permalink" href="/changelog#{tag}" aria-label="Permalink to {tag}">#</a></li>'''
-
-
 def build(listing):
     stable, nightly = select(listing)
-    entries = "\n".join(stable_entry(r, i == 0) for i, r in enumerate(stable))
+    entries = "\n".join(release_entry(r, i == 0) for i, r in enumerate(stable))
     if not stable:
         entries = '''<div class="pkg"><h2>Stable releases</h2>
 <p class="install-line">The first stable release is on its way. Its release notes will appear here when it is published.</p></div>'''
-    nightlies = ('<div class="pkg"><ul class="changelog-nightlies">' + "\n".join(map(nightly_entry, nightly)) + "</ul></div>"
+    nightlies = ("\n".join(release_entry(r, i == 0) for i, r in enumerate(nightly))
                  if nightly else '<p class="install-line">No nightly builds are published yet.</p>')
     # Share the homepage chrome itself, so future navigation/footer edits carry over.
     home = (PUBLIC / "index.html").read_text()
@@ -151,7 +153,8 @@ def build(listing):
     name, values = render.values({"stable": channel(stable_release), "nightly": channel(nightly_release)}, shots)
     footer = render.render(footer, name, values)
     template = Template((ROOT / "tools/changelog.html").read_text())
-    return template.substitute(header=header, footer=footer, stable=entries, nightly=nightlies)
+    return template.substitute(header=header, footer=footer, stable=entries, nightly=nightlies,
+                               download_channel=name or "nightly")
 
 
 def standalone(page):

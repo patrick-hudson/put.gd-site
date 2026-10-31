@@ -42,6 +42,7 @@ jobs:
       - name: Build releases.json and the update feeds from GitHub
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CODENAME: ${{ vars.SITE_CODENAME_GUARD }}
         run: |
           python3 tools/releases.py --out public/_site/releases.json --feed-dir public/update/v1 --listing-out "$RUNNER_TEMP/github-releases.json"
           python3 tools/changelog.py --releases "$RUNNER_TEMP/github-releases.json"

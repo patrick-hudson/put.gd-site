@@ -26,6 +26,7 @@ jobs:
       - name: Generate releases.json and the update feeds from GitHub (dry run)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CODENAME: ${{ vars.SITE_CODENAME_GUARD }}
         run: |
           python3 tools/releases.py --out "$RUNNER_TEMP/releases.json" --feed-dir "$RUNNER_TEMP/update/v1" --listing-out "$RUNNER_TEMP/github-releases.json"
           python3 tools/changelog.py --releases "$RUNNER_TEMP/github-releases.json"

@@ -64,7 +64,7 @@ class FeedTest(unittest.TestCase):
                            release("sources-v26.1031.3384-nightly-files", "2026-10-31T06:43:34Z")]
         data, _ = self.build(listing)
         self.assertIsNone(data["stable"])
-        self.assertEqual(data["nightly"]["tag"], "v0.1.1-nightly.588")
+        self.assertEqual(data["nightly"]["tag"], "v26.1020.588-nightly")
 
     def test_listing_paginates_to_older_stable_releases(self):
         urls = []
