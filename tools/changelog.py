@@ -119,27 +119,27 @@ def date(release):
 
 def stable_entry(release, latest):
     tag = release["tag_name"]
-    return f'''<article class="changelog-release" id="{tag}" aria-labelledby="title-{tag}">
+    return f'''<article class="pkg changelog-release" id="{tag}" aria-labelledby="title-{tag}">
   <h2 id="title-{tag}"><a href="/changelog#{tag}" aria-label="Permalink to {tag}">{tag[1:]}</a></h2>
   <p class="status">{date(release)} · Stable{' · Latest' if latest else ''}</p>
   <div class="changelog-notes">{notes(release.get('body'))}</div>
-  <p class="actions"><a class="btn-quiet" href="{release_url(release)}">Downloads, checksums and sources →</a></p>
+  <p class="get"><a class="btn btn-primary" href="{release_url(release)}">Downloads, checksums and sources →</a></p>
 </article>'''
 
 
 def nightly_entry(release):
     tag = release["tag_name"]
     return f'''<li id="{tag}"><a class="file" href="{release_url(release)}">{tag[1:]}</a>
-    {date(release)}<a class="permalink" href="/changelog#{tag}" aria-label="Permalink to {tag}">#</a></li>'''
+    <span class="meta">{date(release)}</span><a class="permalink" href="/changelog#{tag}" aria-label="Permalink to {tag}">#</a></li>'''
 
 
 def build(listing):
     stable, nightly = select(listing)
     entries = "\n".join(stable_entry(r, i == 0) for i, r in enumerate(stable))
     if not stable:
-        entries = '''<h2>Stable releases</h2>
-<p class="install-line">The first stable release is on its way. Its release notes will appear here when it is published.</p>'''
-    nightlies = ('<ul class="changelog-nightlies">' + "\n".join(map(nightly_entry, nightly)) + "</ul>"
+        entries = '''<div class="pkg"><h2>Stable releases</h2>
+<p class="install-line">The first stable release is on its way. Its release notes will appear here when it is published.</p></div>'''
+    nightlies = ('<div class="pkg"><ul class="changelog-nightlies">' + "\n".join(map(nightly_entry, nightly)) + "</ul></div>"
                  if nightly else '<p class="install-line">No nightly builds are published yet.</p>')
     # Share the homepage chrome itself, so future navigation/footer edits carry over.
     home = (PUBLIC / "index.html").read_text()
