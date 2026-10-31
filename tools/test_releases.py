@@ -59,6 +59,12 @@ def text_from(listing):
 
 
 class FeedTest(unittest.TestCase):
+    def test_published_listing_is_unchanged_when_only_run_time_changes(self):
+        first, _ = releases.build(TODAY, text_from(TODAY), NOW)
+        later, _ = releases.build(TODAY, text_from(TODAY), NOW + dt.timedelta(days=1))
+        self.assertEqual(first, later)
+        self.assertEqual(first['generated_at'], '2026-10-20T05:55:50Z')
+
     def test_source_only_releases_never_become_download_channels(self):
         listing = TODAY + [release("proton-sources-0.22.2", "2026-10-31T17:30:48Z", prerelease=False),
                            release("sources-v26.1031.3384-nightly-files", "2026-10-31T06:43:34Z")]

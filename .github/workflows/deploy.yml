@@ -95,39 +95,23 @@ jobs:
           role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Upload the site
+      - name: Upload changed site objects
+        env:
+          SITE_BUCKET: ${{ vars.SITE_BUCKET }}
         run: |
-          # Assets under /_site/ get a day of caching, the page and releases.json five minutes. All are invalidated below.
-          aws s3 sync public/_site/ "s3://${{ vars.SITE_BUCKET }}/_site/" --delete --exclude releases.json \
-            --cache-control "public, max-age=86400, stale-while-revalidate=604800"
-          # The runner's MIME table may not know AVIF or WOFF2; set their types explicitly.
-          for type in "avif image/avif" "woff2 font/woff2"; do set -- $type
-            aws s3 cp public/_site/ "s3://${{ vars.SITE_BUCKET }}/_site/" --recursive --exclude "*" --include "*.$1" \
-              --content-type "$2" --cache-control "public, max-age=86400, stale-while-revalidate=604800"
-          done
-          aws s3 cp public/_site/releases.json "s3://${{ vars.SITE_BUCKET }}/_site/releases.json" \
-            --cache-control "public, max-age=300" --content-type "application/json"
-          aws s3 cp public/index.html "s3://${{ vars.SITE_BUCKET }}/index.html" \
-            --cache-control "public, max-age=300, stale-while-revalidate=86400" --content-type "text/html; charset=utf-8"
-          # Serve the exact /changelog key through the existing site behavior. CloudFront's
-          # default root object does not resolve subdirectories; no router/infra change needed.
-          aws s3 cp public/changelog.html "s3://${{ vars.SITE_BUCKET }}/changelog" \
-            --cache-control "public, max-age=300" --content-type "text/html; charset=utf-8"
-          aws s3 cp public/robots.txt "s3://${{ vars.SITE_BUCKET }}/robots.txt" --cache-control "public, max-age=3600"
-          aws s3 cp public/sitemap.xml "s3://${{ vars.SITE_BUCKET }}/sitemap.xml" --cache-control "public, max-age=3600"
-          aws s3 cp public/404.html "s3://${{ vars.SITE_BUCKET }}/404.html" --cache-control "public, max-age=3600" --content-type "text/html; charset=utf-8"
-          aws s3 cp public/install "s3://${{ vars.SITE_BUCKET }}/install" \
-            --content-type "text/plain; charset=utf-8" --cache-control "public, max-age=300" \
-            --metadata "source-commit=$INSTALLER_COMMIT"
-          # Update feed v1 (put.gd-desktop #293) is published by the package signer to the pkg bucket,
-          # after the apt and dnf repositories carry the release; /update/* routes there. The feeds
-          # built above are only a contract cross-check and are not uploaded.
+          python3 tools/deploy.py upload --bucket "$SITE_BUCKET" \
+            --manifest "$RUNNER_TEMP/site-diff.json" --installer-commit "$INSTALLER_COMMIT"
 
       - name: Point the /dl/ permalinks at the current releases
         run: python3 tools/update-kvs.py --kvs-arn "${{ vars.CLOUDFRONT_KVS_ARN }}" --releases public/_site/releases.json
 
-      - name: Refresh the CDN
+      - name: Refresh changed CDN paths
+        # Refresh completed writes even if a later upload or KVS update failed.
+        if: ${{ !cancelled() }}
+        env:
+          DISTRIBUTIONS: ${{ vars.CLOUDFRONT_DISTRIBUTION_IDS }}
         run: |
-          for id in ${{ vars.CLOUDFRONT_DISTRIBUTION_IDS }}; do
-            aws cloudfront create-invalidation --distribution-id "$id" --paths "/" "/index.html" "/changelog" "/404.html" "/_site/*" "/robots.txt" "/sitemap.xml" "/install"
-          done
+          if [ -f "$RUNNER_TEMP/site-diff.json" ]; then
+            python3 tools/deploy.py invalidate --manifest "$RUNNER_TEMP/site-diff.json" \
+              --distributions $DISTRIBUTIONS
+          fi

@@ -64,6 +64,9 @@ code { font: 400 0.88em/1 var(--mono); }
 .hero h1 span { color: var(--text-muted); }
 .lede { margin-top: 16px; font-size: 20px; line-height: 30px; color: var(--text-secondary); max-width: 40ch; text-wrap: balance; }
 .actions { display: flex; align-items: center; gap: 24px; margin-top: 32px; }
+.hero-install { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 24px 32px; margin-top: 32px; }
+.hero-install .actions { margin-top: 0; min-height: 44px; }
+.hero-install .install-command { flex: 1 1 520px; margin-top: 0; }
 .status { display: flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 13px; line-height: 20px; color: var(--text-muted); }
 .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
@@ -119,6 +122,13 @@ code { font: 400 0.88em/1 var(--mono); }
 }
 .copy:hover { color: var(--text); }
 .pkg .hint { margin-top: 12px; font-size: 13px; line-height: 20px; color: var(--text-muted); }
+
+.install-command { margin-top: 24px; max-width: 720px; min-width: 0; }
+.install-command .cmd { margin-top: 0; border: 1px solid var(--border); }
+.install-command .cmd code { white-space: normal; overflow-wrap: anywhere; }
+.install-hint { margin-top: 8px; font-size: 13px; line-height: 20px; color: var(--text-muted); }
+.install-hint code { white-space: nowrap; }
+.install-hint span { margin: 0 6px; }
 
 /* Without :has(), every package stays visible; with it, only the chosen one. */
 @supports selector(:has(*)) {
