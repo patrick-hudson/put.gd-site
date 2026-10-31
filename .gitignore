@@ -3,3 +3,5 @@
 node_modules/
 public/_site/releases.json
 public/update/
+public/install
+.installer-source/
