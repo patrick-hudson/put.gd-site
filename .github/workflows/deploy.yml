@@ -29,11 +29,14 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       # The desktop repository owns and tests the installer. Deploy only reviewed
       # nightly source, also on release dispatches and the scheduled refresh.
       - uses: actions/checkout@v4
         with:
+          persist-credentials: false
           repository: patrick-hudson/put.gd-desktop
           ref: nightly
           path: .installer-source
@@ -42,8 +45,13 @@ jobs:
 
       - name: Stage the desktop installer
         run: |
+          # Publish only a regular file: a symlink could point at .git/config or other secrets.
+          if [ ! -f .installer-source/packaging/install.sh ] || [ -L .installer-source/packaging/install.sh ]; then
+            echo "::error::installer must be a regular, non-symlink file"
+            exit 1
+          fi
           sh -n .installer-source/packaging/install.sh
-          cp .installer-source/packaging/install.sh public/install
+          cp --no-dereference .installer-source/packaging/install.sh public/install
           echo "INSTALLER_COMMIT=$(git -C .installer-source rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Install Pillow for the screenshot pipeline tests
