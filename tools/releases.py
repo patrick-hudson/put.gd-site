@@ -175,7 +175,8 @@ def build(releases, get_text, now):
     """Return (releases.json data, {channel: feed}) for a GitHub releases listing."""
     stable, nightly = pick(releases)
     data = {
-        "generated_at": now.isoformat(timespec="seconds"),
+        # This file is published; wall-clock churn would invalidate an unchanged site.
+        "generated_at": max((r["published_at"] for r in (stable, nightly) if r), default=None),
         "repo": REPO,
         "stable": channel(stable),
         "nightly": channel(nightly),
