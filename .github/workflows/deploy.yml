@@ -29,6 +29,30 @@ jobs:
     environment: production
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      # The desktop repository owns and tests the installer. Deploy only reviewed
+      # nightly source, also on release dispatches and the scheduled refresh.
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          repository: patrick-hudson/put.gd-desktop
+          ref: nightly
+          path: .installer-source
+          sparse-checkout: packaging/install.sh
+          sparse-checkout-cone-mode: false
+
+      - name: Stage the desktop installer
+        run: |
+          # Publish only a regular file: a symlink could point at .git/config or other secrets.
+          if [ ! -f .installer-source/packaging/install.sh ] || [ -L .installer-source/packaging/install.sh ]; then
+            echo "::error::installer must be a regular, non-symlink file"
+            exit 1
+          fi
+          sh -n .installer-source/packaging/install.sh
+          cp --no-dereference .installer-source/packaging/install.sh public/install
+          echo "INSTALLER_COMMIT=$(git -C .installer-source rev-parse HEAD)" >> "$GITHUB_ENV"
 
       - name: Install Pillow for the screenshot pipeline tests
         run: python3 -m pip install --quiet --user --break-system-packages pillow
@@ -92,6 +116,9 @@ jobs:
           aws s3 cp public/robots.txt "s3://${{ vars.SITE_BUCKET }}/robots.txt" --cache-control "public, max-age=3600"
           aws s3 cp public/sitemap.xml "s3://${{ vars.SITE_BUCKET }}/sitemap.xml" --cache-control "public, max-age=3600"
           aws s3 cp public/404.html "s3://${{ vars.SITE_BUCKET }}/404.html" --cache-control "public, max-age=3600" --content-type "text/html; charset=utf-8"
+          aws s3 cp public/install "s3://${{ vars.SITE_BUCKET }}/install" \
+            --content-type "text/plain; charset=utf-8" --cache-control "public, max-age=300" \
+            --metadata "source-commit=$INSTALLER_COMMIT"
           # Update feed v1 (put.gd-desktop #293) is published by the package signer to the pkg bucket,
           # after the apt and dnf repositories carry the release; /update/* routes there. The feeds
           # built above are only a contract cross-check and are not uploaded.
@@ -102,5 +129,5 @@ jobs:
       - name: Refresh the CDN
         run: |
           for id in ${{ vars.CLOUDFRONT_DISTRIBUTION_IDS }}; do
-            aws cloudfront create-invalidation --distribution-id "$id" --paths "/" "/index.html" "/changelog" "/404.html" "/_site/*" "/robots.txt" "/sitemap.xml"
+            aws cloudfront create-invalidation --distribution-id "$id" --paths "/" "/index.html" "/changelog" "/404.html" "/_site/*" "/robots.txt" "/sitemap.xml" "/install"
           done
