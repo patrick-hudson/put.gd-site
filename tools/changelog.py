@@ -164,9 +164,10 @@ def standalone(page):
         return f'url("data:font/woff2;base64,{data}")'
 
     for name in ("tokens.css", "site.css"):
-        css = (PUBLIC / "_site" / name).read_text()
+        css = (PUBLIC / "_site" / name).read_text().split("/* Seasons:")[0]  # A draft stays ordinary.
         css = re.sub(r'url\("(/_site/fonts/[^"?]+)(?:\?[^" ]*)?"\)', font, css)
         page = page.replace(f'<link rel="stylesheet" href="/_site/{name}">', f"<style>{css}</style>")
+    page = page.replace('<script src="/_site/season.js"></script>\n', "")
     logo = base64.b64encode((PUBLIC / "_site/logo.svg").read_bytes()).decode("ascii")
     page = page.replace('/_site/logo.svg', f"data:image/svg+xml;base64,{logo}")
     return page.replace('href="/changelog#', 'href="#').replace('href="/"', 'href="https://app.put.gd/"')

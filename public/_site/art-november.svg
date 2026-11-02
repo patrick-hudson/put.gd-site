@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 24 24" role="img" aria-label="put.gd">
+  <style>
+    .bowl{fill:#f0c887}.skin{fill:#f0c887}
+    @media (prefers-color-scheme: light){.bowl{fill:#c98a3a}.skin{fill:#dfa75a}}
+  </style>
+  <clipPath id="f68"><rect x="8" y="1.8" width="4" height="10.5" rx="2"/></clipPath><g transform="rotate(-68 10 12.3)" clip-path="url(#f68)"><rect x="8" y="1.8" width="4" height="10.5" fill="#a9481c"/><rect x="8" y="3.5" width="4" height=".7" fill="#e8a24c"/><rect x="8" y="5.4" width="4" height=".6" fill="#f6dfae"/></g>
+  <clipPath id="f32"><rect x="8" y="1.8" width="4" height="10.5" rx="2"/></clipPath><g transform="rotate(-32 10 12.3)" clip-path="url(#f32)"><rect x="8" y="1.8" width="4" height="10.5" fill="#c8622a"/><rect x="8" y="3.5" width="4" height=".7" fill="#f0b45f"/><rect x="8" y="5.4" width="4" height=".6" fill="#f6dfae"/></g>
+  <clipPath id="f8"><rect x="8" y="1.8" width="4" height="10.5" rx="2"/></clipPath><g transform="rotate(8 10 12.3)" clip-path="url(#f8)"><rect x="8" y="1.8" width="4" height="10.5" fill="#d97f35"/><rect x="8" y="3.5" width="4" height=".7" fill="#8f3a17"/><rect x="8" y="5.4" width="4" height=".6" fill="#f6dfae"/></g>
+  <path class="skin" d="M7.5 11.5Q8 9 10.8 9H14L15 5.6Q13.9 4.7 14.1 3.1Q14.4 .7 16.9 .7Q19.6 .7 19.7 3.5Q19.7 5.2 18 6L17.1 10.6Q16.7 13.7 14.8 16H9Q7.2 14.4 7.5 11.5Z"/>
+  <path fill="#a9481c" d="M8.6 12.1Q9.5 9.9 12.3 10.2Q14.6 10.6 14.2 12.6Q13.4 14.9 10.8 14.8Q8.5 14.5 8.6 12.1Z"/>
+  <path fill="none" stroke="#e8a24c" stroke-width=".3" stroke-linecap="round" d="M10 11.6Q11.5 11.3 13.1 12"/>
+  <path fill="#e8952f" d="M19.3 2.8L23.1 4.2L19.2 5.5Z"/>
+  <path fill="#c9352f" d="M18.4 5.8Q20.6 6.2 19.5 9.3Q18.9 10.8 17.7 9.8Q16.8 9 17.6 7Z"/>
+  <circle cx="17.7" cy="2.9" r=".85" fill="#30251f"/><circle cx="17.95" cy="2.65" r=".24" fill="#fff"/>
+  <path class="bowl" d="M2 13H6V18Q6 19 7 19H17Q18 19 18 18V13H22V18Q22 23 17 23H7Q2 23 2 18Z"/>
+</svg>

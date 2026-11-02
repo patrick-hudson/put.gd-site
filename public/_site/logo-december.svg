@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" role="img" aria-label="put.gd">
+  <rect width="24" height="24" rx="5" fill="#222222"/>
+  <g transform="translate(2.4 2) scale(.8)">
+    <path fill="#e8b66d" d="M9 11H15V16H9Z"/>
+    <g transform="translate(0 .48) scale(1 .76)">
+      <path fill="#4f9e72" d="M12 2L16.6 6.7H14.8L19 10.8H16.1L20.2 15.1H3.8L7.9 10.8H5L9.2 6.7H7.4Z"/>
+      <path fill="none" stroke="#f0c887" stroke-width=".65" stroke-linecap="round" d="M8 9Q12 11.4 16 10.7M7.2 12.6Q12 15 17 13.7"/>
+      <circle cx="10.4" cy="7.7" r=".8" fill="#e0564f"/>
+      <circle cx="14.4" cy="11.7" r=".8" fill="#e0564f"/>
+    </g>
+    <polygon fill="#f4cf6a" points="12.000,0.150 12.470,1.353 13.759,1.428 12.761,2.247 13.087,3.497 12.000,2.800 10.913,3.497 11.239,2.247 10.241,1.428 11.530,1.353"/>
+    <path fill="#f0c887" d="M2 13H6V18Q6 19 7 19H17Q18 19 18 18V13H22V18Q22 23 17 23H7Q2 23 2 18Z"/>
+  </g>
+</svg>

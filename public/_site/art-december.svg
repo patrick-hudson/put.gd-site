@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 24 24" role="img" aria-label="put.gd">
+  <style>
+    .bowl{fill:#f0c887}.trunk{fill:#e8b66d}
+    @media (prefers-color-scheme: light){.bowl{fill:#c98a3a}.trunk{fill:#a8672a}}
+  </style>
+  <path class="trunk" d="M9 11H15V16H9Z"/>
+  <g transform="translate(0 .48) scale(1 .76)">
+    <path fill="#2f8159" d="M12 2L16.6 6.7H14.8L19 10.8H16.1L20.2 15.1H3.8L7.9 10.8H5L9.2 6.7H7.4Z"/>
+    <path fill="#25694a" d="M12 2L12 15.1H3.8L7.9 10.8H5L9.2 6.7H7.4Z" opacity=".45"/>
+    <path fill="none" stroke="#f4cf6a" stroke-width=".6" stroke-linecap="round" d="M8 9Q12 11.4 16 10.7M7.2 12.6Q12 15 17 13.7"/>
+    <circle cx="10.4" cy="7.7" r=".72" fill="#d8344a"/><circle cx="14.4" cy="11.7" r=".72" fill="#d8344a"/>
+    <circle cx="13.5" cy="6.6" r=".6" fill="#f4cf6a"/><circle cx="9.2" cy="11.5" r=".62" fill="#f4cf6a"/>
+    <circle cx="6.8" cy="14.1" r=".6" fill="#7cc4e8"/><circle cx="17.3" cy="14.2" r=".6" fill="#d8344a"/>
+    <circle cx="12" cy="13.6" r=".6" fill="#7cc4e8"/><circle cx="12" cy="4.9" r=".5" fill="#7cc4e8"/>
+  </g>
+  <polygon fill="#f4cf6a" points="12.000,0.150 12.470,1.353 13.759,1.428 12.761,2.247 13.087,3.497 12.000,2.800 10.913,3.497 11.239,2.247 10.241,1.428 11.530,1.353"/>
+  <path class="bowl" d="M2 13H6V18Q6 19 7 19H17Q18 19 18 18V13H22V18Q22 23 17 23H7Q2 23 2 18Z"/>
+</svg>
