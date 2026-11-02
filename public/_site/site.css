@@ -253,6 +253,10 @@ html[data-season] .hero { position: relative; }
 }
 .season-flake {
   position: absolute; left: var(--x); top: var(--y); width: var(--size); height: var(--size);
+  border-radius: 50%; opacity: var(--depth);
+}
+.season-flake::before {
+  content: ""; display: block; width: 100%; height: 100%;
   border-radius: 50%; background: var(--season-flake);
 }
 @media (max-width: 640px) { .season-flake:nth-child(even) { display: none; } }
@@ -263,6 +267,8 @@ html[data-season] .hero { position: relative; }
   position: absolute; right: var(--gutter); top: 44px; width: 160px; height: 160px;
   background: var(--season-art) center / contain no-repeat;
 }
+.season-art-inline { background: none; }
+.season-art > svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .season-light {
   position: absolute; left: var(--x); top: var(--y); width: 7%; height: 7%; margin: -3.5% 0 0 -3.5%; border-radius: 50%;
   background: radial-gradient(closest-side, rgb(255 232 170 / 0.5), transparent); opacity: 0;
@@ -297,11 +303,38 @@ html[data-season] .top-row { position: relative; }
   from { transform: translate3d(0, calc(-1 * var(--y) - 8px), 0); }
   to { transform: translate3d(var(--drift), calc(100vh - var(--y) + 8px), 0); }
 }
-@keyframes season-twinkle { 50% { opacity: 0.65; } }
+/* Long rests between small gestures; the bowl is never a moving group. */
+@keyframes turkey-nod {
+  0%, 58%, 80%, 100% { transform: rotate(0deg); }
+  65% { transform: rotate(3deg); }
+  72% { transform: rotate(-1deg); }
+}
+@keyframes turkey-fan {
+  0%, 60%, 84%, 100% { transform: rotate(0deg); }
+  69% { transform: rotate(var(--fan)); }
+}
+@keyframes turkey-wattle {
+  0%, 64%, 82%, 100% { transform: rotate(0deg); }
+  69% { transform: rotate(-7deg); }
+  75% { transform: rotate(4deg); }
+}
+@keyframes season-twinkle { 0%, 32%, 100% { opacity: 0; } 58% { opacity: 0.65; } }
+@keyframes season-glint { 0%, 62%, 100% { opacity: 1; } 72% { opacity: 0.7; } 82% { opacity: 1; } }
+@keyframes season-sway { from { transform: translateX(-5px); } to { transform: translateX(5px); } }
 @media (prefers-reduced-motion: no-preference) {
+  .turkey-nod { transform-origin: 12px 14px; animation: turkey-nod 12s ease-in-out infinite; }
+  .turkey-feather { transform-origin: 10px 12.3px; animation: turkey-fan 12s ease-in-out infinite; }
+  .turkey-feather-68 { --fan: -3deg; }
+  .turkey-feather-32 { --fan: -1deg; }
+  .turkey-feather-8 { --fan: 3deg; }
+  .turkey-wattle { transform-origin: 18.4px 5.8px; animation: turkey-wattle 12s ease-in-out infinite; }
+  .tree-star { animation: season-glint 9s ease-in-out infinite; }
   .season-flake { will-change: transform; animation: season-fall var(--fall) linear infinite; animation-delay: var(--phase); }
-  .season-light { animation: season-twinkle 4.8s ease-in-out infinite; }
-  .season-light:nth-child(2n) { animation-delay: -1.6s; }
-  .season-light:nth-child(3n) { animation-delay: -3.2s; }
-  html[data-season-motion="off"] .season-flake, html[data-season-motion="off"] .season-light { animation-play-state: paused; }
+  .season-flake::before { animation: season-sway var(--sway) ease-in-out infinite alternate; animation-delay: var(--phase); }
+  .season-light { animation: season-twinkle 6s ease-in-out infinite; }
+  .season-light:nth-of-type(2n) { animation-delay: -2s; }
+  .season-light:nth-of-type(3n) { animation-delay: -4s; }
+  html[data-season-motion="off"] .season-art *,
+  html[data-season-motion="off"] .season-flake,
+  html[data-season-motion="off"] .season-flake::before { animation-play-state: paused; }
 }

@@ -61,6 +61,12 @@ hover text, and a tip on keyboard focus, say "put.gd - Happy Holidays!"; its nam
 
 Seasonal colours and artwork URLs live in `site.css` as variables on `html[data-season]`, so
 `render.py` checks and stamps them like any other asset and ordinary visitors never download them.
+Hero SVGs are fetched from those same-origin CSS URLs and inlined, keeping one artwork source and
+letting page CSS pause their groups. A failed fetch keeps the static background. November has a
+12-second nod/fan gesture with long rests; December has staggered 6-second lights, a 9-second star
+glint and 15 gently drifting flakes. The bowl never moves. Both months share the remembered pause
+control, pause in hidden tabs, and become fully static under reduced motion. Midnight removes the
+inline art and aborts pending artwork requests.
 
 To look at a season without changing the clock, open the local server with
 `?season=november`, `?season=december` or `?season=ordinary`. The parameter only works on

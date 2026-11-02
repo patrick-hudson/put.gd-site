@@ -91,6 +91,8 @@ def capture(browser, base, out, results):
                 for season in SEASONS:
                     context = browser.new_context(viewport={"width": w, "height": h}, color_scheme=scheme, device_scale_factor=1)
                     page = context.new_page()
+                    requests = []
+                    page.on("request", lambda r: requests.append(r.url))
                     errors = []
                     page.on("pageerror", lambda e: errors.append(str(e)))
                     page.goto(f"{base}{path}?season={season}", wait_until="networkidle")
@@ -100,6 +102,7 @@ def capture(browser, base, out, results):
                     tag = f"{page_name} {season} {scheme} {size}"
                     if season == "ordinary":
                         baseline[(page_name, scheme, size)] = probe
+                        expect(results, f"{tag}: no seasonal asset downloads", not any("-november.svg" in u or "-december.svg" in u for u in requests))
                     expect(results, f"{tag}: no horizontal overflow", state["overflow"] <= 0, state["overflow"])
                     expect(results, f"{tag}: no script errors", not errors, errors)
                     # Same names, same boxes as the ordinary page: no layout shift, nothing hidden.
@@ -190,37 +193,63 @@ def behaviour(browser, base, results, out=None):
             page.screenshot(path=out / f"greeting-focus-{season}-{w}.png", clip={"x": 0, "y": 0, "width": w, "height": 160})
         context.close()
 
-    # Reduced motion: flakes stay as a static fallback, nothing animates, no pause button.
-    context = browser.new_context(reduced_motion="reduce", viewport={"width": 1280, "height": 900})
-    page = context.new_page()
-    page.goto(f"{base}/?season=december", wait_until="load")
-    state = page.evaluate(STATE)
-    expect(results, "reduced motion: static decoration", state["running"] == 0 and state["flakes"] > 0 and state["motion"] == "off", state)
-    expect(results, "reduced motion: no pause button", page.locator(".season-control").is_hidden())
-    context.close()
+    for season in ("november", "december"):
+        # Reduced motion: flakes stay as a static fallback, nothing animates, no pause button.
+        context = browser.new_context(reduced_motion="reduce", viewport={"width": 1280, "height": 900})
+        page = context.new_page()
+        page.goto(f"{base}/?season={season}", wait_until="networkidle")
+        state = page.evaluate(STATE)
+        expect(results, "reduced motion: static decoration", state["running"] == 0 and (state["flakes"] > 0 if season == "december" else state["flakes"] == 0) and state["motion"] == "off", state)
+        expect(results, "reduced motion: no pause button", page.locator(".season-control").is_hidden())
+        context.close()
 
-    # Pause control: stops every animation, by keyboard, and is remembered.
-    context = browser.new_context(viewport={"width": 1280, "height": 900})
-    page = context.new_page()
-    page.goto(f"{base}/?season=december", wait_until="load")
-    expect(results, "pause: animating at first", page.evaluate(STATE)["running"] > 0)
-    control = page.get_by_role("button", name="Pause decorations")
-    control.focus()
-    page.keyboard.press("Enter")
-    expect(results, "pause: stopped", page.evaluate(STATE)["running"] == 0)
-    expect(results, "pause: button offers play", page.get_by_role("button", name="Resume decorations").is_visible())
-    page.reload(wait_until="load")
-    expect(results, "pause: remembered", page.evaluate(STATE)["motion"] == "off")
-    page.get_by_role("button", name="Resume decorations").click()
-    expect(results, "pause: resumes", page.evaluate(STATE)["running"] > 0)
-    # Hidden tab: paused while hidden, resumed on return.
-    page.evaluate("""() => { Object.defineProperty(document, 'hidden', {configurable: true, get: () => true});
-                     document.dispatchEvent(new Event('visibilitychange')); }""")
-    expect(results, "hidden: animation paused", page.evaluate(STATE)["running"] == 0)
-    page.evaluate("""() => { Object.defineProperty(document, 'hidden', {configurable: true, get: () => false});
-                     document.dispatchEvent(new Event('visibilitychange')); }""")
-    expect(results, "hidden: animation resumes", page.evaluate(STATE)["running"] > 0)
-    context.close()
+        # Pause control: stops every animation, by keyboard, and is remembered.
+        context = browser.new_context(viewport={"width": 1280, "height": 900})
+        page = context.new_page()
+        page.goto(f"{base}/?season={season}", wait_until="networkidle")
+        expect(results, "pause: animating at first", page.evaluate(STATE)["running"] > 0)
+        control = page.get_by_role("button", name="Pause decorations")
+        control.focus()
+        page.keyboard.press("Enter")
+        expect(results, "pause: stopped", page.evaluate(STATE)["running"] == 0)
+        expect(results, "pause: button offers play", page.get_by_role("button", name="Resume decorations").is_visible())
+        page.reload(wait_until="networkidle")
+        expect(results, "pause: remembered", page.evaluate(STATE)["motion"] == "off")
+        page.get_by_role("button", name="Resume decorations").click()
+        expect(results, "pause: resumes", page.evaluate(STATE)["running"] > 0)
+        # Hidden tab: paused while hidden, resumed on return.
+        page.evaluate("""() => { Object.defineProperty(document, 'hidden', {configurable: true, get: () => true});
+                         document.dispatchEvent(new Event('visibilitychange')); }""")
+        expect(results, "hidden: animation paused", page.evaluate(STATE)["running"] == 0)
+        page.evaluate("""() => { Object.defineProperty(document, 'hidden', {configurable: true, get: () => false});
+                         document.dispatchEvent(new Event('visibilitychange')); }""")
+        expect(results, "hidden: animation resumes", page.evaluate(STATE)["running"] > 0)
+        context.close()
+
+    # Sample each animated pose: the bowl remains fixed and the tree gap stays open.
+    for season in ("november", "december"):
+        context = browser.new_context(viewport={"width": 1280, "height": 900})
+        page = context.new_page()
+        page.goto(f"{base}/?season={season}", wait_until="networkidle")
+        page.wait_for_selector(".season-art-inline svg")
+        poses = page.evaluate("""() => {
+          const svg = document.querySelector('.season-art svg');
+          const bowl = svg.querySelector('.bowl');
+          const box = el => { const r = el.getBoundingClientRect(); return [r.x,r.y,r.width,r.height]; };
+          const initial = box(bowl);
+          let fixed = true, gap = true;
+          for (let t = 0; t <= 12000; t += 100) {
+            document.getAnimations().forEach(a => { a.pause(); a.currentTime = t; });
+            fixed &&= JSON.stringify(box(bowl)) === JSON.stringify(initial);
+            if (document.documentElement.dataset.season === 'december') {
+              gap &&= svg.querySelector('g').getBoundingClientRect().bottom < bowl.getBoundingClientRect().top;
+            }
+          }
+          return {fixed, gap};
+        }""")
+        expect(results, f"{season}: bowl fixed throughout cycle", poses["fixed"])
+        expect(results, f"{season}: tree gap stays open", poses["gap"])
+        context.close()
 
     # Suspended tab: the clock jumps past a boundary with no timer firing, then focus or pageshow catches it.
     for event, target in (("focus", "window"), ("pageshow", "window"), ("visibilitychange", "document")):
