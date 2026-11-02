@@ -16,7 +16,9 @@ class Deploy(unittest.TestCase):
         self.public = self.root / 'public'
         self.manifest = self.root / 'diff.json'
         self.files = {name: name.encode() for name in deploy.ROOT_FILES.values()}
-        self.files.update({'_site/releases.json': b'{}', '_site/site.css': b'css', '_site/a.avif': b'image'})
+        self.files.update({'_site/releases.json': b'{}', '_site/site.css': b'css', '_site/a.avif': b'image',
+                           'userguide/capture.html': b'<html>', 'userguide/search.json': b'{}',
+                           'userguide/assets/javascripts/bundle.abc123.min.js': b'js', 'userguide/img/tray.webp': b'webp'})
         for name, data in self.files.items():
             path = self.public / name
             path.parent.mkdir(parents=True, exist_ok=True)
@@ -53,6 +55,24 @@ class Deploy(unittest.TestCase):
                          ['/', '/_site/*', '/changelog', '/index.html', '/install', '/robots.txt'])
         self.assertEqual(deploy.paths_for(['install', 'changelog'], deploy.UPLOADS_DISTRIBUTION), [])
         self.assertEqual(deploy.paths_for(['_site/releases.json'], 'EP85P0MVCKASG'), ['/_site/*'])
+        self.assertEqual(deploy.paths_for(['userguide', 'userguide/capture.html', 'userguide/assets/x.js'], 'EP85P0MVCKASG'),
+                         ['/userguide', '/userguide/*'])
+
+    def test_guide_pages_are_short_lived_html_and_hashed_assets_long_lived(self):
+        self.assertEqual(deploy.headers('userguide'), ('text/html; charset=utf-8', 'public, max-age=300'))
+        self.assertEqual(deploy.headers('userguide/capture.html'), ('text/html; charset=utf-8', 'public, max-age=300'))
+        self.assertEqual(deploy.headers('userguide/search.json'), ('application/json', 'public, max-age=300'))
+        self.assertEqual(deploy.headers('userguide/assets/javascripts/bundle.abc123.min.js'),
+                         ('text/javascript', 'public, max-age=86400, stale-while-revalidate=604800'))
+        self.assertEqual(deploy.headers('userguide/img/tray.webp'), ('image/webp', 'public, max-age=3600'))
+
+    def test_removed_guide_pages_are_deleted_and_refreshed(self):
+        self.publish()
+        self.calls.clear()
+        (self.public / 'userguide/capture.html').unlink()
+        self.publish()
+        self.assertNotIn('userguide/capture.html', self.remote)
+        self.assertEqual(json.loads(self.manifest.read_text())['deleted'], ['userguide/capture.html'])
 
     def test_only_changed_bytes_and_removed_assets_refresh(self):
         self.publish()

@@ -1,0 +1,29 @@
+{#
+  The guide inside the site's own chrome. partials/site-header.html and site-footer.html are
+  written by tools/guide.py from public/index.html at build time, so the navigation and the
+  footer stay the same as the homepage and the changelog.
+#}
+{% extends "base.html" %}
+
+{% block site_meta %}
+  {{ super() }}
+  <meta name="theme-color" content="#191919" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+{% endblock %}
+
+{% block styles %}
+  <link rel="stylesheet" href="/_site/tokens.css">
+  {{ super() }}
+{% endblock %}
+
+{% block extrahead %}
+  <link rel="icon" href="/_site/logo.svg" type="image/svg+xml">
+{% endblock %}
+
+{% block header %}
+  {% include "partials/site-header.html" %}
+{% endblock %}
+
+{% block footer %}
+  {% include "partials/site-footer.html" %}
+{% endblock %}

@@ -5,3 +5,6 @@ public/_site/releases.json
 public/update/
 public/install
 .installer-source/
+public/userguide/
+guide/overrides/partials/
+guide/.site/

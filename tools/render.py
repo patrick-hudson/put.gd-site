@@ -22,6 +22,13 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 PUBLIC = ROOT / "public"
 PAGES = ["index.html", "404.html", "changelog.html"]
 STYLES = ["_site/site.css"]
+
+
+def pages() -> list[str]:
+    """The committed pages and stylesheet, plus the built user guide when it exists."""
+    guide = PUBLIC / "userguide"
+    extra = sorted(p.relative_to(PUBLIC).as_posix() for p in guide.rglob("*") if p.suffix in (".html", ".css"))
+    return PAGES + STYLES + extra
 MARK = re.compile(r"<!--r:([^>]+?)-->(.*?)<!--/r:\1-->", re.S)
 ASSET = re.compile(r"(/_site/[A-Za-z0-9_./@-]+\.(?:css|js|svg|webp|avif|png|woff2))(?![?\w])")
 REF_ATTR = re.compile(r'\b(?:src|href|srcset)="([^"]*)"')
@@ -145,7 +152,7 @@ def references(text: str, css: bool) -> list[str]:
 
 def missing() -> list[str]:
     out = []
-    for name in PAGES + STYLES:
+    for name in pages():
         text = (PUBLIC / name).read_text()
         for ref in references(text, name.endswith(".css")):
             if not (PUBLIC / ref.lstrip("/")).exists():
@@ -178,7 +185,7 @@ def main() -> int:
     print("every /_site/ reference exists")
 
     if args.stamp:
-        for name in PAGES + STYLES:
+        for name in pages():
             path = PUBLIC / name
             path.write_text(stamp(path.read_text(), args.stamp))
         print(f"stamped asset URLs with ?v={args.stamp}")

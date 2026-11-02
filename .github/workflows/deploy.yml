@@ -1,6 +1,6 @@
 name: Deploy
 
-# Publishes the site, changelog and download links. Runs on every push to main,
+# Publishes the site, changelog, user guide and download links. Runs on every push to main,
 # when put.gd-desktop publishes a release (repository_dispatch from its workflow),
 # on a schedule as a backstop, and by hand.
 on:
@@ -57,8 +57,8 @@ jobs:
       - name: Install Pillow for the screenshot pipeline tests
         run: python3 -m pip install --quiet --user --break-system-packages pillow
 
-      - name: Install the static changelog renderer
-        run: python3 -m pip install --quiet --user --break-system-packages -r tools/requirements-changelog.txt
+      - name: Install the static changelog renderer and the user guide builder
+        run: python3 -m pip install --quiet --user --break-system-packages -r tools/requirements-changelog.txt -r tools/requirements-guide.txt
 
       - name: Test the release tools
         run: python3 -m unittest discover -s tools -v
@@ -70,6 +70,7 @@ jobs:
         run: |
           python3 tools/releases.py --out public/_site/releases.json --feed-dir public/update/v1 --listing-out "$RUNNER_TEMP/github-releases.json"
           python3 tools/changelog.py --releases "$RUNNER_TEMP/github-releases.json"
+          python3 tools/userguide.py
 
       - name: Keep the internal design codename off the site
         # The word lives in a repository variable so it never appears in this repository.
@@ -77,7 +78,7 @@ jobs:
           CODENAME: ${{ vars.SITE_CODENAME_GUARD }}
         run: |
           if [ -z "$CODENAME" ]; then echo "SITE_CODENAME_GUARD is not set; skipping"; exit 0; fi
-          if grep -rIil -- "$CODENAME" public tools .github README.md; then
+          if grep -rIil -- "$CODENAME" public tools guide .github README.md; then
             echo "::error::the files above mention the internal codename"; exit 1
           fi
 

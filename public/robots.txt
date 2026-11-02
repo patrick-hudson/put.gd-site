@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
 Sitemap: https://app.put.gd/sitemap.xml
+Sitemap: https://app.put.gd/userguide/sitemap.xml

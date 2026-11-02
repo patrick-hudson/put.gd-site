@@ -17,7 +17,10 @@ import subprocess
 
 UPLOADS_DISTRIBUTION = 'E2UO5E3WJ8BRV9'
 ROOT_FILES = {'index.html': 'index.html', 'changelog': 'changelog.html', '404.html': '404.html',
-              'robots.txt': 'robots.txt', 'sitemap.xml': 'sitemap.xml', 'install': 'install'}
+              'robots.txt': 'robots.txt', 'sitemap.xml': 'sitemap.xml', 'install': 'install',
+              'userguide': 'userguide/index.html'}
+# Trees published whole; a remote key under one that is no longer built is removed.
+TREES = ('_site/', 'userguide/')
 
 
 def aws(*args):
@@ -27,7 +30,8 @@ def aws(*args):
 
 def objects(public):
     files = {key: public / name for key, name in ROOT_FILES.items()}
-    files.update((path.relative_to(public).as_posix(), path) for path in (public / '_site').rglob('*') if path.is_file())
+    for tree in TREES:
+        files.update((path.relative_to(public).as_posix(), path) for path in (public / tree).rglob('*') if path.is_file())
     for path in files.values():
         if not path.is_file() or path.is_symlink():
             raise ValueError(f'Expected a regular site file: {path}')
@@ -41,21 +45,25 @@ def paths_for(keys, distribution):
             paths.update(('/', '/index.html'))
         elif key.startswith('_site/'):
             paths.add('/_site/*')
+        elif key.startswith('userguide/'):
+            paths.add('/userguide/*')
         elif distribution != UPLOADS_DISTRIBUTION:
             paths.add('/' + key)
     return sorted(paths)
 
 
 def headers(key):
-    if key in ('index.html', 'changelog', '404.html'):
+    if key in ('index.html', 'changelog', '404.html', 'userguide') or key.endswith('.html'):
         return 'text/html; charset=utf-8', 'public, max-age=300'
     if key == 'install':
         return 'text/plain; charset=utf-8', 'public, max-age=300'
     suffix = Path(key).suffix
     kind = {'.avif': 'image/avif', '.woff2': 'font/woff2', '.json': 'application/json'}.get(suffix)
     kind = kind or mimetypes.guess_type(key)[0] or 'application/octet-stream'
+    # Zensical's assets carry a content hash in their names, so they can be cached like /_site/.
+    long_lived = key.startswith('_site/') or key.startswith('userguide/assets/')
     cache = 'public, max-age=300' if suffix in ('.json', '.html') else (
-        'public, max-age=86400, stale-while-revalidate=604800' if key.startswith('_site/') else 'public, max-age=3600')
+        'public, max-age=86400, stale-while-revalidate=604800' if long_lived else 'public, max-age=3600')
     return kind, cache
 
 
@@ -65,7 +73,7 @@ def upload(public, bucket, manifest, installer_commit, call=aws):
               call('s3api', 'list-objects-v2', '--bucket', bucket).get('Contents', [])}
     digests = {key: hashlib.md5(path.read_bytes(), usedforsecurity=False).digest() for key, path in files.items()}
     changed = sorted(key for key in files if remote.get(key) != digests[key].hex())
-    deleted = sorted(key for key in remote if key.startswith('_site/') and key not in files)
+    deleted = sorted(key for key in remote if key.startswith(TREES) and key not in files)
     # Retain completed writes so a later upload/KVS failure still refreshes them.
     completed = {'changed': [], 'deleted': []}
     def save():
