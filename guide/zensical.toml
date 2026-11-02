@@ -1,0 +1,63 @@
+[project]
+site_url = "https://app.put.gd/userguide/"
+site_name = "put.gd user guide"
+site_description = "How to install put.gd and capture, edit, record, upload and share from your Linux desktop."
+docs_dir = "docs"
+site_dir = ".site"
+# Flat .html pages: the S3 origin has no directory index, so /userguide/capture.html is a real key.
+use_directory_urls = false
+
+nav = [
+  { "Install" = "index.md" },
+  { "Your first capture" = "quickstart.md" },
+  { "Capture" = "capture.md" },
+  { "Edit before uploading" = "edit.md" },
+  { "Record the screen" = "record.md" },
+  { "Destinations" = [
+    { "Set up a destination" = "destinations.md" },
+    { "Amazon S3 and compatible" = "destinations-s3.md" },
+    { "Backblaze B2" = "destinations-b2.md" },
+    { "Proton Drive" = "destinations-proton.md" },
+  ] },
+  { "History" = "history.md" },
+  { "Settings" = "settings.md" },
+  { "Keeping it updated" = "updating.md" },
+  { "GNOME, KDE and Cinnamon" = "desktops.md" },
+  { "Troubleshooting" = "troubleshooting.md" },
+  { "Command line" = "cli.md" },
+]
+
+extra_css = ["stylesheets/guide.css"]
+
+[project.theme]
+custom_dir = "overrides"
+font = false
+language = "en"
+features = [
+  "content.code.copy",
+  "content.tabs.link",
+  "navigation.footer",
+  "navigation.sections",
+  "navigation.top",
+  "search.highlight",
+  "toc.follow",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+md_in_html = {}
+tables = {}
+toc.permalink = true
+pymdownx.details = {}
+pymdownx.keys = {}
+pymdownx.superfences = {}
+pymdownx.tabbed.alternate_style = true

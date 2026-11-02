@@ -8,7 +8,9 @@
 //
 // Targets live in the function's KeyValueStore, written by the deploy workflow
 // from releases.json. Keys are "<channel>/<package>"; values are URLs.
-// Anything else falls through to the site bucket, with "/" mapped to index.html.
+// Anything else falls through to the site bucket, with "/" mapped to index.html
+// and any other directory URI ("/userguide/") to its index.html, which the S3
+// origin cannot resolve by itself.
 import cf from 'cloudfront';
 
 var kvs = cf.kvs();
@@ -19,6 +21,11 @@ async function handler(event) {
 
   if (uri === '' || uri === '/') {
     request.uri = '/index.html';
+    return request;
+  }
+
+  if (uri.indexOf('/dl/') !== 0 && uri.slice(-1) === '/') {
+    request.uri = uri + 'index.html';
     return request;
   }
 
