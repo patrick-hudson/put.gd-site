@@ -142,3 +142,11 @@ body { background: var(--bg); color: var(--text); font-family: "IBM Plex Sans", 
 .md-nav__item--section > .md-nav__link { color: var(--text-muted); font-weight: 600; text-transform: none; font-size: 13px; }
 .md-top { background: var(--surface-raised); color: var(--text); border: 1px solid var(--border); box-shadow: var(--md-shadow-z2); }
 .md-footer-nav, .md-footer__inner { display: none; }
+
+/* Admonitions in the app's palette, over Zensical's per-type blues and greens. */
+.md-typeset :is(.admonition, details):is(.note, .info, .tip, .success, .question, .abstract, .example, .quote) { background: var(--surface); border-color: var(--border); border-left-color: var(--accent); }
+.md-typeset :is(.note, .info, .tip, .success, .question, .abstract, .example, .quote) > :is(.admonition-title, summary) { background: transparent; }
+.md-typeset :is(.note, .info, .tip, .success, .question, .abstract, .example, .quote) > :is(.admonition-title, summary)::before { background-color: var(--accent); }
+.md-typeset :is(.admonition, details):is(.warning, .danger, .failure, .bug) { background: var(--warning-surface); border-color: var(--border); border-left-color: var(--warning); }
+.md-typeset :is(.warning, .danger, .failure, .bug) > :is(.admonition-title, summary) { background: transparent; }
+.md-typeset :is(.warning, .danger, .failure, .bug) > :is(.admonition-title, summary)::before { background-color: var(--warning); }
