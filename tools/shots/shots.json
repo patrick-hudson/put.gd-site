@@ -32,7 +32,15 @@
     {"id": "history", "kind": "history", "window": [1320, 880]},
     {"id": "storage", "kind": "destinations"},
     {"id": "settings", "kind": "settings", "row": 2},
-    {"id": "desktop", "kind": "desktop", "window": [1320, 880]}
+    {"id": "general", "kind": "settings", "row": 0},
+    {"id": "capture-settings", "kind": "settings", "row": 1},
+    {"id": "advanced", "kind": "settings", "row": 3},
+    {"id": "updates", "kind": "settings", "view": "updates"},
+    {"id": "proton", "kind": "destination", "provider": "proton-drive"},
+    {"id": "b2", "kind": "destination", "provider": "backblaze-b2"},
+    {"id": "desktop", "kind": "desktop", "window": [1320, 880]},
+    {"id": "tray", "kind": "tray"},
+    {"id": "file-manager", "kind": "file-manager"}
   ],
   "shots": [
     {"name": "history", "step": "history", "themes": ["dark", "light"],
@@ -47,7 +55,23 @@
      "desktop": {"anchor": "window", "pad": 48}},
     {"name": "settings", "step": "settings", "themes": ["dark", "light"],
      "desktop": {"anchor": "window", "pad": 48}},
+    {"name": "general", "step": "general", "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "pad": 48}},
+    {"name": "capture-settings", "step": "capture-settings", "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "pad": 48}},
+    {"name": "advanced", "step": "advanced", "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "pad": 48}},
+    {"name": "updates", "step": "updates", "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "pad": 48}},
+    {"name": "proton", "step": "proton", "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "pad": 48}},
+    {"name": "b2", "step": "b2", "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "pad": 48}},
     {"name": "desktop", "step": "desktop", "aspect": "16:9", "themes": ["dark", "light"],
-     "desktop": {"anchor": "screen", "pad": 0}}
+     "desktop": {"anchor": "screen", "pad": 0}},
+    {"name": "file-manager", "step": "file-manager", "themes": ["dark", "light"],
+     "desktop": {"anchor": "frame", "pad": 48, "clamp": "screen"}},
+    {"name": "tray", "step": "tray", "themes": ["dark", "light"],
+     "desktop": {"anchor": "menu", "pad": 48, "clamp": "screen"}}
   ]
 }

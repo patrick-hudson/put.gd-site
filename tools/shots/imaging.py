@@ -72,6 +72,60 @@ def foreground_box(image, backdrop=LOCATE_COLOR, min_run=24, tolerance=12):
     return [cols[0], rows[0], cols[-1] - cols[0] + 1, rows[-1] - rows[0] + 1]
 
 
+def changed_box(before, after, threshold=24, min_run=8):
+    """The box around everything that differs between two same-size frames, ignoring
+    columns and rows with fewer than `min_run` changed pixels. None if nothing changed."""
+    from PIL import ImageChops
+    diff = ImageChops.difference(before.convert('RGB'), after.convert('RGB')).convert('L')
+    mask = diff.point(lambda v: 255 if v > threshold else 0)
+    cols = [x for x, n in enumerate(_projection(mask, 0)) if n >= min_run]
+    rows = [y for y, n in enumerate(_projection(mask, 1)) if n >= min_run]
+    if not cols or not rows:
+        return None
+    return [cols[0], rows[0], cols[-1] - cols[0] + 1, rows[-1] - rows[0] + 1]
+
+
+def bar_height(frame, scale=1, dark=50):
+    """Height of GNOME's top bar: the rows at the top that are nearly black."""
+    probe = frame.crop((0, 0, frame.size[0], 80 * scale)).convert('L')
+    means = probe.resize((1, probe.size[1]), Image.Resampling.BOX).getdata()
+    height = 0
+    for value in means:
+        if value > dark:
+            break
+        height += 1
+    return height
+
+
+def _is_orange(pixel):
+    r, g, b = pixel[:3]
+    return r > 200 and 60 < g < 170 and b < 80
+
+
+def tray_icon(bar, scale=1, bright=150):
+    """Centre of put.gd's indicator in the top bar (an RGB image of the bar's full width):
+    the bright cluster immediately left of GNOME's orange screencast pill, which the lab's
+    VNC screencast always shows. Raises ValueError when the bar has neither."""
+    width, height = bar.size
+    px = bar.convert('RGB').load()
+    rows = range(0, height, 2)
+    orange = [x for x in range(width) if any(_is_orange(px[x, y]) for y in rows)]
+    if not orange:
+        raise ValueError('no screencast pill in the top bar')
+    lit = [any(sum(px[x, y]) > 3 * bright for y in rows) for x in range(width)]
+    x = min(orange) - 1
+    while x > 0 and not lit[x]:
+        x -= 1
+    if x <= 0:
+        raise ValueError('nothing is left of the screencast pill in the top bar')
+    right, gap = x, 0
+    while x > 0 and gap <= 3 * scale:
+        x -= 1
+        gap = 0 if lit[x] else gap + 1
+    left = x + gap + 1
+    return [(left + right) // 2, height // 2]
+
+
 def outside_fraction(image, keep, backdrop=LOCATE_COLOR, tolerance=12):
     """Share of the pixels outside the `keep` boxes that are NOT backdrop."""
     mask = color_mask(image, backdrop, tolerance).point(lambda v: 0 if v else 255)
@@ -89,8 +143,9 @@ def inside(inner, outer):
 
 def resolve_crop(spec, anchors, screen):
     """Resolve one crop spec against named anchor rects. Specs:
-    {"anchor": A, "pad": N}                    A grown by N on every side; an odd side
-                                               loses a pixel so the 1x image is exactly half
+    {"anchor": A, "pad": N, "clamp": C}        A grown by N on every side, then clipped to
+                                               anchor C when given; an odd side loses a pixel
+                                               so the 1x image is exactly half
     {"anchor": A, "rect": [x, y, w, h]}        relative to A's top-left
     {"anchor": A, "center": [fx, fy], "size": [w, h], "clamp": C}
         a w x h box centred on a point given as fractions of A, moved (not
@@ -102,6 +157,11 @@ def resolve_crop(spec, anchors, screen):
     if 'pad' in spec:
         p = spec['pad']
         rect = [ax - p, ay - p, aw + 2 * p, ah + 2 * p]
+        if 'clamp' in spec:
+            cx, cy, cw, ch = anchors[spec['clamp']]
+            x0, y0 = max(rect[0], cx), max(rect[1], cy)
+            x1, y1 = min(rect[0] + rect[2], cx + cw), min(rect[1] + rect[3], cy + ch)
+            rect = [x0, y0, x1 - x0, y1 - y0]
         rect[2] -= rect[2] % 2
         rect[3] -= rect[3] % 2
         bounds = [0, 0, screen[0], screen[1]]

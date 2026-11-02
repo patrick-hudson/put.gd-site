@@ -15,11 +15,18 @@ STEP_KINDS = {
     'file-upload': ({'media', 'filename'}, set()),
     'history': ({'window'}, {'window'}),
     'destinations': (set(), {'window'}),
+    # A provider's empty destination form: a profile is added for the shot and selected.
+    'destination': ({'provider'}, {'window'}),
     'settings': (set(), {'window'}),
+    # The tray menu, open over the wallpaper on an empty workspace.
+    'tray': (set(), {'menu'}),
+    # The desktop's file manager on the demo upload folder, with a file's right-click menu open.
+    'file-manager': (set(), {'window', 'menu', 'frame'}),
     # The whole physical screen (top bar, wallpaper, the History window) on an empty workspace.
     'desktop': ({'window'}, {'screen', 'window'}),
 }
 VARIANTS = ('desktop', 'mobile')
+PROVIDERS = ('proton-drive', 'backblaze-b2')
 ANNOTATION_FIELDS = {'arrow': {'from', 'to'}, 'rectangle': {'rect'}, 'highlight': {'rect'}, 'text': {'at', 'text'}}
 
 
@@ -169,6 +176,10 @@ def validate_shots(cfg, media_ids=None):
                     if key in shape and not (_pair(shape[key], f'{where}.annotate[{i}].{key}', errors, integers=False)
                                              and all(0 <= v <= 1 for v in shape[key])):
                         errors.append(f'{where}.annotate[{i}].{key}: must be fractions of the image')
+        if kind == 'destination' and step['provider'] not in PROVIDERS:
+            errors.append(f'{where}: provider must be one of {sorted(PROVIDERS)}')
+        if kind == 'settings' and 'view' in step and step['view'] not in ('settings', 'updates'):
+            errors.append(f'{where}: view must be settings or updates')
         if kind == 'file-upload' and not re.fullmatch(r'[a-z0-9][a-z0-9.-]{0,60}\.(jpg|png)', str(step['filename'])):
             errors.append(f'{where}: filename must be a plain lowercase .jpg or .png name')
     names = set()

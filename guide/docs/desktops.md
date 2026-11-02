@@ -1,24 +1,27 @@
 # GNOME, KDE and Cinnamon
 
-put.gd works the same way on all three desktops, apart from the differences on this page. By the end, you know what to set up on yours and what to expect.
+put.gd supports GNOME 50 on Wayland, KDE Plasma on Wayland or X11, and Cinnamon on X11. By the end of this page, you know what to set up on yours and what to expect.
 
-![The same put.gd window on Cinnamon, GNOME and KDE Plasma; the rail shows every action with its live shortcut.](img/desktops-strip.webp){ .shot }
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-light.avif 389w, /_site/shots/tray-light@2x.avif 778w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-dark.avif 389w, /_site/shots/tray-dark@2x.avif 778w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-light.webp 389w, /_site/shots/tray-light@2x.webp 778w">
+  <img src="/_site/shots/tray-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-dark.webp 389w, /_site/shots/tray-dark@2x.webp 778w" width="389" height="635" loading="lazy" alt="The put.gd tray menu on GNOME: the current output, Change output, Capture region, Capture window, Capture desktop, Capture region & edit, Edit image, Record screen, Upload clipboard, then History, Destinations and Settings.">
+</picture>
 
-put.gd supports GNOME 50 and KDE Plasma 6 on Wayland, and Cinnamon on X11. To see what your own desktop supports, open **Settings → Advanced**.
+This GNOME tray menu lists everything you can do from the tray. On every desktop, click the tray icon to open History, or right-click it for this menu. The pictures in this guide are all from GNOME, because that is what our lab runs.
+
+To see what your own desktop supports, open **Settings → Advanced → Desktop support details**.
 
 ## GNOME
 
-![The tray menu on GNOME.](img/tray-gnome.webp){ .shot }
+**Install.** GNOME needs put.gd's Shell extension, made for GNOME 50. Without it, put.gd can't capture your screen. The packages include it: [log out and back in, then enable it](index.md#turn-on-the-gnome-extension). After a later update, log out and back in again.
 
-GNOME needs put.gd's Shell extension, made for GNOME 50. It draws the region selector, takes the captures, handles the global shortcuts and the clipboard, and adds the text you see when you hover over the tray icon. Without it, put.gd can't capture your screen. The tray icon itself appears through GNOME's AppIndicator extension.
+With the AppImage, install the extension yourself:
 
-The packages include the extension: [log out and back in, then enable it](index.md). After a later update, log out and back in again. Until you do, screenshots keep working but recording a region is refused.
-
-**With the AppImage**, install the extension yourself:
-
-1. Open the [releases page](https://github.com/patrick-hudson/put.gd-desktop/releases) and find **Sources and GNOME integration** for your version.
-2. Download the GNOME ZIP from it.
-3. Install the ZIP, using its full path:
+1. On the [releases page](https://github.com/patrick-hudson/put.gd-desktop/releases), open **Sources and GNOME integration** for your version.
+2. Download `putgd-gnome50-VERSION.zip`.
+3. Install it, using its full path:
 
     ```bash
     gnome-extensions install /absolute/path/to/putgd-gnome50-VERSION.zip
@@ -31,34 +34,45 @@ The packages include the extension: [log out and back in, then enable it](index.
     gnome-extensions enable putgd@put.gd
     ```
 
-When you record your only monitor, the recording bar has nowhere else to go. It shrinks to a dot and a Stop button in a corner, and appears in the video.
+**Tray.** The icon sits in the top bar, through GNOME's AppIndicator extension. Without that there is no tray icon, but notifications still appear.
+
+**Region selection.** The desktop keeps moving while you drag. Press ++esc++ or right-click to cancel.
+
+**Right-click upload.** Choose **Upload with put.gd** in Files. With the AppImage, and on desktop icons, it's under **Scripts**.
+
+**Recording.** The recording bar moves outside the area. If there is no room, as when you record your only monitor, it shrinks to a dot and a Stop button in the corner, and appears in the video. On Fedora, recording needs [Cisco's H.264 encoder](index.md#install-with-one-line).
 
 ## KDE Plasma
 
-![The tray menu on KDE Plasma.](img/tray-plasma.webp){ .shot }
+**Install.** There is nothing extra to install. The AppImage needs Plasma 6: on Plasma 5.27 it says so and exits, so use the DEB. Aurora uses the AppImage.
 
-There is nothing extra to install on Plasma. Drag to select a region, and press ++esc++ or right-click to cancel.
+**Tray.** The icon sits in the system tray on your panel.
 
-Opening the region selector closes any open menu. To capture a menu, use **Capture desktop**, which includes it.
+**Region selection.** On Wayland, a crosshair and rectangle appear over the live desktop. On X11 it works as on Cinnamon. Press ++esc++ or right-click to cancel.
 
-On Plasma 6.6 and later, the recording bar stays out of your recording. Debian 13's older Plasma doesn't hide it, so it can appear when you record a whole monitor.
+**Right-click upload.** Choose **Upload with put.gd** in Dolphin.
+
+**Recording.** On Wayland, Plasma 6.6 and later leave the recording bar out of your video. Debian 13's older Plasma doesn't, so the bar can appear when you record a whole monitor.
 
 ## Cinnamon
 
-![The tray menu on Cinnamon.](img/tray-cinnamon.webp){ .shot }
+**Install.** Cinnamon runs on X11, and there is nothing extra to install.
 
-Cinnamon runs on X11, and there is nothing extra to install. The desktop keeps moving while you select a region: windows and video keep updating. Drag with the left button, and press ++esc++ or right-click to cancel.
+**Tray.** The icon sits in the system tray on your panel.
+
+**Region selection.** Windows and video keep updating while you select. Drag with the left button, and press ++esc++ or right-click to cancel.
+
+**Right-click upload.** Choose **Upload with put.gd** in Nemo.
+
+**Recording.** The screen outside the area dims, and the recording bar sits outside the area or on another monitor. If there is no room, it shrinks to a dot and a Stop button in the corner, and appears in the video.
 
 ## X11 and Wayland
 
-Plasma can run on either, so these differences depend on your session as well as your desktop.
+Plasma can run on either, so these depend on your session too.
 
 | | X11 | Wayland |
 | --- | --- | --- |
-| **Capture region** with a menu open | Starts once the menu closes. Press ++esc++ or click outside it within 3 seconds, or press the shortcut again. | GNOME opens the selector over the menu, so you can select it. Plasma closes the menu. |
-| **Capture window** | Anything overlapping the window appears in the image. | On GNOME and Plasma, the window's own menus are left out. |
+| **Capture window** | Anything overlapping the window appears in the image. | GNOME captures the window on its own. Plasma includes the title bar and leaves out shadows. |
 | **Record screen** | Drag the area to record. | Drag the area on GNOME and Plasma. Other Wayland desktops ask once which screen or window to share. |
 
-## Shortcuts on every desktop
-
-put.gd never takes a shortcut from another app. Open **Settings → Shortcuts** to see any conflict beside its row, then choose a different combination.
+Region selection needs any open menu closed first, on every desktop. To include a menu, use [Screenshot first](capture.md#capture-an-open-menu).

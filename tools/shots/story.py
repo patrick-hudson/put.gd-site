@@ -17,6 +17,15 @@ from PIL import ImageStat
 
 MAGENTA = 'FF00FF'
 SETTINGS_RAIL = (100, 141, 38)  # first row's centre from the window's corner, then the row pitch
+DESTINATION_ROW = (108, 154)  # the first destination's centre in the Destinations list
+# Empty destination forms for the guide, as Settings creates them (the providers' own defaults).
+PROVIDERS = {
+    'proton-drive': ('Proton Drive', {'accountRootUid': '', 'folderUid': '', 'shareByDefault': True, 'linkExpirationDays': 0,
+                                      'sharePasswordReference': None, 'requestTimeoutMs': 120000}),
+    'backblaze-b2': ('Backblaze B2', {'apiUrl': 'https://api.backblazeb2.com', 'bucket': 'my-bucket', 'objectPrefix': '', 'linkMode': 'public',
+                                      'linkValidityDays': 7, 'publicUrlBase': None, 'connectTimeoutMs': 10000,
+                                      'requestTimeoutMs': 600000}),
+}
 DONE_STATES = {'completed', 'failed', 'partial', 'cancelled', 'interrupted'}
 
 
@@ -426,7 +435,42 @@ class Story:
         self.page(step, 'destinations')
 
     def settings(self, step):
-        self.page(step, 'settings', step.get('row'))
+        self.page(step, step.get('view', 'settings'), step.get('row'))
+
+    def destination(self, step):
+        """A provider's destination form as Add destination shows it: a profile with the
+        provider's defaults and no account or bucket, moved to the top of the list and clicked."""
+        provider = step['provider']
+        label, defaults = PROVIDERS[provider]
+        pid = f'shot-{provider}'
+        profiles = [dict(p) for p in self.cli('settings.get')['document']['profiles']]
+        order = [p['id'] for p in profiles]
+        if pid not in order:
+            profiles.append({'id': pid, 'label': label, 'provider': provider, 'settings': defaults,
+                             'credentials': {'mode': 'keychain', 'reference': f'putgd/{pid}'}})
+            self.patch({'profiles': profiles})
+            order.append(pid)
+        self.reorder([pid] + [i for i in order if i != pid])
+        self.cli('ui.show', {'view': 'destinations'})
+        time.sleep(2.0)
+        self.park()
+        window = self.locate()
+        x, y = (v * self.scale for v in DESTINATION_ROW)
+        self.input.click(window[0] + x, window[1] + y)
+        time.sleep(1.5)
+        self.park()
+        self.anchors[step['id']] = {'window': window}
+        for theme in ('dark', 'light'):
+            self.set_theme(theme)
+            self.park()
+            self.keep(step['id'], theme)
+        self.set_theme('dark')
+        self.reorder([i for i in order if i != pid] + [pid])  # the demo destination leads again
+
+    def reorder(self, order):
+        revision = self.cli('settings.get')['metadata']['observedRevision']
+        self.cli('settings.reorderProfiles', {'order': order, 'expectedRevision': revision})
+        time.sleep(1.0)
 
     def page(self, step, view, row=None):
         """A page of the main window, as History left it. `row` picks a Settings category
@@ -435,10 +479,13 @@ class Story:
         time.sleep(2.0)
         self.park()
         window = self.locate()
-        if row:
+        if row is not None:
+            # Row 0 is General (a plain `if row` skipped it). Twice, since a click on the
+            # selected row is harmless and one has been lost after another Settings step.
             x, y, pitch = (v * self.scale for v in SETTINGS_RAIL)
-            self.input.click(window[0] + x, window[1] + y + row * pitch)
-            time.sleep(1.0)
+            for _ in range(2):
+                self.input.click(window[0] + x, window[1] + y + row * pitch)
+                time.sleep(1.0)
             self.park()
         self.anchors[step['id']] = {'window': window}
         for theme in ('dark', 'light'):
@@ -460,9 +507,7 @@ class Story:
         time.sleep(2.5)
         if imaging.color_fraction(self.grab(), imaging.LOCATE_COLOR) > 0.0005:
             raise StoryError('the backdrop is still on screen; the window did not reach an empty workspace')
-        wallpaper = self.host.cfg['wallpaper']
-        for key, value in wallpaper.items():
-            self.host.agent('gsettings', 'set', 'org.gnome.desktop.background', key, value.strip("'"))
+        self.wallpaper()
         self.park(self.screen[0] - 1, self.screen[1] - 1)  # the arrow's hotspot in the corner: the arrow is off screen
         for theme in ('dark', 'light'):
             self.set_theme(theme, backdrop=False)
@@ -471,6 +516,87 @@ class Story:
         self.anchors[step['id']] = {'window': box, 'screen': [0, 0, self.screen[0], self.screen[1]]}
         self.leave_workspace()
         self.set_theme('dark')  # also returns the backdrop on workspace 1 to its colour
+
+    def file_manager(self, step):
+        """The desktop's file manager showing the demo upload folder, with the right-click
+        menu of its file open: Upload with put.gd is what the reader is shown. The file is
+        selected from the keyboard and the menu opened with the Menu key, so no position
+        inside the file manager's window is assumed."""
+        folder = f'{self.host.run_dir}/upload'
+        if self.host.run(f'ls {folder} 2>/dev/null | wc -l').strip() == '0':
+            raise StoryError('the upload folder is empty; the file-upload step must run first')
+        boxes = []
+        for theme in ('dark', 'light'):
+            self.set_theme(theme)
+            window = self.open_app('files', self.host.cfg['files'] + [folder], expect_min=(600, 400))
+            self.backdrop(self.themes[theme]['backdrop'].lstrip('#'))
+            self.input.click(window[0] + window[2] // 2, window[1] + window[3] - 40 * self.scale)  # focus the file area
+            time.sleep(0.6)
+            self.input.key('right')  # selects the first (only) file
+            time.sleep(0.6)
+            self.park()
+            before = self.grab()
+            self.input.key('menu')
+            time.sleep(1.2)
+            frame = self.keep(step['id'], theme)
+            menu = imaging.changed_box(before, frame, min_run=8 * self.scale)
+            if not menu or menu[3] < 120 * self.scale:
+                raise StoryError(f'no context menu opened in the file manager (changed area {menu})')
+            boxes.append((window, menu))
+            self.input.key('esc')
+            time.sleep(0.5)
+            self.close_app('files')
+            time.sleep(1.0)
+        window = boxes[-1][0]
+        x0 = min(min(w[0], m[0]) for w, m in boxes)
+        y0 = min(min(w[1], m[1]) for w, m in boxes)
+        x1 = max(max(w[0] + w[2], m[0] + m[2]) for w, m in boxes)
+        y1 = max(max(w[1] + w[3], m[1] + m[3]) for w, m in boxes)
+        self.anchors[step['id']] = {'window': window, 'menu': boxes[-1][1], 'frame': [x0, y0, x1 - x0, y1 - y0]}
+        self.set_theme('dark')
+
+    def wallpaper(self):
+        for key, value in self.host.cfg['wallpaper'].items():
+            self.host.agent('gsettings', 'set', 'org.gnome.desktop.background', key, value.strip("'"))
+
+    def tray(self, step):
+        """The tray menu, opened by a real click on put.gd's indicator in the top bar, over
+        the stock wallpaper on the empty last workspace. The anchor is what the click changed."""
+        self.input.key('super', 'end')  # switch-to-workspace-last: always an empty one
+        self.workspace_moved = True
+        time.sleep(2.5)
+        if imaging.color_fraction(self.grab(), imaging.LOCATE_COLOR) > 0.0005:
+            raise StoryError('the backdrop is still on screen; the view did not reach an empty workspace')
+        self.wallpaper()
+        boxes = []
+        for theme in ('dark', 'light'):
+            self.set_theme(theme, backdrop=False)
+            self.park(self.screen[0] - 1, self.screen[1] - 1)
+            time.sleep(1.5)
+            before = self.grab()
+            bar = imaging.bar_height(before, self.scale)
+            if bar < 16 * self.scale:
+                raise StoryError('no top bar at the top of the screen')
+            try:
+                icon = imaging.tray_icon(before.crop((0, 0, before.size[0], bar)), self.scale)
+            except ValueError as error:
+                raise StoryError(f'tray icon: {error}') from error
+            self.log(f'  tray icon at {icon}')
+            self.input.click(icon[0], icon[1])
+            time.sleep(0.8)
+            self.park(self.screen[0] - 1, self.screen[1] - 1)
+            frame = self.keep(step['id'], theme)
+            box = imaging.changed_box(before, frame, min_run=8 * self.scale)
+            if not box or box[3] < 160 * self.scale or box[2] > box[3]:
+                raise StoryError(f'no menu opened under the tray icon (changed area {box})')
+            boxes.append(box)
+            self.input.key('esc')
+            time.sleep(1.0)
+        x0, y0 = min(b[0] for b in boxes), min(b[1] for b in boxes)
+        x1, y1 = max(b[0] + b[2] for b in boxes), max(b[1] + b[3] for b in boxes)
+        self.anchors[step['id']] = {'menu': [x0, y0, x1 - x0, y1 - y0], 'screen': [0, 0, self.screen[0], self.screen[1]]}
+        self.leave_workspace()
+        self.set_theme('dark')
 
     def leave_workspace(self):
         if self.workspace_moved:
@@ -481,7 +607,8 @@ class Story:
     def run(self, steps=None):
         handlers = {'region-capture': self.region_capture, 'edit': self.edit, 'record': self.record,
                     'file-upload': self.file_upload, 'history': self.history, 'destinations': self.destinations,
-                    'settings': self.settings,
+                    'destination': self.destination, 'settings': self.settings, 'tray': self.tray,
+                    'file-manager': self.file_manager,
                     'desktop': self.desktop}
         self.set_theme('dark')
         for step in self.cfg['story']:

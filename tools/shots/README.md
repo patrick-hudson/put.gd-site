@@ -105,7 +105,9 @@ under a UUID key with `PermissionStore.Set` and write that UUID to the token fil
   - `screen`: the whole screen.
 
   A crop is one of:
-  - `{"pad": N}`: grow the anchor by N.
+  - `{"pad": N}`: grow the anchor by N. With `"clamp"`, the result is clipped to
+    that anchor instead of failing when it leaves the screen (the tray menu hangs
+    from the top bar).
   - `{"rect": [x, y, w, h]}`: relative to the anchor's top-left.
   - `{"center": [fx, fy], "size": [w, h]}`: a box centred on a fraction of the anchor.
 

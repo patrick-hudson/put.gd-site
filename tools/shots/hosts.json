@@ -13,6 +13,7 @@
     "desktop": "gnome",
     "package": {"asset": "fedora44-x86_64.rpm", "manager": "dnf", "name": "putgd"},
     "viewer": ["loupe"],
+    "files": ["nautilus", "--new-window"],
     "player": ["dbus-run-session", "--", "showtime"],
     "playerNote": "Showtime 50 deadlocks when GNOME Shell queries its MPRIS volume while the video prerolls; a private session bus avoids that.",
     "relogin": "gdm",

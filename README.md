@@ -89,8 +89,8 @@ python3 -m http.server 4411 --directory public          # then open /userguide/i
 
 Pages are Markdown under `guide/docs/`; add a page to `nav` in `guide/zensical.toml` and
 `tools/test_userguide.py` checks that every page is in the nav, has one title and a picture, and that
-its links and pictures resolve. The lab screenshots are referenced from `/_site/shots/` (nothing is
-copied); the static pictures under `guide/docs/img/` come from the desktop repository's README.
+its links and pictures resolve. Every picture is a lab screenshot referenced from `/_site/shots/` (nothing is
+copied); `guide/README.md` lists the exact blocks to paste.
 The build is strict: a broken link fails the deploy. The deploy publishes the index at the bare
 `userguide` key and the rest under `userguide/`; `/userguide/` with a slash works once the router
 rule in `cloudfront/download-redirect.js` is applied with `terraform -chdir=infra apply`.
