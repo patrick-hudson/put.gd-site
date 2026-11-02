@@ -272,7 +272,7 @@ def switch_display(host, why, kernel_connector, edid_file, monitors):
     if monitors is None:
         host.run('rm -f ~/.config/monitors.xml')
     else:
-        host.run(f'cat > ~/.config/monitors.xml <<\'XML\'\n{monitors}XML')
+        host.run('cat > ~/.config/monitors.xml', input=monitors)
     override = f'/sys/kernel/debug/dri/0/{kernel_connector}/edid_override'
     status = f'/sys/class/drm/card0-{kernel_connector}/status'
     source = f'cat {shlex.quote(edid_file)}' if edid_file else 'printf reset'  # exactly "reset": no newline
@@ -548,6 +548,7 @@ def main():
         (run_dir / 'frames').mkdir(parents=True)
         lock.acquire()
         state, problems = {}, []
+        pointer = None
         try:
             state = load_state(host)
             if any(state.values()):
@@ -619,30 +620,32 @@ def main():
                 story.run(set(args.steps.split(',')) if args.steps else None)
             finally:
                 story.leave_workspace()
-                if pointer is not client:
-                    pointer.close()
             run = {'screen': story.screen, 'anchors': story.anchors, 'frames': story.frames, 'release': tag,
                    'host': args.host, 'identity': {k: ident[k] for k in ('commit', 'desktop', 'version')}}
             (run_dir / 'run.json').write_text(json.dumps(run, indent=1))
             log(f'frames saved in {run_dir}')
         finally:
-            if args.keep_host:
-                log('--keep-host: leaving put.gd installed, the run directory and the lock in place')
-                host.cli('ui.quit', check=False, timeout=30)
-                host.agent('killall', check=False)
-                host.agent('keyring-delete', state.get('keyringReference', 'none'), check=False)
-                state.pop('keyringReference', None)
-                for key, value in list(state.get('gsettings', {}).items()):
-                    schema, name = key.split(' ')
-                    host.agent('gsettings', 'set', schema, name, value, check=False)
-                state['gsettings'] = {}
-                save_state(host, state)
-            else:
-                problems = restore(host, state, final_relogin=True)
-                if problems:
-                    log('RESTORE PROBLEMS: ' + '; '.join(problems))
+            try:
+                if isinstance(pointer, hostinput.HostInput):
+                    pointer.close()
+            finally:
+                if args.keep_host:
+                    log('--keep-host: leaving put.gd installed, the run directory and the lock in place')
+                    host.cli('ui.quit', check=False, timeout=30)
+                    host.agent('killall', check=False)
+                    host.agent('keyring-delete', state.get('keyringReference', 'none'), check=False)
+                    state.pop('keyringReference', None)
+                    for key, value in list(state.get('gsettings', {}).items()):
+                        schema, name = key.split(' ')
+                        host.agent('gsettings', 'set', schema, name, value, check=False)
+                    state['gsettings'] = {}
+                    save_state(host, state)
                 else:
-                    lock.release()
+                    problems = restore(host, state, final_relogin=True)
+                    if problems:
+                        log('RESTORE PROBLEMS: ' + '; '.join(problems))
+                    else:
+                        lock.release()
         if args.steps:
             return
         crops = run_dir / 'crops'

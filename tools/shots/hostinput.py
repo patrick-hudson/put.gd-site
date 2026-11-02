@@ -34,6 +34,13 @@ class HostInput:
         self.local = Path(self.scratch) / 'input.sock'
         self.tunnel = None
         self.sock = None
+        try:
+            self._connect(host)
+        except Exception:
+            self.close()
+            raise
+
+    def _connect(self, host):
         deadline = time.monotonic() + 20
         while True:
             if host.run(f'test -S {self.remote} && echo y || true').strip() == 'y':
@@ -49,6 +56,7 @@ class HostInput:
                 raise RuntimeError('no tunnel to the input agent')
             time.sleep(0.2)
         self.sock = socket.socket(socket.AF_UNIX)
+        self.sock.settimeout(30)
         self.sock.connect(str(self.local))
         self.stream = self.sock.makefile('r')
         self.stream.readline()  # greeting
@@ -56,7 +64,10 @@ class HostInput:
 
     def _call(self, request):
         self.sock.sendall((json.dumps(request) + '\n').encode())
-        reply = json.loads(self.stream.readline())
+        line = self.stream.readline()
+        if not line:
+            raise RuntimeError('the input agent closed the connection')
+        reply = json.loads(line)
         if 'error' in reply:
             raise RuntimeError(f'input agent: {reply["error"]}')
 

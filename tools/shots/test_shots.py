@@ -155,6 +155,44 @@ class Config(unittest.TestCase):
         self.assertEqual(hostinput.axis(3839, 3840), 32767)
         self.assertEqual(hostinput.axis(5000, 3840), 32767)
 
+    def test_input_agent_hanging_up_is_a_clear_error(self):
+        import hostinput
+        import socket
+        agent = hostinput.HostInput.__new__(hostinput.HostInput)
+        agent.sock, peer = socket.socketpair()
+        agent.stream = agent.sock.makefile('r')
+        peer.close()
+        with self.assertRaisesRegex((RuntimeError, BrokenPipeError), 'closed the connection|Broken pipe'):
+            agent._call({'execute': 'qmp_capabilities'})
+        agent.stream.close()
+        agent.sock.close()
+
+    def test_failed_input_setup_leaves_nothing_behind(self):
+        import hostinput
+        import subprocess
+        import tempfile
+        from pathlib import Path
+
+        class Host:
+            run_dir, cfg = '/run', {'user': 'u'}
+            target = 'nowhere'
+            def run(self, command, **_):
+                return '1000' if command == 'id -u' else ''
+            def put(self, *_):
+                pass
+        scratch, original = [], tempfile.mkdtemp
+        hostinput.tempfile.mkdtemp = lambda **k: scratch.append(original(**k)) or scratch[-1]
+        real_monotonic = hostinput.time.monotonic
+        hostinput.time.monotonic = iter(range(0, 10000, 100)).__next__
+        real_sleep, hostinput.time.sleep = hostinput.time.sleep, lambda _: None
+        try:
+            with self.assertRaisesRegex(RuntimeError, 'did not start'):
+                hostinput.HostInput(Host(), 'agent.py', 3840, 2160)
+        finally:
+            hostinput.tempfile.mkdtemp = original
+            hostinput.time.monotonic, hostinput.time.sleep = real_monotonic, real_sleep
+        self.assertFalse(Path(scratch[0]).exists())
+
     def test_media_needs_pins_and_licenses(self):
         media = copy.deepcopy(self.media)
         media['assets'][0]['sha256'] = 'abc'
