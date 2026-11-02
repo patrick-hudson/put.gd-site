@@ -74,8 +74,12 @@ code { font: 400 0.88em/1 var(--mono); }
 .shot { border: 1px solid var(--border); border-radius: var(--radius-container); background: var(--well); overflow: hidden; }
 .shot-hero { margin-top: 48px; }
 
-/* Features: 2 x 2, one line each. */
+/* Features: complete windows, one line each. Edit gets the full width. */
 .features { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px 32px; margin-top: var(--section); }
+.tile-wide { grid-column: 1 / -1; }
+.shot-square { aspect-ratio: 1; }
+.shot-square picture { display: block; height: 100%; }
+.shot-square img { height: 100%; object-fit: contain; }
 .tile h2 { margin-top: 20px; font-size: 17px; line-height: 24px; font-weight: 600; }
 .tile p { margin-top: 4px; font-size: 15px; line-height: 22px; color: var(--text-secondary); }
 
@@ -163,6 +167,7 @@ code { font: 400 0.88em/1 var(--mono); }
   .lede { font-size: 17px; line-height: 26px; }
   .shot-hero { margin-top: 32px; }
   .features { grid-template-columns: minmax(0, 1fr); gap: 40px; }
+  .shot-square { aspect-ratio: auto; }
   .pkg { padding: 16px; }
   .pkg .get { gap: 16px; }
 }

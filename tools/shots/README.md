@@ -43,8 +43,14 @@ its cleanup check passes):
 
 1. Installs the release package (refusing a transaction that touches desktop
    packages, or a put.gd it didn't install).
-2. Logs the GNOME session out and lets GDM log back in, so Shell loads the put.gd
-   extension. It stops instead if the session has apps of yours open.
+2. Logs the GNOME session out and lets GDM log back in on a 3840x2160 display at
+   200%, so Shell loads the put.gd extension and every shot has twice the detail.
+   The lab desktops have no monitor, so the mode is a runtime EDID override
+   (`edid.py`, written to debugfs; no reboot, no boot config) plus a saved GNOME
+   layout. It stops instead if the session has apps of yours open. Frames still
+   come over VNC, but pointer and keys go through the lab's kernel input agent
+   (`tools/lab/host_input.py`), because VNC drops pointer positions past the logical
+   1920x1080.
 3. Writes the demo key to the default keyring in put.gd's keychain format under a
    fresh `putgd-lab-<uuid>` reference. The blank lab keyring is unlocked only if
    that needs no prompt.
@@ -55,15 +61,15 @@ its cleanup check passes):
    Loupe and Showtime with private dirs and in-memory settings. It turns
    notification banners off and switches GNOME's colour scheme for each theme.
 6. Runs the story: region captures of NASA photos, an edit with a redaction, a
-   region recording of the Sintel trailer, a clipboard file upload, then History
-   and Destinations.
+   region recording of the Sintel trailer, a clipboard file upload, then History,
+   Destinations and Settings.
 7. For `desktop`, moves the History window to the last (empty) workspace with
    Super+Shift+End, sets the stock wallpaper and grabs the whole screen, then
    switches back with Super+Home.
 8. Restores everything: stops exactly the PIDs it started, deletes the keychain
    entry and the run directory, restores the GNOME settings it changed
-   (colour scheme, banners, wallpaper), removes the package and logs in afresh to
-   unload the extension.
+   (colour scheme, banners, wallpaper), removes the package, clears the override
+   and logs in afresh at 1080p to unload the extension.
 
 What it records is kept in `~/.local/state/site-shots/state.json` on the host.
 After a crash, run `capture.py --cleanup-only`.
@@ -71,11 +77,29 @@ After a crash, run `capture.py --cleanup-only`.
 The uploads stay in the `putgd-demo` bucket, so the links shown in the shots
 work; the bucket expires them after 30 days.
 
+## If VNC stops answering after a display change
+
+The VNC server's permission to share the screen is a portal token in
+`~/.local/state/tigervnc/restoretoken`, and it names the monitor as
+`LNX:Linux FHD:Linux #0`. So:
+
+- Stop the server before changing the display; if it sees the output vanish it
+  saves the permission with no screens (`Failed to get streams` in its log).
+- Never write `detect` to the connector's `status`, only `off` then `on`.
+- The EDID must keep that identity, or GNOME shows a consent dialog nobody can reach.
+
+To recover without a monitor: move the token aside and restart the server, take a
+frame with Mutter's ScreenCast API, and approve with `tools/lab/host_input.py`
+(allow remote interaction). A token from that dialog isn't a UUID, and the portal
+refuses it on the next start (`Invalid restore token`); store the same permission
+under a UUID key with `PermissionStore.Set` and write that UUID to the token file.
+
 ## Changing shots
 
 - `shots.json`: `story` (the steps, run in order) and `shots` (which step's frame
-  each shot uses, and its crops). Crops are relative to a rectangle the step
-  records:
+  each shot uses, and its crop). Shots on the site show the complete window, so
+  each one is the window grown by a little backdrop. Crops are relative to a
+  rectangle the step records:
   - `window`: the app window.
   - `viewer`/`selection`: the photo viewer and the dragged region.
   - `screen`: the whole screen.
@@ -85,8 +109,8 @@ work; the bucket expires them after 30 days.
   - `{"rect": [x, y, w, h]}`: relative to the anchor's top-left.
   - `{"center": [fx, fy], "size": [w, h]}`: a box centred on a fraction of the anchor.
 
-  Add `"clamp": "screen"` to let a crop leave the anchor. Tiles must be 4:3 and
-  every crop size even. `mobile` is optional.
+  Add `"clamp": "screen"` to let a crop leave the anchor. Fixed crop sizes must be
+  even. A `mobile` crop is optional.
 - `media.json`: each demo file with its pinned URL, sha256, credit and license.
   A changed upstream file stops the run; pin a new one.
 - `hosts.json`: the physical desktops (only GNOME is implemented).
@@ -102,8 +126,8 @@ For debugging, `--steps a,b` runs only some story steps and writes no outputs.
 `--keep-host` leaves the package, run directory and lock in place for the next try.
 
 Outputs are `<shot>-<theme>[-mobile][@2x].{avif,webp}` and `shots.json`
-(provenance, pixel sizes and media credits). The host renders at scale 1, so
-`@2x` is the native capture and 1x is a half-size downscale.
+(provenance, pixel sizes and media credits). The host renders at 200%, so `@2x`
+is the native capture and 1x is a half-size downscale.
 
 ## Tests
 

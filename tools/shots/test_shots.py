@@ -103,11 +103,6 @@ class Config(unittest.TestCase):
         change(cfg)
         return config.validate_shots(cfg, self.media_ids)
 
-    def test_tiles_must_be_four_by_three(self):
-        def change(cfg):
-            next(s for s in cfg['shots'] if s['tile'])['desktop'] = {'anchor': 'window', 'rect': [0, 0, 800, 500]}
-        self.assertTrue(any('not 4:3' in e for e in self.errors_after(change)))
-
     def test_unknown_step_media_and_duplicates(self):
         self.assertTrue(self.errors_after(lambda c: c['shots'][0].update(step='nope')))
         self.assertTrue(self.errors_after(lambda c: c['story'][0].update(media='nope')))
@@ -122,6 +117,82 @@ class Config(unittest.TestCase):
         self.assertTrue(self.errors_after(lambda c: c['shots'][0].update(desktop={'anchor': 'window', 'pad': 4, 'rect': [0, 0, 2, 2]})))
         self.assertTrue(self.errors_after(lambda c: c['shots'][0].update(desktop={'anchor': 'viewer', 'pad': 4})))
         self.assertTrue(self.errors_after(lambda c: c['shots'][0].update(mobile={'anchor': 'window', 'rect': [0, 0, 301, 200]})))
+
+    def test_pad_keeps_the_whole_anchor_and_even_sides(self):
+        spec = {'anchor': 'viewer', 'pad': 24}
+        self.assertEqual(imaging.resolve_crop(spec, {'viewer': [497, 70, 927, 973]}, [1920, 1080]), [473, 46, 974, 1020])
+        self.assertTrue(self.errors_after(lambda c: c['shots'][0]['desktop'].update(rect=[0, 0, 10, 10])))
+
+    def test_annotations_use_image_fractions(self):
+        import story
+        size = [1000, 2000]
+        self.assertEqual(story.annotation({'kind': 'arrow', 'from': [0.5, 0.5], 'to': [0.1, 0.1]}, size),
+                         {'kind': 'arrow', 'from': [500, 1000], 'to': [100, 200]})
+        self.assertEqual(story.annotation({'kind': 'highlight', 'rect': [0, 0.5, 0.5, 0.25]}, size)['rect'], [0, 1000, 500, 500])
+        edit = lambda c: next(s for s in c['story'] if s['kind'] == 'edit')
+        self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': 'redact'})))
+        self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': ['arrow']})))
+        self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': 'arrow', 'from': [2, 0], 'to': [0, 0]})))
+        for shape in ({'kind': 'arrow', 'from': [0, 0]}, {'kind': 'rectangle'}, {'kind': 'highlight'},
+                      {'kind': 'text', 'at': [0, 0]}, {'kind': 'text', 'text': 'x'}):
+            self.assertTrue(any('needs' in e for e in self.errors_after(lambda c: edit(c)['annotate'].append(shape))), shape)
+
+    def test_edid_is_4k_hdmi_with_the_panels_identity(self):
+        import edid
+        data = edid.build()
+        self.assertEqual(len(data), 256)
+        self.assertEqual((sum(data[:128]) & 255, sum(data[128:]) & 255), (0, 0))
+        self.assertEqual(data[126], 1)
+        self.assertEqual((data[56] | (data[58] & 0xF0) << 4, data[59] | (data[61] & 0xF0) << 4), (3840, 2160))
+        self.assertEqual(int.from_bytes(data[54:56], 'little') * 10, 297_000)  # kHz
+        self.assertIn(b'Linux FHD', data[:128])
+        self.assertIn(b'Linux #0', data[:128])
+        self.assertIn(bytes([0x03, 0x0C, 0x00]), data[128:])  # the HDMI block i915 needs above 165 MHz
+        self.assertIn('<serial>Linux #0</serial>', edid.monitors_xml('HDMI-1'))
+
+    def test_input_axis_covers_the_whole_screen(self):
+        import hostinput
+        self.assertEqual(hostinput.axis(0, 3840), 0)
+        self.assertEqual(hostinput.axis(3839, 3840), 32767)
+        self.assertEqual(hostinput.axis(5000, 3840), 32767)
+
+    def test_input_agent_hanging_up_is_a_clear_error(self):
+        import hostinput
+        import socket
+        agent = hostinput.HostInput.__new__(hostinput.HostInput)
+        agent.sock, peer = socket.socketpair()
+        agent.stream = agent.sock.makefile('r')
+        peer.close()
+        with self.assertRaisesRegex((RuntimeError, BrokenPipeError), 'closed the connection|Broken pipe'):
+            agent._call({'execute': 'qmp_capabilities'})
+        agent.stream.close()
+        agent.sock.close()
+
+    def test_failed_input_setup_leaves_nothing_behind(self):
+        import hostinput
+        import subprocess
+        import tempfile
+        from pathlib import Path
+
+        class Host:
+            run_dir, cfg = '/run', {'user': 'u'}
+            target = 'nowhere'
+            def run(self, command, **_):
+                return '1000' if command == 'id -u' else ''
+            def put(self, *_):
+                pass
+        scratch, original = [], tempfile.mkdtemp
+        hostinput.tempfile.mkdtemp = lambda **k: scratch.append(original(**k)) or scratch[-1]
+        real_monotonic = hostinput.time.monotonic
+        hostinput.time.monotonic = iter(range(0, 10000, 100)).__next__
+        real_sleep, hostinput.time.sleep = hostinput.time.sleep, lambda _: None
+        try:
+            with self.assertRaisesRegex(RuntimeError, 'did not start'):
+                hostinput.HostInput(Host(), 'agent.py', 3840, 2160)
+        finally:
+            hostinput.tempfile.mkdtemp = original
+            hostinput.time.monotonic, hostinput.time.sleep = real_monotonic, real_sleep
+        self.assertFalse(Path(scratch[0]).exists())
 
     def test_media_needs_pins_and_licenses(self):
         media = copy.deepcopy(self.media)
@@ -150,7 +221,7 @@ class Manifest(unittest.TestCase):
         names = manifest.expected_files(self.shots)
         self.assertEqual(len(names), len(set(names)))
         self.assertIn('history-dark@2x.avif', names)
-        self.assertIn('history-light-mobile.webp', names)
+        self.assertIn('settings-light.webp', names)
         self.assertIn('desktop-light@2x.webp', names)
         self.assertNotIn('desktop-dark-mobile.avif', names)
 

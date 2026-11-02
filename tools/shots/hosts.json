@@ -16,6 +16,7 @@
     "player": ["dbus-run-session", "--", "showtime"],
     "playerNote": "Showtime 50 deadlocks when GNOME Shell queries its MPRIS volume while the video prerolls; a private session bus avoids that.",
     "relogin": "gdm",
+    "hidpi": {"kernelConnector": "HDMI-A-1", "monitorConnector": "HDMI-1"},
     "wallpaper": {
       "picture-uri": "'file:///usr/share/backgrounds/f44/default/f44-01-day.jxl'",
       "picture-uri-dark": "'file:///usr/share/backgrounds/f44/default/f44-01-night.jxl'",

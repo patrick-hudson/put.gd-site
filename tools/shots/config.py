@@ -11,14 +11,16 @@ STEP_KINDS = {
     # kind: (required params, anchors the step records for its shot, whether it can hold a shot)
     'region-capture': ({'media', 'selection'}, {'viewer', 'selection'}),
     'edit': ({'media', 'redact'}, {'window'}),
-    'record': ({'media', 'clip', 'area', 'seconds', 'trim', 'playhead'}, {'window'}),
+    'record': ({'media', 'clip', 'area', 'seconds', 'trim', 'playheads'}, {'window'}),
     'file-upload': ({'media', 'filename'}, set()),
     'history': ({'window'}, {'window'}),
     'destinations': (set(), {'window'}),
+    'settings': (set(), {'window'}),
     # The whole physical screen (top bar, wallpaper, the History window) on an empty workspace.
     'desktop': ({'window'}, {'screen', 'window'}),
 }
 VARIANTS = ('desktop', 'mobile')
+ANNOTATION_FIELDS = {'arrow': {'from', 'to'}, 'rectangle': {'rect'}, 'highlight': {'rect'}, 'text': {'at', 'text'}}
 
 
 class ConfigError(ValueError):
@@ -56,7 +58,7 @@ def crop_size(spec):
     return None
 
 
-def validate_crop(spec, where, anchors, tile, errors):
+def validate_crop(spec, where, anchors, errors):
     if not isinstance(spec, dict):
         errors.append(f'{where}: expected an object')
         return
@@ -91,11 +93,6 @@ def validate_crop(spec, where, anchors, tile, errors):
         size = tuple(spec['rect'][2:])
     elif 'center' in spec and isinstance(spec.get('size'), list) and len(spec['size']) == 2:
         size = tuple(spec['size'])
-    if tile:
-        if size is None:
-            errors.append(f'{where}: a tile crop needs a fixed 4:3 size (rect or center+size)')
-        elif isinstance(size[0], int) and isinstance(size[1], int) and size[0] * 3 != size[1] * 4:
-            errors.append(f'{where}: tile crop {size[0]}x{size[1]} is not 4:3')
     if size is not None and all(isinstance(v, int) for v in size) and (size[0] % 2 or size[1] % 2):
         errors.append(f'{where}: crop sides must be even so the 1x image is exactly half')
 
@@ -148,15 +145,30 @@ def validate_shots(cfg, media_ids=None):
         if kind == 'record':
             if not (isinstance(step['seconds'], (int, float)) and 2 <= step['seconds'] <= 30):
                 errors.append(f'{where}: seconds must be 2-30')
-            trim, playhead = step['trim'], step['playhead']
+            trim, playheads = step['trim'], step['playheads']
             if not (_pair(trim, f'{where}.trim', errors, integers=False) and 0 <= trim[0] < trim[1] <= step['seconds']):
                 errors.append(f'{where}: trim must be [start, end] seconds inside the recording')
-            elif not (isinstance(playhead, (int, float)) and trim[0] <= playhead <= trim[1]):
-                errors.append(f'{where}: playhead must lie inside the trim')
+            elif not (isinstance(playheads, list) and playheads
+                      and all(isinstance(p, (int, float)) and trim[0] <= p <= trim[1] for p in playheads)):
+                errors.append(f'{where}: playheads must be times inside the trim')
             clip = step['clip']
             if not (isinstance(clip, dict) and isinstance(clip.get('start'), (int, float)) and isinstance(clip.get('seconds'), (int, float))
                     and clip['seconds'] >= step['seconds'] + 4):
                 errors.append(f'{where}: clip needs start and seconds (at least the recording plus 4 s)')
+        if kind == 'edit':
+            for i, shape in enumerate(step.get('annotate', [])):
+                kind_name = shape.get('kind')
+                needed = ANNOTATION_FIELDS.get(kind_name) if isinstance(kind_name, str) else None
+                if needed is None:
+                    errors.append(f'{where}.annotate[{i}]: kind must be one of {sorted(ANNOTATION_FIELDS)}')
+                elif needed - set(shape):
+                    errors.append(f'{where}.annotate[{i}]: {shape["kind"]} needs {sorted(needed - set(shape))}')
+                if 'rect' in shape:
+                    _fraction_box(shape['rect'], f'{where}.annotate[{i}].rect', errors)
+                for key in ('from', 'to', 'at'):
+                    if key in shape and not (_pair(shape[key], f'{where}.annotate[{i}].{key}', errors, integers=False)
+                                             and all(0 <= v <= 1 for v in shape[key])):
+                        errors.append(f'{where}.annotate[{i}].{key}: must be fractions of the image')
         if kind == 'file-upload' and not re.fullmatch(r'[a-z0-9][a-z0-9.-]{0,60}\.(jpg|png)', str(step['filename'])):
             errors.append(f'{where}: filename must be a plain lowercase .jpg or .png name')
     names = set()
@@ -183,13 +195,11 @@ def validate_shots(cfg, media_ids=None):
             errors.append(f'{where}: missing the desktop crop')
         for variant in VARIANTS:
             if variant in shot:
-                validate_crop(shot[variant], f'{where}.{variant}', anchors, bool(shot.get('tile')), errors)
+                validate_crop(shot[variant], f'{where}.{variant}', anchors, errors)
         if shot.get('aspect') == '16:9':
             size = crop_size(shot.get('desktop', {})) if isinstance(shot.get('desktop'), dict) else None
             if size is not None and size[0] * 9 != size[1] * 16:
                 errors.append(f'{where}: desktop crop {size[0]}x{size[1]} is not 16:9')
-        if not isinstance(shot.get('tile'), bool):
-            errors.append(f'{where}: tile must be true or false')
     pace = cfg.get('pace', {})
     for key in ('step', 'hold'):
         if not (isinstance(pace.get(key), (int, float)) and 1.0 <= pace[key] <= 10):
