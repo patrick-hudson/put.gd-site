@@ -182,3 +182,126 @@ code { font: 400 0.88em/1 var(--mono); }
 .changelog-notes table { display: block; overflow-x: auto; border-collapse: collapse; }
 .changelog-notes th, .changelog-notes td { padding: 8px 12px; border: 1px solid var(--border); text-align: left; }
 .changelog-notes a { color: var(--link); }
+
+/* Seasons: season.js sets data-season on <html> from the visitor's own calendar. Everything below
+   layers over the tokens and adds decoration behind the page; none of it takes part in layout.
+   Keep this section last: the changelog's standalone draft cuts the file here. */
+html[data-season="november"] {
+  --season-logo: url("/_site/logo-november.svg");
+  --season-favicon: url("/_site/favicon-november.svg");
+  --accent: #f0a24a;
+  --accent-hover: #f7b766;
+  --link: #f0b878;
+  --selected: #3b2d21;
+  --season-headline: #f0a24a;
+  --season-rule: linear-gradient(90deg, #a9481c, #e8952f 50%, #a9481c);
+  --season-wash: radial-gradient(60% 100% at 88% 0, rgb(217 116 46 / 0.2), transparent 70%), radial-gradient(44% 80% at 6% 0, rgb(169 72 28 / 0.12), transparent 70%);
+  --season-scene: url("/_site/leaves-november.svg");
+  --season-art: url("/_site/art-november.svg");
+  --season-sprig: url("/_site/sprig-november.svg");
+}
+html[data-season="december"] {
+  --season-logo: url("/_site/logo-december.svg");
+  --season-favicon: url("/_site/favicon-december.svg");
+  --accent: #eec45f;
+  --accent-hover: #f4d27f;
+  --link: #93d3ad;
+  --selected: #24362d;
+  --season-headline: #8ed0a9;
+  --season-rule: linear-gradient(90deg, #2f8159, #d8344a 50%, #2f8159);
+  --season-wash: radial-gradient(60% 100% at 88% 0, rgb(47 129 89 / 0.2), transparent 70%), radial-gradient(44% 80% at 6% 0, rgb(216 52 74 / 0.09), transparent 70%);
+  --season-art: url("/_site/art-december.svg");
+  --season-sprig: url("/_site/sprig-december.svg");
+  --season-flake: rgb(238 243 247 / 0.35);
+}
+@media (prefers-color-scheme: light) {
+  html[data-season="november"] {
+    --accent: #a4500f;
+    --accent-hover: #87400a;
+    --link: #93470d;
+    --selected: #f5e6d6;
+    --season-headline: #a4500f;
+    --season-wash: radial-gradient(60% 100% at 88% 0, rgb(232 149 47 / 0.2), transparent 70%), radial-gradient(44% 80% at 6% 0, rgb(200 98 42 / 0.1), transparent 70%);
+  }
+  html[data-season="december"] {
+    --accent: #1f6e4a;
+    --accent-hover: #175739;
+    --link: #1b6543;
+    --selected: #e0eee6;
+    --season-headline: #1f6e4a;
+    --season-wash: radial-gradient(60% 100% at 88% 0, rgb(47 129 89 / 0.14), transparent 70%), radial-gradient(44% 80% at 6% 0, rgb(216 52 74 / 0.06), transparent 70%);
+    --season-flake: rgb(169 191 206 / 0.28);
+  }
+}
+
+html[data-season] .hero h1 span { color: var(--season-headline); }
+html[data-season] .top, html[data-season] .foot { border-image: var(--season-rule) 1; }
+html[data-season] .works ul { border-image: var(--season-rule) 1; }
+html[data-season="december"] .works ul { border-image: linear-gradient(90deg, #6b947b, #b77b80 50%, #6b947b) 1; }
+
+/* Behind everything: the page has no stacking context, so surfaces and text paint over these. */
+.season-scene, .season-snow, .season-art { pointer-events: none; user-select: none; }
+html[data-season] .hero { position: relative; }
+.season-scene {
+  position: absolute; top: 0; left: 0; right: 0; z-index: -1; height: 560px; overflow: hidden; contain: strict;
+  background: var(--season-scene, none) center top / 1200px auto no-repeat, var(--season-wash);
+}
+@media (max-width: 1199px) { .season-scene { background: var(--season-wash); } } /* No leaves cut off by the window edge. */
+.season-snow {
+  position: fixed; inset: 0; z-index: -1; overflow: hidden; contain: strict;
+  mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 70%, transparent);
+}
+.season-flake {
+  position: absolute; left: var(--x); top: var(--y); width: var(--size); height: var(--size);
+  border-radius: 50%; background: var(--season-flake);
+}
+@media (max-width: 640px) { .season-flake:nth-child(even) { display: none; } }
+
+/* At full width the headline is one line, leaving the hero's right column free below the pause button.
+   Narrower, the artwork shrinks and hangs from the lede's baseline, clear of the wrapped headline. */
+.season-art {
+  position: absolute; right: var(--gutter); top: 44px; width: 160px; height: 160px;
+  background: var(--season-art) center / contain no-repeat;
+}
+.season-light {
+  position: absolute; left: var(--x); top: var(--y); width: 7%; height: 7%; margin: -3.5% 0 0 -3.5%; border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 232 170 / 0.5), transparent); opacity: 0;
+}
+@media (max-width: 1079px) { .season-art { top: auto; width: 76px; height: 76px; transform: translateY(-100%); } }
+@media (max-width: 640px) { .season-art { display: none; } }
+
+/* Separator details sit on the existing hairlines, so nothing moves. */
+html[data-season] .foot { position: relative; }
+html[data-season] .foot::before {
+  content: ""; position: absolute; top: -13px; left: 50%; width: 96px; height: 24px; margin-left: -48px;
+  background: var(--season-sprig) center / contain no-repeat; pointer-events: none;
+}
+
+/* The logo's hover text is a native title; this is the same words for keyboard focus. */
+.season-greeting {
+  display: none; position: absolute; z-index: 1; top: 100%; left: var(--gutter); margin-top: 6px; padding: 6px 8px;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-raised);
+  color: var(--text); font: 400 12px/14px var(--sans); white-space: nowrap; pointer-events: none;
+}
+.brand:focus-visible + .season-greeting { display: block; }
+
+.season-control {
+  position: absolute; z-index: 1; top: 100%; right: var(--gutter); margin-top: 6px; height: 28px; padding: 0 8px;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg);
+  color: var(--text-secondary); font: 400 12px/1 var(--sans); cursor: pointer;
+}
+.season-control:hover { color: var(--text); }
+html[data-season] .top-row { position: relative; }
+
+@keyframes season-fall {
+  from { transform: translate3d(0, calc(-1 * var(--y) - 8px), 0); }
+  to { transform: translate3d(var(--drift), calc(100vh - var(--y) + 8px), 0); }
+}
+@keyframes season-twinkle { 50% { opacity: 0.65; } }
+@media (prefers-reduced-motion: no-preference) {
+  .season-flake { will-change: transform; animation: season-fall var(--fall) linear infinite; animation-delay: var(--phase); }
+  .season-light { animation: season-twinkle 4.8s ease-in-out infinite; }
+  .season-light:nth-child(2n) { animation-delay: -1.6s; }
+  .season-light:nth-child(3n) { animation-delay: -3.2s; }
+  html[data-season-motion="off"] .season-flake, html[data-season-motion="off"] .season-light { animation-play-state: paused; }
+}
