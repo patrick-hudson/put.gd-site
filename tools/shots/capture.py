@@ -422,7 +422,7 @@ def restore(host, state, final_relogin, keep_package=False):
                 save_state(host, state)
             else:
                 relogin(host, 'unload the removed Shell extension')
-        except Stop as error:
+        except (Stop, HostError) as error:
             problems.append(str(error))
         host.run(f'rm -rf -- {shlex.quote(temporary)}')
         host.run_dir = None
