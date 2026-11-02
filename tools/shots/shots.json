@@ -12,8 +12,8 @@
     "webp": {"quality": 82, "method": 6}
   },
   "budgets": {
-    "history-dark@2x.avif": 256000,
-    "history-light@2x.avif": 256000
+    "history-dark@2x.avif": 512000,
+    "history-light@2x.avif": 512000
   },
   "story": [
     {"id": "aurora", "kind": "region-capture", "media": "aurora", "selection": [0.16, 0.1, 0.68, 0.42]},
@@ -26,27 +26,27 @@
        {"kind": "text", "at": [0.58, 0.09], "text": "Both hemispheres", "color": "#FF5A36", "fontPixels": 56}
      ]},
     {"id": "record", "kind": "record", "media": "sintel", "clip": {"start": 20, "seconds": 20},
-     "area": [0.12, 0.14, 0.76, 0.72], "seconds": 6, "trim": [0.8, 5.2], "playhead": 4.0},
+     "area": [0.12, 0.14, 0.76, 0.72], "seconds": 6, "trim": [0.8, 5.2], "playheads": [1.2, 1.8, 2.4, 3.0, 3.6, 4.2, 4.8]},
     {"id": "upload", "kind": "file-upload", "media": "blue-marble", "filename": "blue-marble.jpg"},
     {"id": "capture", "kind": "region-capture", "media": "earthrise", "selection": [0.381, 0.37, 0.378, 0.231], "hold": true},
-    {"id": "history", "kind": "history", "window": [1200, 760]},
+    {"id": "history", "kind": "history", "window": [1320, 880]},
     {"id": "storage", "kind": "destinations"},
     {"id": "settings", "kind": "settings", "row": 2},
-    {"id": "desktop", "kind": "desktop", "window": [1200, 760]}
+    {"id": "desktop", "kind": "desktop", "window": [1320, 880]}
   ],
   "shots": [
     {"name": "history", "step": "history", "themes": ["dark", "light"],
-     "desktop": {"anchor": "window", "pad": 24}},
+     "desktop": {"anchor": "window", "pad": 48}},
     {"name": "capture", "step": "capture", "themes": ["dark", "light"],
-     "desktop": {"anchor": "viewer", "pad": 24}},
+     "desktop": {"anchor": "viewer", "pad": 48}},
     {"name": "edit", "step": "edit", "themes": ["dark", "light"],
-     "desktop": {"anchor": "window", "pad": 24}},
+     "desktop": {"anchor": "window", "pad": 48}},
     {"name": "record", "step": "record", "themes": ["dark", "light"],
-     "desktop": {"anchor": "window", "pad": 24}},
+     "desktop": {"anchor": "window", "pad": 48}},
     {"name": "storage", "step": "storage", "themes": ["dark", "light"],
-     "desktop": {"anchor": "window", "pad": 24}},
+     "desktop": {"anchor": "window", "pad": 48}},
     {"name": "settings", "step": "settings", "themes": ["dark", "light"],
-     "desktop": {"anchor": "window", "pad": 24}},
+     "desktop": {"anchor": "window", "pad": 48}},
     {"name": "desktop", "step": "desktop", "aspect": "16:9", "themes": ["dark", "light"],
      "desktop": {"anchor": "screen", "pad": 0}}
   ]

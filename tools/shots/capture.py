@@ -26,6 +26,8 @@ SITE = HERE.parent.parent
 sys.path.insert(0, str(HERE))
 
 import config  # noqa: E402
+import edid  # noqa: E402
+import hostinput  # noqa: E402
 import imaging  # noqa: E402
 import manifest  # noqa: E402
 import wall  # noqa: E402
@@ -250,6 +252,39 @@ def relogin(host, why):
     time.sleep(8)
 
 
+def switch_display(host, why, kernel_connector, edid_file, monitors):
+    """Log in afresh on another display mode. edid_file: a path on the host, or None for the
+    panel the kernel boots with. monitors: the text of GNOME's saved layout, or None for no file.
+    The VNC server stops first: if it sees the output vanish it saves its screen-sharing
+    permission with no screens, and re-approving that needs a click on this screen. For the same
+    reason the connector only ever goes off and on; writing `detect` drops the forced-on state,
+    and with nothing plugged in the output then disconnects."""
+    apps = host.agent('foreign-apps')['apps']
+    if apps:
+        listing = '\n'.join(f'  {scope}: {", ".join(names)}' for scope, names in apps.items())
+        raise Stop(f'{host.name} needs a fresh GNOME login ({why}), but these apps are open in its session:\n{listing}\n'
+                   'Close them yourself (nothing here closes your windows), then rerun.')
+    log(f'{host.name}: logging in afresh ({why}); the wall tile reconnects in ~30 s')
+    old = host.run('pgrep -u "$(id -u)" -x gnome-shell || true').split()
+    host.run('systemctl --user stop putgd-gnome-vnc.service')
+    host.agent('logout', check=False)
+    wait_for(lambda: not set(old) & set(host.run('pgrep -u "$(id -u)" -x gnome-shell || true').split()), 60, 'the old session to end')
+    if monitors is None:
+        host.run('rm -f ~/.config/monitors.xml')
+    else:
+        host.run(f'cat > ~/.config/monitors.xml <<\'XML\'\n{monitors}XML')
+    override = f'/sys/kernel/debug/dri/0/{kernel_connector}/edid_override'
+    status = f'/sys/class/drm/card0-{kernel_connector}/status'
+    source = f'cat {shlex.quote(edid_file)}' if edid_file else 'printf reset'  # exactly "reset": no newline
+    host.run('sudo -n sh -c ' + shlex.quote(f'{source} > {override}; echo off > {status}; sleep 2; echo on > {status}'))
+    host.run('sudo -n systemctl restart gdm', timeout=60)
+    wait_for(lambda: bool(set(host.run('pgrep -u "$(id -u)" -x gnome-shell || true').split()) - set(old)), 90,
+             'the new GNOME session')
+    wait_for(lambda: host.run('systemctl --user is-active putgd-gnome-vnc.service || true').strip() == 'active', 90,
+             'the session VNC server')
+    time.sleep(8)
+
+
 def extension_ready(host):
     info = host.agent('ext-info', EXTENSION, check=False).get('info', {})
     return info.get('State') in ('ACTIVE', 'ENABLED') and info.get('Path', '').startswith('/usr/share/')
@@ -353,6 +388,8 @@ def restore(host, state, final_relogin, keep_package=False):
         host.cli('ui.quit', check=False, timeout=30)
         time.sleep(2)
     host.agent('killall', check=False)
+    if state.pop('inputAgent', None):
+        hostinput.stop_agent(host)
     if state.get('keyringReference'):
         if host.agent('keyring-delete', state['keyringReference'], check=False).get('ok'):
             state.pop('keyringReference')
@@ -375,10 +412,16 @@ def restore(host, state, final_relogin, keep_package=False):
         state.pop('installedPackage')
         removed = True
     save_state(host, state)
-    if removed and final_relogin:
+    if state.get('hidpi') or (removed and final_relogin):
         temporary = ensure_agent(host)
         try:
-            relogin(host, 'unload the removed Shell extension')
+            if state.get('hidpi'):
+                saved = state['hidpi'].get('monitors')
+                switch_display(host, 'back to the normal display', host.cfg['hidpi']['kernelConnector'], None, saved)
+                state.pop('hidpi')
+                save_state(host, state)
+            else:
+                relogin(host, 'unload the removed Shell extension')
         except Stop as error:
             problems.append(str(error))
         host.run(f'rm -rf -- {shlex.quote(temporary)}')
@@ -517,8 +560,20 @@ def main():
             rpm = f'{host.run_dir}/{package.name}'
             host.put(package, rpm)
             install_package(host, state, rpm)
-            if not extension_ready(host):
-                relogin(host, 'load the put.gd Shell extension from the package')
+            hidpi = cfg.get('hidpi')
+            if hidpi or not extension_ready(host):
+                if hidpi:
+                    saved = host.run('cat ~/.config/monitors.xml 2>/dev/null || true')
+                    state['hidpi'] = {'monitors': saved or None}
+                    save_state(host, state)
+                    edid_file = f'{host.run_dir}/putgd-4k.bin'
+                    local = run_dir / 'putgd-4k.bin'
+                    local.write_bytes(edid.build())
+                    host.put(local, edid_file)
+                    switch_display(host, '4K at 200%, and the put.gd Shell extension', hidpi['kernelConnector'], edid_file,
+                                   edid.monitors_xml(hidpi['monitorConnector']))
+                else:
+                    relogin(host, 'load the put.gd Shell extension from the package')
                 if not extension_ready(host):
                     raise Stop(f'the put.gd Shell extension is not active after a fresh login: '
                                f'{host.agent("ext-info", EXTENSION, check=False)}')
@@ -543,22 +598,29 @@ def main():
                        'backdrop', shots_cfg['themes']['dark']['backdrop'].lstrip('#'))
             if not host.agent('wait-line', 'backdrop', 'covered', 20)['ok']:
                 raise Stop('the backdrop window did not go full screen')
-            client.pointer(client.width - 4, client.height - 4)
+            pointer = client
+            if hidpi:
+                state['inputAgent'] = True
+                save_state(host, state)
+                pointer = hostinput.HostInput(host, args.putgd_repo / 'tools/lab/host_input.py', client.width, client.height)
+            pointer.pointer(client.width - 4, client.height - 4)
             time.sleep(1.5)
             first = imaging.from_bgrx(*client.frame())
             if imaging.color_fraction(first, imaging.parse_color(shots_cfg['themes']['dark']['backdrop'])) < 0.98:
-                client.key('esc')  # a fresh session starts in the overview
+                pointer.key('esc')  # a fresh session starts in the overview
                 time.sleep(2)
                 first = imaging.from_bgrx(*client.frame())
                 if imaging.color_fraction(first, imaging.parse_color(shots_cfg['themes']['dark']['backdrop'])) < 0.98:
                     raise Stop('the backdrop does not cover the screen; not capturing anything')
             log('backdrop covers the screen')
             configure_app(host, reference)
-            story = Story(host, client, shots_cfg, remote_media, run_dir / 'frames', log)
+            story = Story(host, client, pointer, shots_cfg, remote_media, run_dir / 'frames', log)
             try:
                 story.run(set(args.steps.split(',')) if args.steps else None)
             finally:
                 story.leave_workspace()
+                if pointer is not client:
+                    pointer.close()
             run = {'screen': story.screen, 'anchors': story.anchors, 'frames': story.frames, 'release': tag,
                    'host': args.host, 'identity': {k: ident[k] for k in ('commit', 'desktop', 'version')}}
             (run_dir / 'run.json').write_text(json.dumps(run, indent=1))

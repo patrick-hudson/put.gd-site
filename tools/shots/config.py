@@ -11,7 +11,7 @@ STEP_KINDS = {
     # kind: (required params, anchors the step records for its shot, whether it can hold a shot)
     'region-capture': ({'media', 'selection'}, {'viewer', 'selection'}),
     'edit': ({'media', 'redact'}, {'window'}),
-    'record': ({'media', 'clip', 'area', 'seconds', 'trim', 'playhead'}, {'window'}),
+    'record': ({'media', 'clip', 'area', 'seconds', 'trim', 'playheads'}, {'window'}),
     'file-upload': ({'media', 'filename'}, set()),
     'history': ({'window'}, {'window'}),
     'destinations': (set(), {'window'}),
@@ -144,11 +144,12 @@ def validate_shots(cfg, media_ids=None):
         if kind == 'record':
             if not (isinstance(step['seconds'], (int, float)) and 2 <= step['seconds'] <= 30):
                 errors.append(f'{where}: seconds must be 2-30')
-            trim, playhead = step['trim'], step['playhead']
+            trim, playheads = step['trim'], step['playheads']
             if not (_pair(trim, f'{where}.trim', errors, integers=False) and 0 <= trim[0] < trim[1] <= step['seconds']):
                 errors.append(f'{where}: trim must be [start, end] seconds inside the recording')
-            elif not (isinstance(playhead, (int, float)) and trim[0] <= playhead <= trim[1]):
-                errors.append(f'{where}: playhead must lie inside the trim')
+            elif not (isinstance(playheads, list) and playheads
+                      and all(isinstance(p, (int, float)) and trim[0] <= p <= trim[1] for p in playheads)):
+                errors.append(f'{where}: playheads must be times inside the trim')
             clip = step['clip']
             if not (isinstance(clip, dict) and isinstance(clip.get('start'), (int, float)) and isinstance(clip.get('seconds'), (int, float))
                     and clip['seconds'] >= step['seconds'] + 4):

@@ -133,6 +133,25 @@ class Config(unittest.TestCase):
         self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': 'redact'})))
         self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': 'arrow', 'from': [2, 0], 'to': [0, 0]})))
 
+    def test_edid_is_4k_hdmi_with_the_panels_identity(self):
+        import edid
+        data = edid.build()
+        self.assertEqual(len(data), 256)
+        self.assertEqual((sum(data[:128]) & 255, sum(data[128:]) & 255), (0, 0))
+        self.assertEqual(data[126], 1)
+        self.assertEqual((data[56] | (data[58] & 0xF0) << 4, data[59] | (data[61] & 0xF0) << 4), (3840, 2160))
+        self.assertEqual(int.from_bytes(data[54:56], 'little') * 10, 297_000)  # kHz
+        self.assertIn(b'Linux FHD', data[:128])
+        self.assertIn(b'Linux #0', data[:128])
+        self.assertIn(bytes([0x03, 0x0C, 0x00]), data[128:])  # the HDMI block i915 needs above 165 MHz
+        self.assertIn('<serial>Linux #0</serial>', edid.monitors_xml('HDMI-1'))
+
+    def test_input_axis_covers_the_whole_screen(self):
+        import hostinput
+        self.assertEqual(hostinput.axis(0, 3840), 0)
+        self.assertEqual(hostinput.axis(3839, 3840), 32767)
+        self.assertEqual(hostinput.axis(5000, 3840), 32767)
+
     def test_media_needs_pins_and_licenses(self):
         media = copy.deepcopy(self.media)
         media['assets'][0]['sha256'] = 'abc'

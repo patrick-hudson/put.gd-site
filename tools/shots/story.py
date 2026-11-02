@@ -1,6 +1,6 @@
 """The demo story, driven on a physical desktop's real session. put.gd is
 driven through putgd-cli; drags, clicks and keys are real input sent over
-the host's loopback VNC; every frame is read back from that same VNC stream.
+the host's loopback VNC (at 200%, the lab's input agent); every frame is read back from that VNC stream.
 
 Each step that feeds a shot records anchor rectangles (screen pixels) and one
 frame per theme. Behind the windows is our own full-screen backdrop: it turns
@@ -45,14 +45,15 @@ def find_id(result, *keys):
 
 
 class Story:
-    def __init__(self, host, rfb, cfg, media, frames_dir, log):
-        self.host, self.rfb, self.cfg, self.media = host, rfb, cfg, media
+    def __init__(self, host, rfb, input, cfg, media, frames_dir, log):
+        self.host, self.rfb, self.input, self.cfg, self.media = host, rfb, input, cfg, media
         self.frames_dir, self.log = frames_dir, log
         self.pace = cfg['pace']
         self.themes = cfg['themes']
         self.anchors, self.frames, self.uploads = {}, {}, []
         self.theme = None
         self.screen = [rfb.width, rfb.height]
+        self.scale = 2 if host.cfg.get('hidpi') else 1  # frames and input are in device pixels
         self.workspace_moved = False
 
     # -- pacing, frames, input -------------------------------------------------
@@ -70,7 +71,7 @@ class Story:
 
     def park(self, x=None, y=None):
         """Pointer onto the backdrop (where it is invisible) or a given point."""
-        self.rfb.pointer(self.screen[0] - 4 if x is None else x, self.screen[1] - 4 if y is None else y)
+        self.input.pointer(self.screen[0] - 4 if x is None else x, self.screen[1] - 4 if y is None else y)
         time.sleep(0.3)
 
     def locate(self, expect=None, tolerance=40, settle=8.0, floor=0.15):
@@ -114,21 +115,21 @@ class Story:
         return frame
 
     def drag(self, p0, p1, hold=False):
-        rfb = self.rfb
-        rfb.pointer(*p0)
+        pointer = self.input.pointer
+        pointer(*p0)
         time.sleep(0.4)
-        rfb.pointer(*p0, down=True)
+        pointer(*p0, down=True)
         time.sleep(0.3)
         steps = 30
         for i in range(1, steps + 1):
-            rfb.pointer(p0[0] + (p1[0] - p0[0]) * i / steps, p0[1] + (p1[1] - p0[1]) * i / steps)
+            pointer(p0[0] + (p1[0] - p0[0]) * i / steps, p0[1] + (p1[1] - p0[1]) * i / steps)
             time.sleep(0.04)
         time.sleep(0.5)
         if not hold:
-            rfb.pointer(*p1, down=False)
+            pointer(*p1, down=False)
 
     def release(self, point):
-        self.rfb.pointer(*point, down=False)
+        self.input.pointer(*point, down=False)
 
     # -- put.gd ------------------------------------------------------------------
     def cli(self, method, params=None, retry=()):
@@ -189,7 +190,7 @@ class Story:
     # -- helper apps -------------------------------------------------------------
     def focus_backdrop(self):
         """A real click on the backdrop gives it focus and a fresh input serial."""
-        self.rfb.click(40, self.screen[1] - 40)
+        self.input.click(40 * self.scale, self.screen[1] - 40 * self.scale)
         time.sleep(0.6)
 
     def open_app(self, name, argv, expect_min=(400, 300), attempts=3):
@@ -233,7 +234,7 @@ class Story:
                 if 'frozen' in str(error) or time.monotonic() > deadline:
                     raise StoryError(f'{name}: {error}') from error
                 continue
-            if box[2] >= expect_min[0] and box[3] >= expect_min[1]:
+            if box[2] >= expect_min[0] * self.scale and box[3] >= expect_min[1] * self.scale:
                 return box
             if time.monotonic() > deadline:
                 raise StoryError(f'{name} window is only {box[2]}x{box[3]}')
@@ -269,7 +270,7 @@ class Story:
                 if last:
                     self.release(p1)
                 else:
-                    self.rfb.key('esc')
+                    self.input.key('esc')
                     time.sleep(0.3)
                     self.release(p1)
                     time.sleep(1.5)
@@ -312,7 +313,7 @@ class Story:
         clip = f"{self.host.run_dir}/media/{step['id']}-clip.webm"
         start, seconds = step['clip']['start'], step['clip']['seconds']
         self.host.run(f"ffmpeg -hide_banner -loglevel error -y -ss {start} -t {seconds} -i "
-                      f"{self.media[step['media']]} -an -vf scale=1280:-2 -c:v libvpx-vp9 -deadline realtime -cpu-used 8 -b:v 4M "
+                      f"{self.media[step['media']]} -an -vf scale={1920 if self.scale > 1 else 1280}:-2 -c:v libvpx-vp9 -deadline realtime -cpu-used 8 -b:v 8M "
                       f"-row-mt 1 {clip}", timeout=300)
         player = self.open_app('player', self.host.cfg['player'] + [clip])
         self.backdrop(self.themes[self.theme]['backdrop'].lstrip('#'))
@@ -324,7 +325,8 @@ class Story:
         encoders = (caps.get('gstreamer') or {}).get('usableH264Encoders')
         if encoders == []:
             fmt = 'webm'
-        rid = find_id(self.cli('recording.prepare', {'target': {'kind': 'region', 'rect': area}, 'format': fmt}))
+        rect = [round(v / self.scale) for v in area]  # put.gd takes desktop coordinates
+        rid = find_id(self.cli('recording.prepare', {'target': {'kind': 'region', 'rect': rect}, 'format': fmt}))
         deadline = time.monotonic() + 30
         while self.cli('recording.inspect', {'id': rid}).get('state') != 'ready':
             if time.monotonic() > deadline:
@@ -337,13 +339,24 @@ class Story:
         time.sleep(2.0)
         us = 1_000_000
         for action in ({'action': 'seek', 'time': round(step['trim'][0] * us)}, {'action': 'setIn'},
-                       {'action': 'seek', 'time': round(step['trim'][1] * us)}, {'action': 'setOut'},
-                       {'action': 'seek', 'time': round(step['playhead'] * us)}):
+                       {'action': 'seek', 'time': round(step['trim'][1] * us)}, {'action': 'setOut'}):
             self.cli('recording.review', {'id': rid, **action})
             time.sleep(0.6)
         self.step_pause()
         self.park()
         window = self.locate()
+        # Recording start times drift, so no fixed moment is safe: the demo clip has fades and
+        # dissolves. Show the frame with the most contrast.
+        x, y, w, h = window
+        video_box = (x + w // 4, y + h // 6, x + 3 * w // 4, y + h // 2)
+        def contrast(playhead):
+            self.cli('recording.review', {'id': rid, 'action': 'seek', 'time': round(playhead * us)})
+            time.sleep(1.0)
+            return max(ImageStat.Stat(self.grab().crop(video_box)).stddev)
+        best = max(step['playheads'], key=contrast)
+        self.cli('recording.review', {'id': rid, 'action': 'seek', 'time': round(best * us)})
+        self.log(f'  showing the recording at {best} s')
+        time.sleep(1.0)
         self.anchors[step['id']] = {'window': window}
         for theme in ('dark', 'light'):
             self.set_theme(theme)
@@ -376,19 +389,21 @@ class Story:
         time.sleep(2.5)
         self.park()
         box = self.locate(settle=10.0)
-        if size and (abs(box[2] - size[0]) > 2 or abs(box[3] - size[1]) > 2):
+        scale = self.scale
+        size = [v * scale for v in size] if size else size
+        if size and (abs(box[2] - size[0]) > 2 * scale or abs(box[3] - size[1]) > 2 * scale):
             # Resize by the bottom-right corner, then centre it below the top bar, by real drags.
-            corner = (box[0] + box[2] - 3, box[1] + box[3] - 3)
-            self.drag(corner, (box[0] + size[0] - 3, box[1] + size[1] - 3))
+            corner = (box[0] + box[2] - 3 * scale, box[1] + box[3] - 3 * scale)
+            self.drag(corner, (box[0] + size[0] - 3 * scale, box[1] + size[1] - 3 * scale))
             time.sleep(1.0)
             self.park()
-            box = self.locate(expect=size, tolerance=4)
-            target = ((self.screen[0] - box[2]) // 2, 32 + (self.screen[1] - 32 - box[3]) // 2)
-            grip = (box[0] + 240, box[1] + 26)
+            box = self.locate(expect=size, tolerance=4 * scale)
+            target = ((self.screen[0] - box[2]) // 2, 32 * scale + (self.screen[1] - 32 * scale - box[3]) // 2)
+            grip = (box[0] + 240 * scale, box[1] + 26 * scale)
             self.drag(grip, (grip[0] + target[0] - box[0], grip[1] + target[1] - box[1]))
             time.sleep(1.0)
             self.park()
-            box = self.locate(expect=size, tolerance=4)
+            box = self.locate(expect=size, tolerance=4 * scale)
         return box
 
     def history(self, step):
@@ -421,7 +436,8 @@ class Story:
         self.park()
         window = self.locate()
         if row:
-            self.rfb.click(window[0] + SETTINGS_RAIL[0], window[1] + SETTINGS_RAIL[1] + row * SETTINGS_RAIL[2])
+            x, y, pitch = (v * self.scale for v in SETTINGS_RAIL)
+            self.input.click(window[0] + x, window[1] + y + row * pitch)
             time.sleep(1.0)
             self.park()
         self.anchors[step['id']] = {'window': window}
@@ -436,10 +452,10 @@ class Story:
         The backdrop and everything else stay on the current workspace."""
         self.cli('ui.show', {'view': 'history'})
         time.sleep(1.5)
-        box = self.locate(expect=step['window'], tolerance=4)  # leaves the backdrop magenta
-        self.rfb.click(box[0] + 240, box[1] + 26)  # focus the window by its header
+        box = self.locate(expect=[v * self.scale for v in step['window']], tolerance=4 * self.scale)  # leaves the backdrop magenta
+        self.input.click(box[0] + 240 * self.scale, box[1] + 26 * self.scale)  # focus the window by its header
         time.sleep(0.5)
-        self.rfb.key('super', 'shift', 'end')  # move-to-workspace-last; the view follows
+        self.input.key('super', 'shift', 'end')  # move-to-workspace-last; the view follows
         self.workspace_moved = True
         time.sleep(2.5)
         if imaging.color_fraction(self.grab(), imaging.LOCATE_COLOR) > 0.0005:
@@ -458,7 +474,7 @@ class Story:
 
     def leave_workspace(self):
         if self.workspace_moved:
-            self.rfb.key('super', 'home')  # switch-to-workspace-1, where the session started
+            self.input.key('super', 'home')  # switch-to-workspace-1, where the session started
             self.workspace_moved = False
             time.sleep(1.5)
 
