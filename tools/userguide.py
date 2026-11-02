@@ -34,6 +34,7 @@ SEARCH = ('\n    <label class="guide-search md-icon" for="__search" aria-label="
           '{% include ".icons/material/magnify.svg" %}</label>\n    {% include "partials/search.html" %}')
 URL_ATTR = re.compile(r'\b(href|src|srcset|data-md-component-src)="([^"]*)"')
 JS_BASE = re.compile(r'"base":\s*"([^"]*)"')
+JS_SEARCH = re.compile(r'"search":\s*"([^"]*)"')
 STAGE = GUIDE / ".site"  # Zensical insists on building inside its project folder
 
 
@@ -72,6 +73,9 @@ def absolute(html: str, page: str) -> str:
     html = URL_ATTR.sub(attr, html)
     # Zensical's scripts fetch search.json and build result links from this base; it must end in /.
     html = JS_BASE.sub(lambda m: '"base":"' + urljoin(page, m[1].rstrip("/") + "/") + '"', html)
+    # ...and start the search worker from this URL. Left page-relative, it 404s at the bare
+    # /userguide key and the search dialog reports that search is unavailable.
+    html = JS_SEARCH.sub(lambda m: '"search":"' + _absolute(m[1], page) + '"', html)
     return html
 
 

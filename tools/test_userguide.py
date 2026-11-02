@@ -58,7 +58,7 @@ class Links(unittest.TestCase):
                 '<link href="assets/a.css"> <script src="./assets/b.js"></script> '
                 '<img src="img/a.webp" srcset="img/a.webp 1x, ./img/a@2x.webp 2x"> '
                 '<a href="https://app.put.gd/">home</a> <img src="/_site/logo.svg"> '
-                '<script>{"base":".","features":[]}</script>')
+                '<script>{"base":".","features":[],"search":"./assets/javascripts/workers/search.1.min.js"}</script>')
         out = guide.absolute(html, "/userguide/capture.html")
         self.assertIn('href="/userguide/capture.html"', out)
         self.assertIn('href="/userguide/edit.html#tools"', out)
@@ -69,6 +69,7 @@ class Links(unittest.TestCase):
         self.assertIn('href="https://app.put.gd/"', out)
         self.assertIn('src="/_site/logo.svg"', out)
         self.assertIn('"base":"/userguide/"', out)
+        self.assertIn('"search":"/userguide/assets/javascripts/workers/search.1.min.js"', out)
 
     def test_base_from_a_nested_page(self):
         self.assertIn('"base":"/userguide/"', guide.absolute('{"base":".."}', "/userguide/sub/page.html"))
@@ -143,6 +144,7 @@ class Build(unittest.TestCase):
         self.assertIn('href="/_site/tokens.css"', html)
         self.assertNotIn("fonts.googleapis.com", html)
         self.assertIn('"base":"/userguide/"', html)
+        self.assertIn('"search":"/userguide/assets/javascripts/workers/search.', html)
         self.assertTrue((self.out / "search.json").is_file())
 
     def test_no_relative_urls_remain(self):
