@@ -20,6 +20,7 @@ STEP_KINDS = {
     'desktop': ({'window'}, {'screen', 'window'}),
 }
 VARIANTS = ('desktop', 'mobile')
+ANNOTATION_FIELDS = {'arrow': {'from', 'to'}, 'rectangle': {'rect'}, 'highlight': {'rect'}, 'text': {'at', 'text'}}
 
 
 class ConfigError(ValueError):
@@ -156,8 +157,11 @@ def validate_shots(cfg, media_ids=None):
                 errors.append(f'{where}: clip needs start and seconds (at least the recording plus 4 s)')
         if kind == 'edit':
             for i, shape in enumerate(step.get('annotate', [])):
-                if shape.get('kind') not in ('arrow', 'rectangle', 'text', 'highlight'):
-                    errors.append(f'{where}.annotate[{i}]: kind must be arrow, rectangle, text or highlight')
+                needed = ANNOTATION_FIELDS.get(shape.get('kind'))
+                if needed is None:
+                    errors.append(f'{where}.annotate[{i}]: kind must be one of {sorted(ANNOTATION_FIELDS)}')
+                elif needed - set(shape):
+                    errors.append(f'{where}.annotate[{i}]: {shape["kind"]} needs {sorted(needed - set(shape))}')
                 if 'rect' in shape:
                     _fraction_box(shape['rect'], f'{where}.annotate[{i}].rect', errors)
                 for key in ('from', 'to', 'at'):

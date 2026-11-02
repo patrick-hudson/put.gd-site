@@ -132,6 +132,9 @@ class Config(unittest.TestCase):
         edit = lambda c: next(s for s in c['story'] if s['kind'] == 'edit')
         self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': 'redact'})))
         self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': 'arrow', 'from': [2, 0], 'to': [0, 0]})))
+        for shape in ({'kind': 'arrow', 'from': [0, 0]}, {'kind': 'rectangle'}, {'kind': 'highlight'},
+                      {'kind': 'text', 'at': [0, 0]}, {'kind': 'text', 'text': 'x'}):
+            self.assertTrue(any('needs' in e for e in self.errors_after(lambda c: edit(c)['annotate'].append(shape))), shape)
 
     def test_edid_is_4k_hdmi_with_the_panels_identity(self):
         import edid
