@@ -44,6 +44,7 @@
     let control = null;
     let current = null;
     let timer = null;
+    let artRequest = null;
     let paused = false;
     try { paused = window.localStorage.getItem(PAUSED_KEY) === "paused"; } catch { /* Private mode. */ }
 
@@ -60,8 +61,8 @@
     };
 
     const updateMotion = () => {
-      const running = current === "december" && !motion.matches && !paused && !document.hidden;
-      if (current === "december") html.setAttribute("data-season-motion", running ? "on" : "off");
+      const running = Boolean(current) && !motion.matches && !paused && !document.hidden;
+      if (current) html.setAttribute("data-season-motion", running ? "on" : "off");
       else html.removeAttribute("data-season-motion");
       if (!control) return;
       control.hidden = motion.matches;
@@ -83,6 +84,27 @@
       parent.append(dot);
     });
 
+    // Fetch only our CSS-stamped, same-origin artwork. The SVG is the single source of
+    // truth; inline groups inherit the page's pause state (background SVGs cannot).
+    const loadArt = async (art) => {
+      const url = cssUrl("--season-art");
+      if (!url) return;
+      const request = new window.AbortController();
+      artRequest = request;
+      try {
+        const response = await window.fetch(url, { signal: request.signal, mode: "same-origin" });
+        if (!response.ok) return;
+        const source = await response.text();
+        if (request.signal.aborted || artRequest !== request) return;
+        const svg = new window.DOMParser().parseFromString(source, "image/svg+xml").documentElement;
+        if (svg.localName !== "svg" || svg.querySelector("parsererror")) return;
+        svg.setAttribute("aria-hidden", "true");
+        svg.setAttribute("focusable", "false");
+        art.append(document.importNode(svg, true));
+        art.classList.add("season-art-inline");
+      } catch { /* Keep the static CSS artwork if loading fails or the season changes. */ }
+    };
+
     // Runs once the body exists. Everything added is decoration, except the pause button.
     const decorate = () => {
       if (!document.body || !current) return;
@@ -91,23 +113,26 @@
       document.body.append(decoration("season-scene"));
       const lede = document.querySelector(".hero .lede");
       const art = lede && decoration("season-art");
-      if (art) lede.after(art);
-      if (current !== "december") return;
-      const snow = decoration("season-snow");
-      document.body.append(snow);
-      dots(snow, "season-flake", FLAKES, (style, [x, y, size, seconds, drift]) => {
-        style.setProperty("--x", `${x}%`);
-        style.setProperty("--y", `${y}vh`);
-        style.setProperty("--size", `${size}px`);
-        style.setProperty("--fall", `${seconds}s`);
-        style.setProperty("--drift", `${drift}px`);
-        style.setProperty("--phase", `${(-seconds * y) / 100}s`); // Starts where the static fallback rests.
-      });
-      if (art) {
-        dots(art, "season-light", LIGHTS, (style, [x, y]) => {
+      if (art) { lede.after(art); loadArt(art); }
+      if (current === "december") {
+        const snow = decoration("season-snow");
+        document.body.append(snow);
+        dots(snow, "season-flake", FLAKES, (style, [x, y, size, seconds, drift]) => {
           style.setProperty("--x", `${x}%`);
-          style.setProperty("--y", `${y}%`);
+          style.setProperty("--y", `${y}vh`);
+          style.setProperty("--size", `${size}px`);
+          style.setProperty("--fall", `${seconds}s`);
+          style.setProperty("--drift", `${drift}px`);
+          style.setProperty("--depth", size === 2 ? "0.55" : size === 3 ? "0.8" : "1");
+          style.setProperty("--sway", `${seconds / 3}s`);
+          style.setProperty("--phase", `${(-seconds * y) / 100}s`); // Starts where the static fallback rests.
         });
+        if (art) {
+          dots(art, "season-light", LIGHTS, (style, [x, y]) => {
+            style.setProperty("--x", `${x}%`);
+            style.setProperty("--y", `${y}%`);
+          });
+        }
       }
       const row = document.querySelector(".top-row");
       if (!row) return;
@@ -142,6 +167,8 @@
     };
 
     const clear = () => {
+      if (artRequest) artRequest.abort();
+      artRequest = null;
       decorations.forEach((el) => el.remove());
       decorations = [];
       if (control) control.remove();

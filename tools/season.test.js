@@ -18,6 +18,7 @@ class Element {
     this.children = [];
     this.listeners = {};
     this.style = { props: {}, setProperty: (k, v) => { this.style.props[k] = v; } };
+    this.classList = { add: (name) => { this.className += ` ${name}`; } };
     this.hidden = false;
     this.textContent = "";
   }
@@ -35,7 +36,7 @@ class Element {
 const LOGO = "/_site/logo.svg?v=abc";
 
 // A page in the state season.js sees from <head>, or fully parsed.
-function page({ start, host = "app.put.gd", search = "", reduce = false, loading = false, storage }) {
+function page({ start, host = "app.put.gd", search = "", reduce = false, loading = false, storage, fetch }) {
   const clock = { now: new Date(start) };
   const html = new Element("HTML");
   const body = new Element("BODY");
@@ -58,6 +59,7 @@ function page({ start, host = "app.put.gd", search = "", reduce = false, loading
     body: loading ? null : body,
     readyState: loading ? "loading" : "complete",
     hidden: false,
+    importNode: (el) => el,
     createElement: (tag) => new Element(tag.toUpperCase()),
     querySelector: (s) => select[s] || null,
     querySelectorAll: (s) => ({ ".brand img": [logo], 'link[rel="icon"]': [icon] })[s] || [],
@@ -69,6 +71,16 @@ function page({ start, host = "app.put.gd", search = "", reduce = false, loading
   const window = new Element("WINDOW");
   Object.assign(window, {
     document,
+    AbortController,
+    DOMParser: class {
+      parseFromString() {
+        const svg = new Element("SVG");
+        svg.localName = "svg";
+        svg.querySelector = () => null;
+        return { documentElement: svg };
+      }
+    },
+    fetch: fetch || (async () => ({ ok: false })),
     location: { hostname: host, search },
     matchMedia: () => motion,
     localStorage: { getItem: (k) => (saved.get ? saved.get(k) ?? null : null),
@@ -219,7 +231,7 @@ test("a tab left open runs through a whole year's transitions and leaves nothing
   assert.match(p.logo.getAttribute("src"), /logo-november\.svg/);
   assert.match(p.icon.getAttribute("href"), /favicon-november\.svg/);
   assert.equal(p.logo.getAttribute("alt"), "");
-  assert.equal(p.html.getAttribute("data-season-motion"), null, "November does not move");
+  assert.equal(p.html.getAttribute("data-season-motion"), "on", "November can be paused too");
   assert.equal(p.named("season-snow"), undefined);
   assert.ok(p.named("season-art"));
 
@@ -320,6 +332,62 @@ test("from <head>, colours apply at once and decoration waits for the body", () 
   p.document.body = p.body;
   p.document.dispatch("DOMContentLoaded");
   assert.match(p.logo.getAttribute("src"), /logo-november\.svg/);
-  assert.equal(p.decorations().length, 3);
+  assert.equal(p.decorations().length, 4);
   assertGreeting(p);
+});
+
+for (const month of ["11", "12"]) {
+  test(`${month}: motion preference, visibility and persisted pause cooperate`, () => {
+    const storage = new Map();
+    const p = page({ start: `2031-${month}-10T12:00:00`, storage });
+    const control = p.named("season-control");
+    control.dispatch("click");
+    p.document.hidden = true;
+    p.document.dispatch("visibilitychange");
+    p.document.hidden = false;
+    p.document.dispatch("visibilitychange");
+    assert.equal(p.html.getAttribute("data-season-motion"), "off");
+    assert.equal(page({ start: `2031-${month}-10T12:00:00`, storage }).html.getAttribute("data-season-motion"), "off");
+    control.dispatch("click");
+    assert.equal(p.html.getAttribute("data-season-motion"), "on");
+    p.motion.matches = true;
+    p.motion.dispatch("change");
+    assert.equal(control.hidden, true);
+    assert.equal(p.html.getAttribute("data-season-motion"), "off");
+    p.motion.matches = false;
+    p.motion.dispatch("change");
+    assert.equal(p.html.getAttribute("data-season-motion"), "on");
+  });
+}
+
+test("midnight aborts pending artwork and ignores even a late successful response", async () => {
+  const requests = [];
+  const p = page({ start: "2031-11-30T23:59:59", fetch: (url, options) =>
+    new Promise(resolve => requests.push({ url, ...options, resolve })) });
+  const old = p.named("season-art");
+  p.advance("2031-12-01T00:00:01");
+  assert.equal(requests[0].signal.aborted, true);
+  assert.equal(requests[0].mode, "same-origin");
+  assert.match(requests[1].url, /art-december.svg/);
+  requests[0].resolve({ ok: true, text: async () => "<svg/>" });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(old.children.length, 0);
+  p.advance("2032-01-01T00:00:01");
+  assert.equal(requests[1].signal.aborted, true);
+  requests[1].resolve({ ok: true, text: async () => "<svg/>" });
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(p.decorations(), []);
+});
+
+test("successful artwork is inline, inert, and removed with its season", async () => {
+  const p = page({ start: "2031-11-30T23:59:59", fetch: async () => ({ ok: true, text: async () => "<svg/>" }) });
+  await new Promise(resolve => setImmediate(resolve));
+  const art = p.named("season-art season-art-inline");
+  assert.ok(art);
+  assert.equal(art.children.length, 1);
+  assert.equal(art.children[0].getAttribute("aria-hidden"), "true");
+  assert.equal(art.children[0].getAttribute("focusable"), "false");
+  p.advance("2032-01-01T00:00:01");
+  await new Promise(resolve => setImmediate(resolve));
+  assert.deepEqual(p.decorations(), []);
 });

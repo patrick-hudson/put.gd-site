@@ -51,14 +51,18 @@ class Season(unittest.TestCase):
         for name in ARTWORK:
             with self.subTest(artwork=name):
                 text = (PUBLIC / f"_site/{name}.svg").read_text()
-                ET.fromstring(text)
+                root = ET.fromstring(text)
+                bowls = [el for el in (root if name.startswith("art-") else root.iter()) if el.get("d") == BOWL]
+                self.assertEqual(len(bowls), 1, "bowl stays outside all animated groups")
+                self.assertIsNone(bowls[0].get("transform"))
                 self.assertIn(BOWL, text)
                 self.assertNotRegex(text, r'(?:href|src)="|url\("?http')
 
     def test_no_hard_coded_year_or_outbound_request(self):
         source = (PUBLIC / "_site/season.js").read_text()
         self.assertNotRegex(source, r"\b20\d\d\b")
-        self.assertNotRegex(source, r"https?:|fetch\(|XMLHttpRequest|sendBeacon")
+        self.assertNotRegex(source, r"https?:|XMLHttpRequest|sendBeacon")
+        self.assertIn('mode: "same-origin"', source)
 
     def test_seasonal_css_leaves_tokens_alone_until_a_season_is_set(self):
         css = (PUBLIC / "_site/site.css").read_text()
