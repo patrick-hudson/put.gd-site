@@ -55,8 +55,8 @@ its cleanup check passes):
    Loupe and Showtime with private dirs and in-memory settings. It turns
    notification banners off and switches GNOME's colour scheme for each theme.
 6. Runs the story: region captures of NASA photos, an edit with a redaction, a
-   region recording of the Sintel trailer, a clipboard file upload, then History
-   and Destinations.
+   region recording of the Sintel trailer, a clipboard file upload, then History,
+   Destinations and Settings.
 7. For `desktop`, moves the History window to the last (empty) workspace with
    Super+Shift+End, sets the stock wallpaper and grabs the whole screen, then
    switches back with Super+Home.
@@ -74,8 +74,9 @@ work; the bucket expires them after 30 days.
 ## Changing shots
 
 - `shots.json`: `story` (the steps, run in order) and `shots` (which step's frame
-  each shot uses, and its crops). Crops are relative to a rectangle the step
-  records:
+  each shot uses, and its crop). Shots on the site show the complete window, so
+  each one is the window grown by a little backdrop. Crops are relative to a
+  rectangle the step records:
   - `window`: the app window.
   - `viewer`/`selection`: the photo viewer and the dragged region.
   - `screen`: the whole screen.
@@ -85,8 +86,8 @@ work; the bucket expires them after 30 days.
   - `{"rect": [x, y, w, h]}`: relative to the anchor's top-left.
   - `{"center": [fx, fy], "size": [w, h]}`: a box centred on a fraction of the anchor.
 
-  Add `"clamp": "screen"` to let a crop leave the anchor. Tiles must be 4:3 and
-  every crop size even. `mobile` is optional.
+  Add `"clamp": "screen"` to let a crop leave the anchor. Fixed crop sizes must be
+  even. A `mobile` crop is optional.
 - `media.json`: each demo file with its pinned URL, sha256, credit and license.
   A changed upstream file stops the run; pin a new one.
 - `hosts.json`: the physical desktops (only GNOME is implemented).

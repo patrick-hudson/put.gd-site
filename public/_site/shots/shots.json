@@ -1,9 +1,9 @@
 {
   "shots": {
     "history": {
-      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1029.2229-nightly",
+      "version": "26.1102.3797-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -15,16 +15,6 @@
             808
           ]
         },
-        "dark-mobile": {
-          "1x": [
-            288,
-            280
-          ],
-          "2x": [
-            576,
-            560
-          ]
-        },
         "light-desktop": {
           "1x": [
             624,
@@ -33,212 +23,149 @@
           "2x": [
             1248,
             808
-          ]
-        },
-        "light-mobile": {
-          "1x": [
-            288,
-            280
-          ],
-          "2x": [
-            576,
-            560
           ]
         }
       }
     },
     "capture": {
-      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1029.2229-nightly",
+      "version": "26.1102.3797-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
-            460,
-            345
+            487,
+            510
           ],
           "2x": [
-            920,
-            690
-          ]
-        },
-        "dark-mobile": {
-          "1x": [
-            440,
-            330
-          ],
-          "2x": [
-            880,
-            660
+            974,
+            1020
           ]
         },
         "light-desktop": {
           "1x": [
-            460,
-            345
+            487,
+            510
           ],
           "2x": [
-            920,
-            690
-          ]
-        },
-        "light-mobile": {
-          "1x": [
-            440,
-            330
-          ],
-          "2x": [
-            880,
-            660
+            974,
+            1020
           ]
         }
       }
     },
     "edit": {
-      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1029.2229-nightly",
+      "version": "26.1102.3797-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
-            620,
-            465
+            804,
+            510
           ],
           "2x": [
-            1240,
-            930
-          ]
-        },
-        "dark-mobile": {
-          "1x": [
-            480,
-            360
-          ],
-          "2x": [
-            960,
-            720
+            1608,
+            1020
           ]
         },
         "light-desktop": {
           "1x": [
-            620,
-            465
+            804,
+            510
           ],
           "2x": [
-            1240,
-            930
-          ]
-        },
-        "light-mobile": {
-          "1x": [
-            480,
-            360
-          ],
-          "2x": [
-            960,
-            720
+            1608,
+            1020
           ]
         }
       }
     },
     "record": {
-      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1029.2229-nightly",
+      "version": "26.1102.3797-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
-            520,
-            390
+            462,
+            384
           ],
           "2x": [
-            1040,
-            780
-          ]
-        },
-        "dark-mobile": {
-          "1x": [
-            520,
-            390
-          ],
-          "2x": [
-            1040,
-            780
+            924,
+            768
           ]
         },
         "light-desktop": {
           "1x": [
-            520,
-            390
+            462,
+            384
           ],
           "2x": [
-            1040,
-            780
-          ]
-        },
-        "light-mobile": {
-          "1x": [
-            520,
-            390
-          ],
-          "2x": [
-            1040,
-            780
+            924,
+            768
           ]
         }
       }
     },
     "storage": {
-      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1029.2229-nightly",
+      "version": "26.1102.3797-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
-            504,
-            378
+            624,
+            404
           ],
           "2x": [
-            1008,
-            756
-          ]
-        },
-        "dark-mobile": {
-          "1x": [
-            400,
-            300
-          ],
-          "2x": [
-            800,
-            600
+            1248,
+            808
           ]
         },
         "light-desktop": {
           "1x": [
-            504,
-            378
+            624,
+            404
           ],
           "2x": [
-            1008,
-            756
+            1248,
+            808
+          ]
+        }
+      }
+    },
+    "settings": {
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1102.3797-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            624,
+            404
+          ],
+          "2x": [
+            1248,
+            808
           ]
         },
-        "light-mobile": {
+        "light-desktop": {
           "1x": [
-            400,
-            300
+            624,
+            404
           ],
           "2x": [
-            800,
-            600
+            1248,
+            808
           ]
         }
       }
     },
     "desktop": {
-      "commit": "9b8ffb086d0b39fc9cfba4890c9b836737b9cba0",
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1029.2229-nightly",
+      "version": "26.1102.3797-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [

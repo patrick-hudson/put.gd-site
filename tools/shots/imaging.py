@@ -89,7 +89,8 @@ def inside(inner, outer):
 
 def resolve_crop(spec, anchors, screen):
     """Resolve one crop spec against named anchor rects. Specs:
-    {"anchor": A, "pad": N}                    A grown by N on every side
+    {"anchor": A, "pad": N}                    A grown by N on every side; an odd side
+                                               loses a pixel so the 1x image is exactly half
     {"anchor": A, "rect": [x, y, w, h]}        relative to A's top-left
     {"anchor": A, "center": [fx, fy], "size": [w, h], "clamp": C}
         a w x h box centred on a point given as fractions of A, moved (not
@@ -101,6 +102,8 @@ def resolve_crop(spec, anchors, screen):
     if 'pad' in spec:
         p = spec['pad']
         rect = [ax - p, ay - p, aw + 2 * p, ah + 2 * p]
+        rect[2] -= rect[2] % 2
+        rect[3] -= rect[3] % 2
         bounds = [0, 0, screen[0], screen[1]]
     elif 'rect' in spec:
         x, y, w, h = spec['rect']

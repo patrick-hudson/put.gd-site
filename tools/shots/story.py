@@ -16,11 +16,25 @@ import imaging
 from PIL import ImageStat
 
 MAGENTA = 'FF00FF'
+SETTINGS_RAIL = (100, 141, 38)  # first row's centre from the window's corner, then the row pitch
 DONE_STATES = {'completed', 'failed', 'partial', 'cancelled', 'interrupted'}
 
 
 class StoryError(RuntimeError):
     pass
+
+
+def annotation(spec, size):
+    """An editor shape from shots.json, whose positions are fractions of the image."""
+    width, height = size
+    shape = dict(spec)
+    for key in ('from', 'to', 'at'):
+        if key in shape:
+            shape[key] = [round(shape[key][0] * width), round(shape[key][1] * height)]
+    if 'rect' in shape:
+        fx, fy, fw, fh = shape['rect']
+        shape['rect'] = [round(fx * width), round(fy * height), round(fw * width), round(fh * height)]
+    return shape
 
 
 def find_id(result, *keys):
@@ -276,8 +290,11 @@ class Story:
             raise StoryError(f'editor.inspect gave no image size: {json.dumps(state)[:300]}')
         fx, fy, fw, fh = step['redact']
         rect = [round(fx * size[0]), round(fy * size[1]), round(fw * size[0]), round(fh * size[1])]
-        self.cli('editor.apply', {'id': op, 'commands': [{'op': 'add', 'shape': {'kind': 'redact', 'rect': rect}}]},
+        shapes = [{'kind': 'redact', 'rect': rect}] + [annotation(a, size) for a in step.get('annotate', [])]
+        self.cli('editor.apply', {'id': op, 'commands': [{'op': 'add', 'shape': shape} for shape in shapes]},
                  retry=('editor_starting',))
+        if step.get('tool'):
+            self.cli('editor.view', {'id': op, 'action': 'tool', 'tool': step['tool']}, retry=('editor_starting',))
         self.step_pause()
         self.park()
         window = self.locate()
@@ -300,6 +317,7 @@ class Story:
         player = self.open_app('player', self.host.cfg['player'] + [clip])
         self.backdrop(self.themes[self.theme]['backdrop'].lstrip('#'))
         self.park()
+        time.sleep(4.0)  # the player dims the video until its controls fade
         area = self.inner(player, step['area'])
         caps = self.cli('recording.capabilities')
         fmt = 'mp4'
@@ -390,10 +408,23 @@ class Story:
         self.set_theme('dark')
 
     def destinations(self, step):
-        self.cli('ui.show', {'view': 'destinations'})
+        self.page(step, 'destinations')
+
+    def settings(self, step):
+        self.page(step, 'settings', step.get('row'))
+
+    def page(self, step, view, row=None):
+        """A page of the main window, as History left it. `row` picks a Settings category
+        by a real click in its rail (the first row is what the page opens on)."""
+        self.cli('ui.show', {'view': view})
         time.sleep(2.0)
         self.park()
-        self.anchors[step['id']] = {'window': self.locate()}
+        window = self.locate()
+        if row:
+            self.rfb.click(window[0] + SETTINGS_RAIL[0], window[1] + SETTINGS_RAIL[1] + row * SETTINGS_RAIL[2])
+            time.sleep(1.0)
+            self.park()
+        self.anchors[step['id']] = {'window': window}
         for theme in ('dark', 'light'):
             self.set_theme(theme)
             self.park()
@@ -434,6 +465,7 @@ class Story:
     def run(self, steps=None):
         handlers = {'region-capture': self.region_capture, 'edit': self.edit, 'record': self.record,
                     'file-upload': self.file_upload, 'history': self.history, 'destinations': self.destinations,
+                    'settings': self.settings,
                     'desktop': self.desktop}
         self.set_theme('dark')
         for step in self.cfg['story']:

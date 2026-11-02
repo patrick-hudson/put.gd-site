@@ -103,11 +103,6 @@ class Config(unittest.TestCase):
         change(cfg)
         return config.validate_shots(cfg, self.media_ids)
 
-    def test_tiles_must_be_four_by_three(self):
-        def change(cfg):
-            next(s for s in cfg['shots'] if s['tile'])['desktop'] = {'anchor': 'window', 'rect': [0, 0, 800, 500]}
-        self.assertTrue(any('not 4:3' in e for e in self.errors_after(change)))
-
     def test_unknown_step_media_and_duplicates(self):
         self.assertTrue(self.errors_after(lambda c: c['shots'][0].update(step='nope')))
         self.assertTrue(self.errors_after(lambda c: c['story'][0].update(media='nope')))
@@ -122,6 +117,21 @@ class Config(unittest.TestCase):
         self.assertTrue(self.errors_after(lambda c: c['shots'][0].update(desktop={'anchor': 'window', 'pad': 4, 'rect': [0, 0, 2, 2]})))
         self.assertTrue(self.errors_after(lambda c: c['shots'][0].update(desktop={'anchor': 'viewer', 'pad': 4})))
         self.assertTrue(self.errors_after(lambda c: c['shots'][0].update(mobile={'anchor': 'window', 'rect': [0, 0, 301, 200]})))
+
+    def test_pad_keeps_the_whole_anchor_and_even_sides(self):
+        spec = {'anchor': 'viewer', 'pad': 24}
+        self.assertEqual(imaging.resolve_crop(spec, {'viewer': [497, 70, 927, 973]}, [1920, 1080]), [473, 46, 974, 1020])
+        self.assertTrue(self.errors_after(lambda c: c['shots'][0]['desktop'].update(rect=[0, 0, 10, 10])))
+
+    def test_annotations_use_image_fractions(self):
+        import story
+        size = [1000, 2000]
+        self.assertEqual(story.annotation({'kind': 'arrow', 'from': [0.5, 0.5], 'to': [0.1, 0.1]}, size),
+                         {'kind': 'arrow', 'from': [500, 1000], 'to': [100, 200]})
+        self.assertEqual(story.annotation({'kind': 'highlight', 'rect': [0, 0.5, 0.5, 0.25]}, size)['rect'], [0, 1000, 500, 500])
+        edit = lambda c: next(s for s in c['story'] if s['kind'] == 'edit')
+        self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': 'redact'})))
+        self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': 'arrow', 'from': [2, 0], 'to': [0, 0]})))
 
     def test_media_needs_pins_and_licenses(self):
         media = copy.deepcopy(self.media)
@@ -150,7 +160,7 @@ class Manifest(unittest.TestCase):
         names = manifest.expected_files(self.shots)
         self.assertEqual(len(names), len(set(names)))
         self.assertIn('history-dark@2x.avif', names)
-        self.assertIn('history-light-mobile.webp', names)
+        self.assertIn('settings-light.webp', names)
         self.assertIn('desktop-light@2x.webp', names)
         self.assertNotIn('desktop-dark-mobile.avif', names)
 
