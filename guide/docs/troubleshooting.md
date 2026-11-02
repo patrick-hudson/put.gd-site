@@ -46,7 +46,7 @@ Your storage refused the request, usually because the credentials lack a permiss
 The file uploaded, but its link domain or access settings don't serve it publicly.
 
 1. In **Destinations**, correct the link domain and access choice.
-2. Click **Test connection**.
+2. Click **Test upload and link**.
 3. Upload again. Existing items keep their original link.
 
 ## An upload says its state is unknown
