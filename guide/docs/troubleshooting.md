@@ -2,13 +2,6 @@
 
 Find your problem below. If you are still stuck, [get help](#get-help).
 
-<picture class="shot">
-  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/desktop-light.avif 1920w, /_site/shots/desktop-light@2x.avif 3840w">
-  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/desktop-dark.avif 1920w, /_site/shots/desktop-dark@2x.avif 3840w">
-  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/desktop-light.webp 1920w, /_site/shots/desktop-light@2x.webp 3840w">
-  <img src="/_site/shots/desktop-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/desktop-dark.webp 1920w, /_site/shots/desktop-dark@2x.webp 3840w" width="1920" height="1080" loading="lazy" alt="put.gd running on Fedora 44 with GNOME: the History window open on the desktop.">
-</picture>
-
 ## The link was not copied
 
 Something else used the clipboard during the upload, so put.gd left it alone.
@@ -20,16 +13,15 @@ Something else used the clipboard during the upload, so put.gd left it alone.
 
 An open menu or another app is holding the keyboard or mouse.
 
-1. Press ++esc++ or click outside the menu.
-2. Capture again.
+Press ++esc++ or click outside the menu, then capture again.
 
 To capture the menu itself, set **While selecting** to **Screenshot first** in [**Settings → Capture**](settings.md#capture).
 
 ## A shortcut does nothing
 
-The desktop may not have given put.gd that key, often because something else uses it.
+The desktop may not have given put.gd that key.
 
-1. Open [**Settings → Shortcuts**](settings.md#shortcuts) and read the action's row. A row with no status line is bound as requested.
+1. Open [**Settings → Shortcuts**](settings.md#shortcuts) and read the action's row.
 2. If it reports a problem, record a different combination.
 3. On GNOME, check [the extension](#nothing-captures-on-gnome).
 
@@ -38,8 +30,8 @@ The desktop may not have given put.gd that key, often because something else use
 Your storage refused the request, usually because the credentials lack a permission.
 
 1. In **Destinations**, check the bucket and credentials.
-2. On S3, ask the bucket owner for `s3:GetObject` and `s3:PutObject`, plus `s3:PutObjectAcl` for public-read. Without `s3:ListBucket`, a missing file can also look denied.
-3. Select the item in History and click **Retry upload**.
+2. On S3, ask the bucket owner for `s3:GetObject` and `s3:PutObject`, plus `s3:PutObjectAcl` for public-read.
+3. In History, click **Retry upload** on the item's row.
 
 ## The public link does not open
 
@@ -53,9 +45,24 @@ The file uploaded, but its link domain or access settings don't serve it publicl
 
 The reply was lost, so the file may or may not have arrived. History shows **Upload outcome unknown**.
 
-1. Select the item in History.
-2. Click **Retry upload**. put.gd checks what arrived before uploading again.
-3. Don't clear temporary files first; the retry needs them.
+In History, click **Retry upload** on the item's row. put.gd checks what arrived before uploading again. Don't clear temporary files first; the retry needs them.
+
+## Upload with put.gd is missing from the right-click menu
+
+The file manager may not have loaded the entry yet, or it may sit in a submenu; see [where it appears](file-manager.md).
+
+- **Files** keeps running after its last window closes, so the entry may appear only after a restart. Restart it; put.gd's first-run notice offers **Restart Files** if your notifications can show buttons. That closes all Files windows.
+- **PCManFM and PCManFM-Qt** load their entries at the first file menu they show. Restart one that has already shown a menu.
+- **With the AppImage**, check that **Settings → General → File manager → File manager menu** is on.
+
+## The file manager upload was refused
+
+A notification names the problem and every file affected. Nothing was uploaded.
+
+- **No local path:** the location has no path on this computer. Network locations through GVfs need the `gvfs-fuse` package.
+- **Empty file:** put.gd won't upload a file of 0 bytes.
+- **Over the limit:** raise **Largest file** or **Largest batch** under **Settings → Advanced → Resource limits**. A destination's own maximum still applies.
+- **put.gd was just updated:** quit put.gd from its tray menu, then try again.
 
 ## Nothing captures on GNOME
 
@@ -72,21 +79,24 @@ GNOME needs put.gd's Shell extension, turned on in your current login.
 
 ## Recording will not start
 
-Something recording needs is missing, and put.gd's message names it.
-
-1. If it mentions an encoder, follow [these steps](record.md#if-recording-will-not-start).
-2. If it mentions the GNOME extension, follow [the steps above](#nothing-captures-on-gnome).
-3. If it mentions disk space, free some and try again.
+put.gd's message names what is missing: an [encoder](record.md#if-recording-will-not-start), the [GNOME extension](#nothing-captures-on-gnome) or disk space.
 
 ## Get help
 
-1. In **Settings → Advanced → Diagnostics**, tick **Keep detailed debug logs for 24 hours**. It turns itself off.
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.avif 1368w, /_site/shots/advanced-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.avif 1368w, /_site/shots/advanced-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.webp 1368w, /_site/shots/advanced-light@2x.webp 2736w">
+  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: limits, thumbnail cache, history retention, Diagnostics and the configuration file.">
+</picture>
+
+1. In **Settings → Advanced → Diagnostics**, tick **Keep detailed debug logs for 24 hours**.
 2. Make the problem happen again.
 3. Beside **Diagnostics package**, click **Create…**.
 4. Leave **Include file names** off to keep names hashed.
-5. Click **Save package**. To keep it local, untick **Also upload to … and copy a link** if it appears.
+5. To keep the package on this computer, untick **Also upload to … and copy a link** if it appears, then click **Save package**.
 6. Attach the file to [a new issue](https://github.com/patrick-hudson/put.gd-desktop/issues).
 
 For one failed upload, click **Save diagnostics…** on its History item instead.
 
-The package holds your system and desktop versions, put.gd's status, settings without credentials, crash stack traces, recent failed uploads and logs. It never holds credentials, tokens, signed links, screenshots, file contents or clipboard text.
+The package never holds credentials, tokens, signed links, screenshots, file contents or clipboard text.

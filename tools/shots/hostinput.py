@@ -13,7 +13,8 @@ import time
 from pathlib import Path
 
 AXIS_MAX = 32767
-QCODES = {'super': 'meta_l', 'shift': 'shift', 'end': 'end', 'home': 'home', 'esc': 'esc'}
+QCODES = {'super': 'meta_l', 'shift': 'shift', 'end': 'end', 'home': 'home', 'esc': 'esc',
+          'down': 'down', 'right': 'right', 'menu': 'menu', 'ret': 'ret'}
 AGENT_PATTERN = '[h]ost_input.py serve'
 
 
@@ -74,19 +75,19 @@ class HostInput:
     def _send(self, events):
         self._call({'execute': 'input-send-event', 'arguments': {'events': events}})
 
-    def pointer(self, x, y, down=None):
+    def pointer(self, x, y, down=None, button='left'):
         self._send([{'type': 'abs', 'data': {'axis': 'x', 'value': axis(x, self.width)}},
                     {'type': 'abs', 'data': {'axis': 'y', 'value': axis(y, self.height)}}])
         if down is not None:
             time.sleep(0.03)
-            self._send([{'type': 'btn', 'data': {'down': down, 'button': 'left'}}])
+            self._send([{'type': 'btn', 'data': {'down': down, 'button': button}}])
 
-    def click(self, x, y):
+    def click(self, x, y, button='left'):
         self.pointer(x, y)
         time.sleep(0.15)
-        self.pointer(x, y, True)
+        self.pointer(x, y, True, button)
         time.sleep(0.05)
-        self.pointer(x, y, False)
+        self.pointer(x, y, False, button)
 
     def key(self, *names, hold=0.05):
         codes = [QCODES[n] for n in names]

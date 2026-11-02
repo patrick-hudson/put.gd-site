@@ -9,30 +9,29 @@ By the end of this page you can find anything you captured, copy its link again 
   <img src="/_site/shots/history-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/history-dark.webp 1368w, /_site/shots/history-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The History window: recent captures with thumbnails, the newest one selected and marked Shared link.">
 </picture>
 
-1. Click the tray icon, or choose **Upload history** in the tray menu.
+1. Click the tray icon, or choose **History** in the tray menu.
 2. Type in **Search history**, or pick a list on the left such as **Images** or **Recordings**.
-3. Select an item. Its result opens on the right.
+3. Select an item. Its preview, link and details open on the right.
 4. Click **Copy link**. This never uploads anything again.
 
 ## Find an item
 
-Switch between **List** and **Gallery** at the top. Search looks through the stored file names. **Filters** narrows the list by date, content, destination and status. Browsing works from what is stored on your computer; it doesn't list or download your cloud files.
-
-![History in gallery view with captures, an edited image and a screen recording (Plasma).](img/history-plasma.webp){ .shot }
+Switch between **List** and **Gallery** at the top. Search looks through the stored file names. **Filters** narrows the list by date, file type, destination and state. Browsing works from what is stored on your computer; it doesn't list or download your cloud files.
 
 ## Use a result
 
-- **Copy link** puts the link on your clipboard.
+- **Copy link** puts the link on your clipboard. An item with only a local copy offers **Copy result** instead.
 - **Open** opens the link in your browser.
-- **Edit…** starts a new edit of the saved image when **Keep a local copy** was on. Your earlier marks are flattened, and the result uploads as a new item.
-- **Save a copy…**, in the **⋯** menu, writes the original file somewhere you choose.
+- **Edit…** starts a new edit of the saved image when a local PNG or JPEG copy was kept. Your earlier marks are flattened, and the result uploads as a new item.
+- **Save a copy…**, in the **⋯** menu, writes the original file somewhere you choose. **Copy image** is in the same menu.
 
 ## When something failed
 
-Select the item, or open **Failed uploads** on the left.
+Open **Failed uploads** on the left, or find the item in any list.
 
-- **Retry upload** tries the same file again.
+- **Retry upload**, on the item's row, tries the same file again.
 - **Retry local save** saves the local copy again without uploading.
+- **Save diagnostics…** saves a report you can [send for help](troubleshooting.md#get-help).
 
 If nothing was stored, the item is marked **Edit failed**, **Upload failed** or **Capture failed** with the reason, and has no retry. Start a new capture instead.
 
@@ -50,7 +49,7 @@ Failed, cancelled and private uploads add no link. If you copy something else in
 1. Select one or more items.
 2. Click **Delete from destination…**.
 3. Read the confirmation. It lists each file, its destination and what deleting does there.
-4. Confirm, or cancel to send nothing.
+4. Confirm, or click **Cancel** to send nothing.
 
 Your local copies and History stay. Copies cached by browsers or a CDN can stay visible for a while. put.gd can't safely delete from Proton Drive, so those files and share links remain.
 

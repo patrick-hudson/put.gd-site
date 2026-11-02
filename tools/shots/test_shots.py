@@ -88,6 +88,15 @@ class Crops(unittest.TestCase):
         self.assertEqual(imaging.scaled_size([1248, 808], 0.5), [624, 404])
 
 
+class PadClamp(unittest.TestCase):
+    def test_padded_crop_is_clipped_to_its_clamp(self):
+        anchors = {'menu': [3018, 7, 682, 1215], 'screen': [0, 0, 3840, 2160]}
+        rect = imaging.resolve_crop({'anchor': 'menu', 'pad': 48, 'clamp': 'screen'}, anchors, [3840, 2160])
+        self.assertEqual(rect, [2970, 0, 778, 1270])
+        with self.assertRaises(ValueError):
+            imaging.resolve_crop({'anchor': 'menu', 'pad': 48}, anchors, [3840, 2160])
+
+
 class Config(unittest.TestCase):
     def setUp(self):
         self.shots, self.media, self.hosts = (config.load_json(HERE / n) for n in ('shots.json', 'media.json', 'hosts.json'))
@@ -268,6 +277,44 @@ class Encode(unittest.TestCase):
                 self.assertNotIn(chunk, data)
         finally:
             shutil.rmtree(folder)
+
+
+class TopBar(unittest.TestCase):
+    """The tray step finds put.gd's indicator left of GNOME's orange screencast pill."""
+
+    def frame(self, scale=1):
+        frame = Image.new('RGB', (800 * scale, 300 * scale), (40, 80, 160))  # wallpaper
+        draw = ImageDraw.Draw(frame)
+        bar = 32 * scale
+        draw.rectangle((0, 0, frame.size[0], bar - 1), fill=(0, 0, 0))
+        draw.rectangle((700 * scale, 8 * scale, 780 * scale, 24 * scale), fill=(230, 230, 230))  # quick settings
+        draw.rounded_rectangle((620 * scale, 6 * scale, 690 * scale, 26 * scale), radius=10 * scale, fill=(255, 120, 0))
+        draw.rectangle((640 * scale, 12 * scale, 650 * scale, 20 * scale), fill=(255, 255, 255))  # a glyph inside the pill
+        draw.rectangle((590 * scale, 10 * scale, 604 * scale, 22 * scale), fill=(240, 240, 240))  # put.gd
+        draw.rectangle((593 * scale, 12 * scale, 601 * scale, 14 * scale), fill=(0, 0, 0))  # with a hole, like a glyph
+        draw.text((380 * scale, 8 * scale), 'Nov 2  11:59', fill=(255, 255, 255))
+        return frame, bar
+
+    def test_bar_height_and_icon_centre(self):
+        for scale in (1, 2):
+            frame, bar = self.frame(scale)
+            self.assertEqual(imaging.bar_height(frame, scale), bar)
+            x, y = imaging.tray_icon(frame.crop((0, 0, frame.size[0], bar)), scale)
+            self.assertTrue(590 * scale <= x <= 604 * scale, (scale, x))
+            self.assertEqual(y, bar // 2)
+
+    def test_no_pill_is_an_error(self):
+        frame, bar = self.frame()
+        ImageDraw.Draw(frame).rectangle((610, 0, 700, bar), fill=(0, 0, 0))
+        with self.assertRaises(ValueError):
+            imaging.tray_icon(frame.crop((0, 0, frame.size[0], bar)))
+
+    def test_changed_box_is_the_menu(self):
+        before, _ = self.frame()
+        after = before.copy()
+        ImageDraw.Draw(after).rectangle((560, 32, 760, 260), fill=(30, 30, 30))
+        self.assertEqual(imaging.changed_box(before, after), [560, 32, 201, 229])
+        self.assertIsNone(imaging.changed_box(before, before))
 
 
 class Codename(unittest.TestCase):

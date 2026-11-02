@@ -9,7 +9,7 @@ This page shows you how to capture a region, a window or the whole desktop, how 
   <img src="/_site/shots/capture-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-dark.webp 975w, /_site/shots/capture-dark@2x.webp 1950w" width="975" height="1021" loading="lazy" alt="A region being selected over a photo, with its size shown beside the selection.">
 </picture>
 
-Every action is on the left rail of the put.gd window and in the tray menu. The put.gd window closes during a screen capture to keep itself out of the picture. You can change any key in [shortcuts](settings.md#shortcuts).
+Every action is a button across the top of the put.gd window and an entry in the tray menu. The put.gd window closes during a screen capture to keep itself out of the picture. You can change any key in [shortcuts](settings.md#shortcuts).
 
 ## Capture region
 
@@ -25,7 +25,7 @@ Every action is on the left rail of the put.gd window and in the tray menu. The 
 
 ## Capture window
 
-1. Click the window you want.
+1. Click the window you want. put.gd does not capture its own windows.
 2. Press ++ctrl+shift+2++, or choose **Capture window**.
 
 Support varies by desktop. See [GNOME, KDE and Cinnamon](desktops.md).
@@ -39,7 +39,7 @@ Press ++ctrl+shift+3++, or choose **Capture desktop**. You get all your enabled 
 1. Copy what you want to upload.
 2. Choose **Upload clipboard**. It has no key until you set one.
 
-put.gd looks for copied files first, then an image, then text. A copied web address uploads as text. The put.gd window stays open.
+put.gd looks for copied files first, then an image, then text. A copied web address uploads as text. The put.gd window stays open. To upload files without copying them, see [Upload from your file manager](file-manager.md).
 
 ## After a capture
 
@@ -49,14 +49,22 @@ put.gd looks for copied files first, then an image, then text. A copied web addr
 
 ## Where captures go
 
-![Settings → Capture with the default destination, sharing, per-action exceptions and file names.](img/capture-plasma.webp){ .shot }
+Go to **Settings → Capture**, or choose **Change output…** in the tray menu.
 
-This picture comes from an older version. **Local copies** is now on this same page, and the exceptions section has a new name.
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.avif 1368w, /_site/shots/capture-settings-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.avif 1368w, /_site/shots/capture-settings-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.webp 1368w, /_site/shots/capture-settings-light@2x.webp 2736w">
+  <img src="/_site/shots/capture-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.webp 1368w, /_site/shots/capture-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture: Destination, Sharing, After uploading, Different output for some actions, and Region selection.">
+</picture>
 
-1. Go to **Settings → Capture**.
-2. Under **Capture output**, choose a **Destination**. **No destination** turns uploads off. To add one, see [Set up a destination](destinations.md).
-3. To send one action somewhere else, open **Different output for some actions**. **Use default** follows the main destination, and an action with its own choice keeps it when the main one changes. Your shortcuts stay as they are.
-4. To keep files on this computer, turn on **Keep a local copy** under **Local copies**. They go to the **Save to** folder, which starts as `put.gd` inside your Documents folder.
+- **Destination** is where uploads go. **No destination** turns uploads off. To add one, see [Set up a destination](destinations.md).
+- **Sharing** is **Destination default**, **Create a share link** or **Keep private**.
+- **After uploading** is **Copy each link as it finishes**, or **Copy a list when uploads finish**.
+- **Different output for some actions** sends one action somewhere else. Choose **Add an exception…**, pick the action, then set its own **Destination** and **Sharing**. It keeps them when the main choice changes. **Remove** ends the exception. Your shortcuts stay as they are.
+- **Region selection → While selecting** is **Live desktop**, which keeps the screen updating while you drag, or **Screenshot first**.
+
+**Keep a local copy** is further down the same page, under **Local copies**, not in **Settings → General**. Files go to the **Save to** folder, which starts as `put.gd` inside your Documents folder.
 
 | Destination | Keep a local copy | What happens |
 | --- | --- | --- |

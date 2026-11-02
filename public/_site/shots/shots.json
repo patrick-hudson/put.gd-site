@@ -162,6 +162,168 @@
         }
       }
     },
+    "general": {
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1102.3797-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        }
+      }
+    },
+    "capture-settings": {
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1102.3797-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        }
+      }
+    },
+    "advanced": {
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1102.3797-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        }
+      }
+    },
+    "updates": {
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1102.3797-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        }
+      }
+    },
+    "proton": {
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1102.3797-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        }
+      }
+    },
+    "b2": {
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1102.3797-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        }
+      }
+    },
     "desktop": {
       "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
@@ -185,6 +347,60 @@
           "2x": [
             3840,
             2160
+          ]
+        }
+      }
+    },
+    "file-manager": {
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1102.3797-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            954,
+            702
+          ],
+          "2x": [
+            1908,
+            1404
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            954,
+            702
+          ],
+          "2x": [
+            1908,
+            1404
+          ]
+        }
+      }
+    },
+    "tray": {
+      "commit": "858e017cc5dd4be5b78ca6844ae4358c27d718ec",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1102.3797-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            389,
+            635
+          ],
+          "2x": [
+            778,
+            1270
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            389,
+            635
+          ],
+          "2x": [
+            778,
+            1270
           ]
         }
       }

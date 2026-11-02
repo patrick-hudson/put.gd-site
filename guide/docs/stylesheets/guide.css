@@ -125,7 +125,8 @@ body { background: var(--bg); color: var(--text); font-family: "IBM Plex Sans", 
 .md-typeset hr { border-color: var(--border); }
 
 /* Pictures: the lab shots and the static images sit on a thin card. */
-.md-typeset img.shot, .md-typeset .shot img, .md-typeset picture.shot img { display: block; width: 100%; max-width: 720px; height: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--well); }
+/* Shots show at their 1x size (the width attribute) and shrink to the column; a narrow one, like the tray menu, is never blown up. */
+.md-typeset img.shot, .md-typeset .shot img, .md-typeset picture.shot img { display: block; width: auto; max-width: 100%; height: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--well); }
 .md-typeset picture.shot, .md-typeset img.shot { display: block; margin: 20px 0 24px; }
 .md-typeset p > img.shot { margin: 0; }
 
