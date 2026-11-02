@@ -157,7 +157,8 @@ def validate_shots(cfg, media_ids=None):
                 errors.append(f'{where}: clip needs start and seconds (at least the recording plus 4 s)')
         if kind == 'edit':
             for i, shape in enumerate(step.get('annotate', [])):
-                needed = ANNOTATION_FIELDS.get(shape.get('kind'))
+                kind_name = shape.get('kind')
+                needed = ANNOTATION_FIELDS.get(kind_name) if isinstance(kind_name, str) else None
                 if needed is None:
                     errors.append(f'{where}.annotate[{i}]: kind must be one of {sorted(ANNOTATION_FIELDS)}')
                 elif needed - set(shape):

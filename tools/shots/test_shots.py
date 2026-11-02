@@ -131,6 +131,7 @@ class Config(unittest.TestCase):
         self.assertEqual(story.annotation({'kind': 'highlight', 'rect': [0, 0.5, 0.5, 0.25]}, size)['rect'], [0, 1000, 500, 500])
         edit = lambda c: next(s for s in c['story'] if s['kind'] == 'edit')
         self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': 'redact'})))
+        self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': ['arrow']})))
         self.assertTrue(self.errors_after(lambda c: edit(c)['annotate'].append({'kind': 'arrow', 'from': [2, 0], 'to': [0, 0]})))
         for shape in ({'kind': 'arrow', 'from': [0, 0]}, {'kind': 'rectangle'}, {'kind': 'highlight'},
                       {'kind': 'text', 'at': [0, 0]}, {'kind': 'text', 'text': 'x'}):
