@@ -6,7 +6,7 @@ Two channels:
   nightly  the newest published vYY.MDD.N-nightly prerelease
 
 releases.json lists each channel's package assets by the key the page uses in data-match
-(ubuntu24.04, ubuntu26.04, debian13, fedora44, .AppImage) with the direct download URL and
+(ubuntu24.04, ubuntu26.04, debian13, fedora44, archlinux, .AppImage) with the direct download URL and
 size, so the page never has to ask the GitHub API itself. It is internal to the site.
 
 The update feeds (public/update/v1/<channel>.json) are the versioned contract the app reads,
@@ -26,14 +26,14 @@ import sys
 import urllib.request
 
 REPO = "patrick-hudson/put.gd-desktop"
-KEYS = ["ubuntu24.04", "ubuntu26.04", "debian13", "fedora44", ".AppImage"]
-PACKAGE = re.compile(r"\.(deb|rpm|AppImage)$")
+KEYS = ["ubuntu24.04", "ubuntu26.04", "debian13", "fedora44", "archlinux", ".AppImage"]
+PACKAGE = re.compile(r"\.(deb|rpm|pkg\.tar\.zst|AppImage)$")
 STABLE = re.compile(r"v[0-9]{2}\.[0-9]{3,4}\.[0-9]+")
 NIGHTLY = re.compile(r"v[0-9]{2}\.[0-9]{3,4}\.[0-9]+-nightly")
 CHANNELS = ("stable", "nightly")
 FEED_SCHEMA = 1
 # Feed asset key for each releases.json key.
-FEED_KEYS = {"ubuntu24.04": "ubuntu24.04", "ubuntu26.04": "ubuntu26.04", "debian13": "debian13", "fedora44": "fedora44", ".AppImage": "appimage"}
+FEED_KEYS = {"ubuntu24.04": "ubuntu24.04", "ubuntu26.04": "ubuntu26.04", "debian13": "debian13", "fedora44": "fedora44", "archlinux": "archlinux", ".AppImage": "appimage"}
 ZSYNC_PERMALINK = "https://app.put.gd/dl/{channel}/appimage.zsync"
 SHA256_LINE = re.compile(r"^([0-9a-fA-F]{64}) [ *](.+)$")
 

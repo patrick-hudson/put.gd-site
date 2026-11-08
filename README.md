@@ -117,6 +117,7 @@ Repository variables: `AWS_DEPLOY_ROLE_ARN`, `SITE_BUCKET`, `CLOUDFRONT_DISTRIBU
 | `https://app.put.gd/dl/stable/ubuntu26.04` | current stable DEB for Ubuntu 26.04 |
 | `https://app.put.gd/dl/stable/debian13` | current stable DEB for Debian 13 |
 | `https://app.put.gd/dl/stable/fedora44` | current stable RPM |
+| `https://app.put.gd/dl/stable/archlinux` | current stable Arch package (404 until a stable release includes one) |
 | `https://app.put.gd/dl/stable/appimage` | current stable AppImage |
 | `https://app.put.gd/dl/stable/appimage.zsync` | that AppImage's `.zsync`, for AppImageUpdate, Gear Lever and put.gd's own updater, served from the package signer's bucket once the signer has mirrored the image it names; 404 until then |
 | `https://app.put.gd/dl/stable/checksums` | that release's `SHA256SUMS` |

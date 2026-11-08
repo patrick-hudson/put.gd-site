@@ -2,7 +2,7 @@
 """Sync the /dl/ permalink targets into the CloudFront KeyValueStore.
 
 Keys are "<channel>/<package>" where package is one of ubuntu24.04, ubuntu26.04,
-debian13, fedora44, appimage, checksums or release; values are the URLs from
+debian13, fedora44, archlinux, appimage, checksums or release; values are the URLs from
 releases.json. A channel with no release has no keys: existing keys are removed,
 so /dl/stable/... returns 404 until a stable release exists. /dl/<channel>/appimage.zsync is not a
 redirect any more: CloudFront serves the package signer's copy from the pkg bucket
@@ -15,7 +15,7 @@ import json
 import subprocess
 import sys
 
-PACKAGES = {"ubuntu24.04": "ubuntu24.04", "ubuntu26.04": "ubuntu26.04", "debian13": "debian13", "fedora44": "fedora44", "appimage": ".AppImage"}
+PACKAGES = {"ubuntu24.04": "ubuntu24.04", "ubuntu26.04": "ubuntu26.04", "debian13": "debian13", "fedora44": "fedora44", "archlinux": "archlinux", "appimage": ".AppImage"}
 
 
 def cli(*args):
