@@ -143,6 +143,7 @@ code { font: 400 0.88em/1 var(--mono); }
   .picker:has(#os-ubuntu26:checked) .pkg[data-os="ubuntu26.04"],
   .picker:has(#os-debian13:checked) .pkg[data-os="debian13"],
   .picker:has(#os-fedora44:checked) .pkg[data-os="fedora44"],
+  .picker:has(#os-archlinux:checked) .pkg[data-os="archlinux"],
   .picker:has(#os-appimage:checked) .pkg[data-os="appimage"] { display: block; }
 }
 

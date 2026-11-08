@@ -47,6 +47,26 @@ class Render(unittest.TestCase):
         self.assertIn("https://app.put.gd/dl/stable/appimage", out)
         self.assertNotIn("/dl/nightly/", out)
 
+    def test_package_missing_from_stable_stays_on_nightly(self):
+        arch = {"name": "putgd-26.1108.4139-nightly-archlinux-x86_64.pkg.tar.zst", "size": 129_275_823}
+        releases = {"stable": STABLE, "nightly": dict(NIGHTLY, assets={".AppImage": ASSET, "archlinux": arch})}
+        page = ('<form><div class="pkg" data-os="appimage"><a href="https://app.put.gd/dl/nightly/appimage">D</a>'
+                '<a href="https://app.put.gd/dl/nightly/checksums">S</a></div>'
+                '<div class="pkg" data-os="archlinux"><p><!--r:file:archlinux-->x<!--/r:file:archlinux--></p>'
+                '<a href="https://app.put.gd/dl/nightly/archlinux">D</a>'
+                '<a href="https://app.put.gd/dl/nightly/checksums">S</a></div></form>')
+        channel, vals = render.values(releases, None)
+        self.assertEqual(channel, "stable")
+        self.assertEqual(render.nightly_only(releases), ["archlinux"])
+        once = render.render(page, channel, vals, render.nightly_only(releases))
+        self.assertIn("/dl/stable/appimage", once)
+        self.assertIn("/dl/nightly/archlinux", once)
+        self.assertNotIn("/dl/stable/archlinux", once)
+        self.assertEqual(once.count("/dl/stable/checksums"), 1)
+        self.assertEqual(once.count("/dl/nightly/checksums"), 1)
+        self.assertIn(arch["name"], once)
+        self.assertEqual(render.render(once, channel, vals, render.nightly_only(releases)), once)
+
     def test_no_release_keeps_defaults(self):
         channel, vals = render.values({"stable": None, "nightly": None}, None)
         self.assertIsNone(channel)
@@ -104,7 +124,7 @@ class Render(unittest.TestCase):
     def test_committed_page_has_every_marker_the_renderer_fills(self):
         page = (HERE.parent / "public/index.html").read_text()
         _, vals = render.values({"nightly": dict(NIGHTLY, assets={k: ASSET for k in
-                                 ["ubuntu24.04", "ubuntu26.04", "debian13", "fedora44", ".AppImage"]})},
+                                 ["ubuntu24.04", "ubuntu26.04", "debian13", "fedora44", "archlinux", ".AppImage"]})},
                                 {"shots": [], "media": []})
         marked = {m[0] for m in render.MARK.findall(page)}
         self.assertEqual(set(vals) - marked, set())

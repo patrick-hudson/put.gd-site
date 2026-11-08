@@ -48,6 +48,13 @@ def megabytes(size: int) -> str:
     return f"{size / 1_000_000:.1f} MB"
 
 
+def nightly_only(releases: dict) -> list[str]:
+    """Packages a nightly has that the current stable release does not."""
+    if not releases.get("stable") or not releases.get("nightly"):
+        return []
+    return [key for key in releases["nightly"]["assets"] if key not in releases["stable"]["assets"]]
+
+
 def values(releases: dict, shots: dict | None) -> tuple[str | None, dict[str, str]]:
     """Return (channel, marker values). Values are HTML."""
     name = "stable" if releases.get("stable") else "nightly" if releases.get("nightly") else None
@@ -66,6 +73,11 @@ def values(releases: dict, shots: dict | None) -> tuple[str | None, dict[str, st
             out["channel"] = f'Nightly builds only for now. This is <a href="{url}">{ver}</a>.'
             out["version"] = f"put.gd {ver} nightly"
         for key, asset in rel["assets"].items():
+            out[f"file:{key}"] = html.escape(asset["name"])
+            out[f"size:{key}"] = f"{megabytes(asset['size'])} · x86_64"
+        # A package new since the last stable still needs a real file to name.
+        for key in nightly_only(releases):
+            asset = releases["nightly"]["assets"][key]
             out[f"file:{key}"] = html.escape(asset["name"])
             out[f"size:{key}"] = f"{megabytes(asset['size'])} · x86_64"
     if shots:
@@ -129,10 +141,22 @@ def sized(page: str, shots: dict) -> str:
     return SHOT_TAG.sub(tag, page)
 
 
-def render(page: str, channel: str | None, vals: dict[str, str]) -> str:
+def pin_to_nightly(page: str, key: str) -> str:
+    """Keep one package's panel on nightly links; its stable permalink would 404."""
+    start = page.find(f'<div class="pkg" data-os="{key.removeprefix(".").lower()}">')
+    if start < 0:
+        return page
+    ends = [i for i in (page.find('<div class="pkg"', start + 1), page.find("</form>", start)) if i >= 0]
+    end = min(ends) if ends else len(page)
+    return page[:start] + page[start:end].replace("/dl/stable/", "/dl/nightly/") + page[end:]
+
+
+def render(page: str, channel: str | None, vals: dict[str, str], nightly_packages: list[str] | tuple[str, ...] = ()) -> str:
     page = MARK.sub(lambda m: f"<!--r:{m[1]}-->{vals.get(m[1], m[2])}<!--/r:{m[1]}-->", page)
     if channel:
         page = re.sub(r"(https://app\.put\.gd/dl/)(?:stable|nightly)/", rf"\g<1>{channel}/", page)
+    for key in nightly_packages:
+        page = pin_to_nightly(page, key)
     return page
 
 
@@ -174,7 +198,7 @@ def main() -> int:
         shots = json.loads(shots_path.read_text()) if shots_path.exists() else None
         channel, vals = values(releases, shots)
         index = PUBLIC / "index.html"
-        page = render(index.read_text(), channel, vals)
+        page = render(index.read_text(), channel, vals, nightly_only(releases))
         index.write_text(sized(page, shots) if shots else page)
         print(f"rendered index.html for {channel or 'no release'}")
 
