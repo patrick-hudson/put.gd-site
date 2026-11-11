@@ -16,6 +16,8 @@
     "files": ["nautilus", "--new-window"],
     "player": ["dbus-run-session", "--", "showtime"],
     "playerNote": "Showtime 50 deadlocks when GNOME Shell queries its MPRIS volume while the video prerolls; a private session bus avoids that.",
+    "extensions": ["appindicatorsupport@rgcjonas.gmail.com"],
+    "extensionsNote": "The tray icon needs GNOME's AppIndicator extension; the lab keeps it switched off between runs.",
     "relogin": "gdm",
     "hidpi": {"kernelConnector": "HDMI-A-1", "monitorConnector": "HDMI-1"},
     "wallpaper": {

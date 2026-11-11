@@ -30,7 +30,7 @@
 
 ## Where it is
 
-The DEB and RPM packages install `putgd-cli` on your path. The AppImage carries it inside, so extract it first:
+The packages install `putgd-cli` on your path. The AppImage carries it inside, so extract it first:
 
 ```bash
 ./putgd-*.AppImage --appimage-extract
@@ -39,11 +39,17 @@ squashfs-root/usr/bin/putgd-cli capabilities
 
 ## Capture, record and upload the clipboard
 
-`action` can be `region`, `window`, `desktop`, `clipboard`, `edit` or `record`.
+`action` can be `region`, `window`, `monitor`, `desktop`, `repeat`, `clipboard`, `edit` or `record`.
 
 ```bash
 putgd-cli action.invoke '{"action":"clipboard"}'
 putgd-cli action.invoke '{"action":"record","mode":"toggle"}'
+```
+
+`monitor` captures the monitor the pointer is on, and `repeat` captures your last region again. The screen captures also take `delaySeconds` of 3, 5 or 10. The reply still comes at once, and `operation.cancel` stops the countdown:
+
+```bash
+putgd-cli action.invoke '{"action":"window","delaySeconds":5}'
 ```
 
 ## Upload files and folders
@@ -103,6 +109,14 @@ putgd-cli settings.patch '{"patch":{"retention":{"recentActivityLimit":77}},"exp
 
 Enter access keys in [Destinations](destinations.md); the command line refuses them.
 
+## Add a custom uploader
+
+Import a ShareX `.sxcu` file as a [custom uploader](destinations-custom.md) destination. Pass the revision as for `settings.patch`. The reply lists the names of the values it stored in your keychain, never the values:
+
+```bash
+putgd-cli settings.importUploader '{"path":"/home/you/uploader.sxcu","expectedRevision":"RETURNED-OBSERVED-REVISION"}'
+```
+
 ## Diagnostics
 
 See the app's status, or save the package described in [Get help](troubleshooting.md#get-help):
@@ -119,12 +133,15 @@ putgd-cli diagnostics.bundle --since 7d
 | Area | Methods |
 | --- | --- |
 | Work in progress | `operation.cancel`, `operation.retry`, `operation.retryLocalSave` |
-| Editor | `editor.open`, `editor.inspect`, `editor.apply`, `editor.cancel` |
-| Recording | `recording.prepare`, `recording.stop`, `recording.upload`, `recording.inspect` |
-| History | `history.detail`, `history.openLink`, `delete.prepare`, `delete.confirm` |
-| App | `update.status`, `update.check`, `ui.quit` |
+| Editor | `editor.open`, `editor.inspect`, `editor.apply`, `editor.copy`, `editor.cancel` |
+| Recording | `recording.prepare`, `recording.microphones`, `recording.windows`, `recording.stop`, `recording.upload`, `recording.inspect` |
+| History | `history.detail`, `history.counts`, `history.openLink`, `delete.prepare`, `delete.confirm` |
+| Destinations | `setup.testDestination`, `setup.inspect` |
+| App | `desktop.setup`, `update.status`, `update.check`, `ui.quit` |
 
-The [full method list](https://github.com/patrick-hudson/put.gd-desktop/blob/nightly/docs/cli.md) gives every parameter.
+`history.copyLink` renews an [expired link](history.md#when-a-link-expires) before copying it. `recording.prepare` records the microphone when you pass `"audio":{"microphone":true}`.
+
+The [full method list](https://github.com/patrick-hudson/put.gd-desktop/blob/nightly/docs/automation/cli.md) gives every parameter. Some of these arrived after the last stable release; see [stable or nightly](index.md#stable-or-nightly).
 
 ## Read the reply
 

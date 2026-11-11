@@ -11,14 +11,25 @@ put.gd checks once a day and tells you when a new version is out, but nothing in
 
 ## What the Updates section shows
 
-Open **Settings → General** and scroll to **Updates**. The picture is the Fedora package with the daily check turned off.
+Open **Settings → General** and scroll to **Updates**. The picture is the nightly Fedora package with the daily check turned off.
 
 - **Check for updates once a day** is on until you turn it off. **Check now** works either way.
-- **Channel** is *Stable* or *Nightly*. You choose it on an AppImage. On a DEB or RPM, the line below names the repository file that sets it.
+- **Channel** is *Stable* or *Nightly*. You choose it on an AppImage. On a package, the line below names the repository file that sets it.
 - **Status** gives the last result and when the next check runs.
-- **Other channel**, on a DEB or RPM, lists the commands that change channel.
+- **Other channel**, on a package, lists the commands that change channel.
 
 The request carries nothing that identifies you, and your computer does the comparison.
+
+## Which version you have
+
+Choose **About put.gd** in the tray menu. The version is under the name, and **Build details** has more to quote in a bug report. The version is also at the bottom right of the main window.
+
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 528px" srcset="/_site/shots/about-light.avif 528w, /_site/shots/about-light@2x.avif 1056w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 528px" srcset="/_site/shots/about-dark.avif 528w, /_site/shots/about-dark@2x.avif 1056w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 528px" srcset="/_site/shots/about-light.webp 528w, /_site/shots/about-light@2x.webp 1056w">
+  <img src="/_site/shots/about-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 528px" srcset="/_site/shots/about-dark.webp 528w, /_site/shots/about-dark@2x.webp 1056w" width="528" height="361" loading="lazy" alt="The About put.gd window: the app icon, its version, Build details and a link to the put.gd website.">
+</picture>
 
 ## Who is told
 
@@ -27,7 +38,7 @@ The request carries nothing that identifies you, and your computer does the comp
 | Your install | Notification | Tray menu |
 | --- | --- | --- |
 | Nightly, any format | Never | No |
-| Stable DEB or RPM | Never: your system's updater tells you | Yes |
+| Stable DEB, RPM or Arch package | Never: your system's updater tells you | Yes |
 | Stable AppImage | Once per version | Yes |
 
 ## Update a DEB or RPM
@@ -39,7 +50,15 @@ The packages add put.gd's repository, so updates arrive like any other package's
 
 The **Or in a terminal** row has the command instead.
 
-On GNOME, log out and back in after updating. Until then, screenshots keep working, but recording a region is refused.
+On GNOME, put.gd asks you to log out and back in after an update that changes its Shell extension. Until you do, window and desktop captures keep working, but region captures and recordings are refused.
+
+## Update the Arch package
+
+The installer added put.gd's signed pacman repository, so put.gd updates with the rest of your system:
+
+```bash
+sudo pacman -Syu
+```
 
 ## Update the AppImage
 
@@ -70,7 +89,7 @@ The old version stays beside the AppImage as a hidden file until the new one has
 
 ## Switch between nightly and stable
 
-There is no stable release yet, so stay on nightly for now.
+Nightly builds carry [what's new since the last stable release](index.md#stable-or-nightly). A stable release is usually older than the nightly you have.
 
 === "AppImage"
 
@@ -78,9 +97,7 @@ There is no stable release yet, so stay on nightly for now.
     2. Click **Switch to** and the version. If it's older, put.gd asks first, because it may not open settings or history saved by a newer one.
     3. Click **Restart put.gd**.
 
-    Until the first stable release, choosing *Stable* shows no button, and your nightly gets no updates while it's chosen.
-
-=== "DEB or RPM"
+=== "DEB, RPM or Arch package"
 
     Your system's repository sets the channel.
 

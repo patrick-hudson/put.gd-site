@@ -6,7 +6,7 @@ A destination is the place put.gd uploads your files to, such as a storage bucke
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-light.avif 1368w, /_site/shots/storage-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.avif 1368w, /_site/shots/storage-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-light.webp 1368w, /_site/shots/storage-light@2x.webp 2736w">
-  <img src="/_site/shots/storage-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.webp 1368w, /_site/shots/storage-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with an S3 bucket: S3 service, bucket, region, folder, upload access request and link domain.">
+  <img src="/_site/shots/storage-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.webp 1368w, /_site/shots/storage-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with an S3 bucket: S3 service, bucket, region, folder, upload access request, who can open files and link domain.">
 </picture>
 
 1. Open the put.gd window and choose **Destinations**.
@@ -15,6 +15,7 @@ A destination is the place put.gd uploads your files to, such as a storage bucke
     - [**Amazon S3 / S3-compatible**](destinations-s3.md): your own bucket on Amazon S3, Cloudflare R2 or a similar service.
     - [**Proton Drive**](destinations-proton.md): a folder in your Proton account, shared through Proton's own page.
     - [**Backblaze B2**](destinations-b2.md): a Backblaze bucket with public or expiring links.
+    - [**Custom uploader (HTTP)**](destinations-custom.md): your own server, or any service that gives you a ShareX `.sxcu` file.
 4. Click **Test upload and link**. On Proton Drive the button is **Check account and folder**.
 5. Click **Make default…** to send your captures there.
 
@@ -40,7 +41,7 @@ Local copies are a separate choice. Turn on **Keep a local copy** to keep saving
 Select a destination and click **⋯** beside its name:
 
 - **Rename destination** changes the name shown in put.gd. It doesn't rename a bucket, change keys or move uploaded files.
-- **Storage service** switches between **Amazon S3 / compatible**, **Proton Drive** and **Backblaze B2**.
+- **Storage service** switches between **Amazon S3 / compatible**, **Proton Drive**, **Backblaze B2** and **Custom uploader (HTTP)**.
 - **Remove destination…** is covered below.
 - **Move up** and **Move down** change the order.
 

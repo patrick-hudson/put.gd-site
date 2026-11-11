@@ -25,7 +25,7 @@ There is no confirmation step. The upload starts right away.
 
 | File manager | Desktop | Where the entry is |
 | --- | --- | --- |
-| Files | GNOME, Unity, Flashback, Budgie | Right-click menu; **Scripts** with the AppImage |
+| Files | GNOME, Unity, Flashback, Budgie, Hyprland on Omarchy | Right-click menu; **Scripts** with the AppImage |
 | Dolphin | KDE Plasma | Right-click menu |
 | Nemo | Cinnamon, Budgie | Right-click menu |
 | Thunar | XFCE | **Send To** |
@@ -48,13 +48,13 @@ Choose how folders upload in **Settings → General → File manager → Folders
 
 ## Turn the entry on or off
 
-With the DEB or RPM the entry is always on. With the AppImage, the first run adds it and shows a notice: "Upload with put.gd is now in your file manager's right-click menu." To turn it off or back on, use **Settings → General → File manager → File manager menu**.
+With a package the entry is always on. With the AppImage, the first run adds it and shows a notice: "Upload with put.gd is now in your file manager's right-click menu." To turn it off or back on, use **Settings → General → File manager → File manager menu**.
 
 ## If the entry does not appear yet
 
-Files keeps running after you close its last window, so the entry may appear only after it restarts. Caja and PCManFM can also need a restart.
+Files keeps running after you close its last window, so the entry may appear only after it restarts. Caja and PCManFM can also need a restart. Logging out and back in restarts them all.
 
-The first time put.gd runs after installing, its notice names the file manager if it needs one. If your desktop's notifications can show buttons, the notice offers **Restart Files**, or the same for Caja or PCManFM. This closes all of that file manager's windows.
+With the AppImage, the first-run notice names the file manager if it needs a restart. If your desktop's notifications can show buttons, the notice offers **Restart Files**, or the same for PCManFM. This closes all of that file manager's windows.
 
 ## What is refused
 

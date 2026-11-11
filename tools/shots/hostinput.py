@@ -14,7 +14,8 @@ from pathlib import Path
 
 AXIS_MAX = 32767
 QCODES = {'super': 'meta_l', 'shift': 'shift', 'end': 'end', 'home': 'home', 'esc': 'esc',
-          'down': 'down', 'right': 'right', 'menu': 'menu', 'ret': 'ret'}
+          'down': 'down', 'right': 'right', 'menu': 'compose', 'ret': 'ret',
+          'tab': 'tab', 'pgdn': 'pgdn', 'pgup': 'pgup', 'up': 'up', 'space': 'spc'}  # the lab agent calls the Menu key compose
 AGENT_PATTERN = '[h]ost_input.py serve'
 
 

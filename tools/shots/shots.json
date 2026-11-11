@@ -18,29 +18,35 @@
   "story": [
     {"id": "aurora", "kind": "region-capture", "media": "aurora", "selection": [0.16, 0.1, 0.68, 0.42]},
     {"id": "saturn", "kind": "region-capture", "media": "saturn", "selection": [0.2, 0.3, 0.6, 0.4]},
-    {"id": "edit", "kind": "edit", "media": "plaque", "redact": [0.36, 0.492, 0.37, 0.078], "tool": "arrow",
+    {"id": "edit", "kind": "edit", "media": "plaque", "redact": [0.36, 0.492, 0.37, 0.078], "tool": "step",
      "annotate": [
        {"kind": "rectangle", "rect": [0.385, 0.295, 0.3, 0.125], "color": "#FF5A36", "width": 10},
        {"kind": "highlight", "rect": [0.37, 0.425, 0.34, 0.035]},
        {"kind": "arrow", "from": [0.9, 0.16], "to": [0.7, 0.29], "color": "#FF5A36", "width": 12},
-       {"kind": "text", "at": [0.58, 0.09], "text": "Both hemispheres", "color": "#FF5A36", "fontPixels": 56}
+       {"kind": "text", "at": [0.58, 0.09], "text": "Both hemispheres", "color": "#FF5A36", "fontPixels": 56},
+       {"kind": "step", "at": [0.33, 0.358], "number": 1, "size": 110, "color": "#FF5A36"},
+       {"kind": "step", "at": [0.33, 0.447], "number": 2, "size": 110, "color": "#FF5A36"}
      ]},
     {"id": "record", "kind": "record", "media": "sintel", "clip": {"start": 20, "seconds": 20},
-     "area": [0.12, 0.14, 0.76, 0.72], "seconds": 6, "trim": [0.8, 5.2], "playheads": [1.2, 1.8, 2.4, 3.0, 3.6, 4.2, 4.8]},
+     "area": [0.12, 0.14, 0.76, 0.72], "seconds": 6, "trim": [0.8, 5.2], "playheads": [1.2, 1.8, 2.4, 3.0, 3.6, 4.2, 4.8], "bar": "record-bar", "microphone": true},
     {"id": "upload", "kind": "file-upload", "media": "blue-marble", "filename": "blue-marble.jpg"},
     {"id": "capture", "kind": "region-capture", "media": "earthrise", "selection": [0.381, 0.37, 0.378, 0.231], "hold": true},
     {"id": "history", "kind": "history", "window": [1320, 880]},
+    {"id": "gallery", "kind": "history", "window": [1320, 880], "view": "gallery"},
     {"id": "storage", "kind": "destinations"},
     {"id": "settings", "kind": "settings", "row": 2},
     {"id": "general", "kind": "settings", "row": 0},
     {"id": "capture-settings", "kind": "settings", "row": 1},
+    {"id": "recording-settings", "kind": "settings", "row": 1, "scroll": 220},
     {"id": "advanced", "kind": "settings", "row": 3},
     {"id": "updates", "kind": "settings", "view": "updates"},
     {"id": "proton", "kind": "destination", "provider": "proton-drive"},
     {"id": "b2", "kind": "destination", "provider": "backblaze-b2"},
+    {"id": "custom", "kind": "destination", "provider": "custom-http"},
     {"id": "desktop", "kind": "desktop", "window": [1320, 880]},
     {"id": "tray", "kind": "tray"},
-    {"id": "file-manager", "kind": "file-manager"}
+    {"id": "file-manager", "kind": "file-manager"},
+    {"id": "about", "kind": "about"}
   ],
   "shots": [
     {"name": "history", "step": "history", "themes": ["dark", "light"],
@@ -72,6 +78,16 @@
     {"name": "file-manager", "step": "file-manager", "themes": ["dark", "light"],
      "desktop": {"anchor": "frame", "pad": 48, "clamp": "screen"}},
     {"name": "tray", "step": "tray", "themes": ["dark", "light"],
-     "desktop": {"anchor": "menu", "pad": 48, "clamp": "screen"}}
+     "desktop": {"anchor": "menu", "pad": 48, "clamp": "screen"}},
+    {"name": "gallery", "step": "gallery", "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "pad": 48}},
+    {"name": "recording-settings", "step": "recording-settings", "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "pad": 48}},
+    {"name": "custom", "step": "custom", "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "pad": 48}},
+    {"name": "about", "step": "about", "themes": ["dark", "light"],
+     "desktop": {"anchor": "window", "pad": 48}},
+    {"name": "record-bar", "step": "record-bar", "themes": ["dark", "light"],
+     "desktop": {"anchor": "viewer", "pad": 48}}
   ]
 }

@@ -112,6 +112,15 @@ class Source(unittest.TestCase):
             self.assertEqual(len(re.findall(r"^# ", text, re.M)), 1, f"{page}: needs exactly one # title")
             self.assertTrue(re.search(r'<picture class="shot"|!\[[^\]]*\]\(img/', text), f"{page}: has no picture")
 
+    def test_pictures_match_the_manifest(self):
+        import guide_pictures
+        import json
+        known = guide_pictures.sizes(json.loads(guide_pictures.MANIFEST.read_text()))
+        for path in guide_pictures.PAGES:
+            text = path.read_text()
+            self.assertEqual(guide_pictures.rewrite(text, known, path.name), text,
+                             f"{path.name}: pictures out of date; run tools/guide_pictures.py")
+
     def test_codename_absent(self):
         word = os.environ.get("PUTGD_FORBIDDEN_WORD") or "".join(["gra", "ph", "ite"])
         for path in list(DOCS.rglob("*")) + list((ROOT / "guide").glob("*")):

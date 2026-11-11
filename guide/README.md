@@ -31,6 +31,10 @@ in the present tense, with plain words. Every page answers "how do I ..." and sh
   the source disagree, the source and the pictures win: the pictures are the current build. Do
   not invent a menu item, a default, a shortcut or a platform behaviour. If a source is unclear,
   say less rather than guess.
+- **Stable and nightly.** The pictures and the text describe the nightly. What the current stable
+  release lacks is listed once, in `index.md` under "Stable or nightly"; a page that covers one of
+  those features carries a short `!!! note "In nightly builds for now"` that links there. When a
+  stable release ships, empty that list and remove the notes it made true.
 - **The app's internal design codename must never appear.** It is the word in the `SITE_CODENAME_GUARD`
   repository variable; the deploy refuses any file that names it, this folder included.
 - **Formatting available:** `!!! note "Title"`, `!!! warning "Title"`, `!!! tip`, collapsible
@@ -44,7 +48,12 @@ Every page starts with a picture when one fits. All pictures are real windows fr
 nightly, captured by `tools/shots/` on the lab's Fedora 44 GNOME desktop and published under
 `/_site/shots/` in dark and light. Paste the block as is; change only the `alt` if a more specific
 description fits the page. They follow the reader's colour scheme. There are no pictures of KDE
-Plasma or Cinnamon: the lab has only GNOME, and the guide says so where it matters.
+Plasma, Cinnamon, Budgie or Hyprland: the lab captures only on GNOME, and the guide says so where
+it matters.
+
+After a capture run, `python3 tools/guide_pictures.py` rewrites every block here and in `docs/`
+from `public/_site/shots/shots.json`, keeping each block's `alt`, so a shot whose size changed
+needs no hand edit. `tools/test_userguide.py` fails while a block is out of date.
 
 **desktop** — put.gd running on Fedora 44 with GNOME: the History window open on the desktop.
 
@@ -57,14 +66,14 @@ Plasma or Cinnamon: the lab has only GNOME, and the guide says so where it matte
 </picture>
 ```
 
-**tray** — The put.gd tray menu on GNOME: the current output, Change output, Capture region, Capture window, Capture desktop, Capture region & edit, Edit image, Record screen, Upload clipboard, then History, Destinations and Settings.
+**tray** — The put.gd tray menu on GNOME: the current output, Change output, Capture region, Repeat last region, Capture window, Capture monitor, Capture desktop, Capture delay, Capture region & edit, Edit image, Record screen and Upload clipboard, then History, Destinations and Settings, then About put.gd and Quit put.gd.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-light.avif 389w, /_site/shots/tray-light@2x.avif 778w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-dark.avif 389w, /_site/shots/tray-dark@2x.avif 778w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-light.webp 389w, /_site/shots/tray-light@2x.webp 778w">
-  <img src="/_site/shots/tray-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-dark.webp 389w, /_site/shots/tray-dark@2x.webp 778w" width="389" height="635" loading="lazy" alt="The put.gd tray menu on GNOME: the current output, Change output, Capture region, Capture window, Capture desktop, Capture region & edit, Edit image, Record screen, Upload clipboard, then History, Destinations and Settings.">
+  <img src="/_site/shots/tray-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-dark.webp 389w, /_site/shots/tray-dark@2x.webp 778w" width="389" height="746" loading="lazy" alt="The put.gd tray menu on GNOME: the current output, Change output, Capture region, Repeat last region, Capture window, Capture monitor, Capture desktop, Capture delay, Capture region &amp; edit, Edit image, Record screen and Upload clipboard, then History, Destinations and Settings, then About put.gd and Quit put.gd.">
 </picture>
 ```
 
@@ -79,14 +88,25 @@ Plasma or Cinnamon: the lab has only GNOME, and the guide says so where it matte
 </picture>
 ```
 
-**history** — The History window: recent captures with thumbnails, the newest one selected and marked Shared link.
+**history** — The History window: today's captures with thumbnails and times, counts beside each list on the left, and the newest capture's details and link on the right.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/history-light.avif 1368w, /_site/shots/history-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/history-dark.avif 1368w, /_site/shots/history-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/history-light.webp 1368w, /_site/shots/history-light@2x.webp 2736w">
-  <img src="/_site/shots/history-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/history-dark.webp 1368w, /_site/shots/history-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The History window: recent captures with thumbnails, the newest one selected and marked Shared link.">
+  <img src="/_site/shots/history-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/history-dark.webp 1368w, /_site/shots/history-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The History window: today&#x27;s captures with thumbnails and times, counts beside each list on the left, and the newest capture&#x27;s details and link on the right.">
+</picture>
+```
+
+**gallery** — History in gallery view: a grid of larger thumbnails, each with its name, details and time.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/gallery-light.avif 1368w, /_site/shots/gallery-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/gallery-dark.avif 1368w, /_site/shots/gallery-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/gallery-light.webp 1368w, /_site/shots/gallery-light@2x.webp 2736w">
+  <img src="/_site/shots/gallery-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/gallery-dark.webp 1368w, /_site/shots/gallery-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="History in gallery view: a grid of larger thumbnails, each with its name, details and time.">
 </picture>
 ```
 
@@ -101,14 +121,25 @@ Plasma or Cinnamon: the lab has only GNOME, and the guide says so where it matte
 </picture>
 ```
 
-**edit** — The image editor with a box, a highlight, an arrow, a text label and a redaction on a photo.
+**edit** — The image editor with the Step number tool chosen: numbered steps, a box, a highlight, an arrow, a text label and a redaction on a photo.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/edit-light.avif 1609w, /_site/shots/edit-light@2x.avif 3218w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/edit-dark.avif 1609w, /_site/shots/edit-dark@2x.avif 3218w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/edit-light.webp 1609w, /_site/shots/edit-light@2x.webp 3218w">
-  <img src="/_site/shots/edit-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/edit-dark.webp 1609w, /_site/shots/edit-dark@2x.webp 3218w" width="1609" height="1020" loading="lazy" alt="The image editor with a box, a highlight, an arrow, a text label and a redaction on a photo.">
+  <img src="/_site/shots/edit-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/edit-dark.webp 1609w, /_site/shots/edit-dark@2x.webp 3218w" width="1609" height="1020" loading="lazy" alt="The image editor with the Step number tool chosen: numbered steps, a box, a highlight, an arrow, a text label and a redaction on a photo.">
+</picture>
+```
+
+**record-bar** — An area of a video outlined and ready to record, with the floating bar below it: Ready to record, System audio, Microphone with its level meter, the format, Start recording and Cancel.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-bar-light.avif 1278w, /_site/shots/record-bar-light@2x.avif 2556w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-bar-dark.avif 1278w, /_site/shots/record-bar-dark@2x.avif 2556w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-bar-light.webp 1278w, /_site/shots/record-bar-light@2x.webp 2556w">
+  <img src="/_site/shots/record-bar-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-bar-dark.webp 1278w, /_site/shots/record-bar-dark@2x.webp 2556w" width="1278" height="747" loading="lazy" alt="An area of a video outlined and ready to record, with the floating bar below it: Ready to record, System audio, Microphone with its level meter, the format, Start recording and Cancel.">
 </picture>
 ```
 
@@ -123,14 +154,14 @@ Plasma or Cinnamon: the lab has only GNOME, and the guide says so where it matte
 </picture>
 ```
 
-**storage** — The Destinations page with an S3 bucket: S3 service, bucket, region, folder, upload access request and link domain.
+**storage** — The Destinations page with an S3 bucket: S3 service, bucket, region, folder, upload access request, who can open files and link domain.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-light.avif 1368w, /_site/shots/storage-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.avif 1368w, /_site/shots/storage-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-light.webp 1368w, /_site/shots/storage-light@2x.webp 2736w">
-  <img src="/_site/shots/storage-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.webp 1368w, /_site/shots/storage-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with an S3 bucket: S3 service, bucket, region, folder, upload access request and link domain.">
+  <img src="/_site/shots/storage-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.webp 1368w, /_site/shots/storage-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with an S3 bucket: S3 service, bucket, region, folder, upload access request, who can open files and link domain.">
 </picture>
 ```
 
@@ -156,6 +187,17 @@ Plasma or Cinnamon: the lab has only GNOME, and the guide says so where it matte
 </picture>
 ```
 
+**custom** — The Destinations page with a custom uploader: Import .sxcu, Method, Request URL, Body, File form name and a secret Authorization header.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/custom-light.avif 1368w, /_site/shots/custom-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/custom-dark.avif 1368w, /_site/shots/custom-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/custom-light.webp 1368w, /_site/shots/custom-light@2x.webp 2736w">
+  <img src="/_site/shots/custom-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/custom-dark.webp 1368w, /_site/shots/custom-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a custom uploader: Import .sxcu, Method, Request URL, Body, File form name and a secret Authorization header.">
+</picture>
+```
+
 **general** — Settings → General: Launch at login, Unlock saved credentials, Show desktop notifications, Theme, File manager and Updates.
 
 ```html
@@ -167,36 +209,47 @@ Plasma or Cinnamon: the lab has only GNOME, and the guide says so where it matte
 </picture>
 ```
 
-**capture-settings** — Settings → Capture: Destination, Sharing, After uploading, Different output for some actions, and Region selection.
+**capture-settings** — Settings → Capture: Destination, Sharing, After uploading, Different output for some actions, Region selection and Screen recording.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.avif 1368w, /_site/shots/capture-settings-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.avif 1368w, /_site/shots/capture-settings-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.webp 1368w, /_site/shots/capture-settings-light@2x.webp 2736w">
-  <img src="/_site/shots/capture-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.webp 1368w, /_site/shots/capture-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture: Destination, Sharing, After uploading, Different output for some actions, and Region selection.">
+  <img src="/_site/shots/capture-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.webp 1368w, /_site/shots/capture-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture: Destination, Sharing, After uploading, Different output for some actions, Region selection and Screen recording.">
 </picture>
 ```
 
-**settings** — Settings → Shortcuts, with global shortcuts for capturing, recording and uploading.
+**recording-settings** — Settings → Capture, further down: Region selection, Screen recording with Frame rate, Microphone and Draw a ring at each click, and Local copies.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-light.avif 1368w, /_site/shots/recording-settings-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-dark.avif 1368w, /_site/shots/recording-settings-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-light.webp 1368w, /_site/shots/recording-settings-light@2x.webp 2736w">
+  <img src="/_site/shots/recording-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-dark.webp 1368w, /_site/shots/recording-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture, further down: Region selection, Screen recording with Frame rate, Microphone and Draw a ring at each click, and Local copies.">
+</picture>
+```
+
+**settings** — Settings → Shortcuts: a key for each capture, for recording and for uploading the clipboard, with Repeat last region and Capture monitor not set.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-light.avif 1368w, /_site/shots/settings-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-dark.avif 1368w, /_site/shots/settings-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-light.webp 1368w, /_site/shots/settings-light@2x.webp 2736w">
-  <img src="/_site/shots/settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-dark.webp 1368w, /_site/shots/settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Shortcuts, with global shortcuts for capturing, recording and uploading.">
+  <img src="/_site/shots/settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-dark.webp 1368w, /_site/shots/settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Shortcuts: a key for each capture, for recording and for uploading the clipboard, with Repeat last region and Capture monitor not set.">
 </picture>
 ```
 
-**advanced** — Settings → Advanced: limits, thumbnail cache, history retention, Diagnostics and the configuration file.
+**advanced** — Settings → Advanced: history retention, Resource limits, Diagnostics and Desktop support details.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.avif 1368w, /_site/shots/advanced-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.avif 1368w, /_site/shots/advanced-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.webp 1368w, /_site/shots/advanced-light@2x.webp 2736w">
-  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: limits, thumbnail cache, history retention, Diagnostics and the configuration file.">
+  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: history retention, Resource limits, Diagnostics and Desktop support details.">
 </picture>
 ```
 
@@ -211,3 +264,13 @@ Plasma or Cinnamon: the lab has only GNOME, and the guide says so where it matte
 </picture>
 ```
 
+**about** — The About put.gd window: the app icon, its version, Build details and a link to the put.gd website.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 528px" srcset="/_site/shots/about-light.avif 528w, /_site/shots/about-light@2x.avif 1056w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 528px" srcset="/_site/shots/about-dark.avif 528w, /_site/shots/about-dark@2x.avif 1056w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 528px" srcset="/_site/shots/about-light.webp 528w, /_site/shots/about-light@2x.webp 1056w">
+  <img src="/_site/shots/about-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 528px" srcset="/_site/shots/about-dark.webp 528w, /_site/shots/about-dark@2x.webp 1056w" width="528" height="361" loading="lazy" alt="The About put.gd window: the app icon, its version, Build details and a link to the put.gd website.">
+</picture>
+```

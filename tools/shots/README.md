@@ -10,7 +10,9 @@ python3 tools/shots/capture.py                      # f44, latest nightly
 python3 tools/shots/capture.py --host f44 --release v26.1029.2229-nightly
 ```
 
-Rerun it whenever the app's UI changes. It takes about 10 minutes and is safe to
+Rerun it whenever the app's UI changes, then run `python3 tools/guide_pictures.py`
+so the user guide's picture blocks pick up any new sizes. It takes about 20 minutes
+(12 on the desktop, the rest encoding) and is safe to
 rerun: it restores the host at the end, and a rerun first repairs anything an
 interrupted run left behind.
 
@@ -51,24 +53,30 @@ its cleanup check passes):
    come over VNC, but pointer and keys go through the lab's kernel input agent
    (`tools/lab/host_input.py`), because VNC drops pointer positions past the logical
    1920x1080.
-3. Writes the demo key to the default keyring in put.gd's keychain format under a
+3. Turns on the Shell extensions the story needs: put.gd's own and the host's
+   `extensions` in `hosts.json` (AppIndicator, for the tray). The lab keeps them in
+   `disabled-extensions` between runs, and put.gd respects that switch instead of
+   undoing it. Both extension lists are saved first and put back at the end.
+4. Writes the demo key to the default keyring in put.gd's keychain format under a
    fresh `putgd-lab-<uuid>` reference. The blank lab keyring is unlocked only if
    that needs no prompt.
-4. Covers the screen with its own backdrop window. The backdrop is magenta while
+5. Covers the screen with its own backdrop window. The backdrop is magenta while
    a window is located, then dark `#121212` or light `#EDEDEA`. Your windows stay
    behind it, untouched.
-5. Runs put.gd with private config, data, cache, state and runtime dirs, plus
-   Loupe and Showtime with private dirs and in-memory settings. It turns
+6. Runs put.gd with private config, data, cache, state and runtime dirs, plus
+   Loupe and Showtime with private dirs and in-memory settings. Only the session's
+   sound server is shared (`PULSE_SERVER`), for the recording bar's microphone. It turns
    notification banners off and switches GNOME's colour scheme for each theme.
-6. Runs the story: region captures of NASA photos, an edit with a redaction, a
-   region recording of the Sintel trailer, a clipboard file upload, then History,
-   Destinations and Settings.
-7. For `desktop`, moves the History window to the last (empty) workspace with
+7. Runs the story: region captures of NASA photos, an edit with step numbers and a
+   redaction, a region recording of the Sintel trailer (its floating bar first, with
+   the microphone ticked), a clipboard file upload, then History in list and gallery,
+   Destinations, Settings and About.
+8. For `desktop`, moves the History window to the last (empty) workspace with
    Super+Shift+End, sets the stock wallpaper and grabs the whole screen, then
    switches back with Super+Home.
-8. Restores everything: stops exactly the PIDs it started, deletes the keychain
+9. Restores everything: stops exactly the PIDs it started, deletes the keychain
    entry and the run directory, restores the GNOME settings it changed
-   (colour scheme, banners, wallpaper), removes the package, clears the override
+   (colour scheme, banners, wallpaper, the two extension lists), removes the package, clears the override
    and logs in afresh at 1080p to unload the extension.
 
 What it records is kept in `~/.local/state/site-shots/state.json` on the host.
@@ -103,6 +111,19 @@ under a UUID key with `PermissionStore.Set` and write that UUID to the token fil
   - `window`: the app window.
   - `viewer`/`selection`: the photo viewer and the dragged region.
   - `screen`: the whole screen.
+
+  Step options worth knowing:
+  - `edit`: `annotate` takes the editor's shapes (arrow, line, rectangle, ellipse,
+    highlight, blur, text, step, pen) with positions as fractions of the image, and
+    `tool` is the tool left selected.
+  - `record`: `"bar": "NAME"` also keeps a frame of the floating bar, ready to record,
+    as a step called NAME (anchors `viewer`, the player window, and `area`);
+    `"microphone": true` ticks Microphone, which needs an input on the host.
+  - `history`: `"view": "gallery"` for the gallery.
+  - `settings`: `row` picks the category, and `scroll` then drags the page's
+    scrollbar down that many pixels.
+  - `destination`: a `provider`'s form with made-up values and no credentials
+    (`proton-drive`, `backblaze-b2`, `custom-http`).
 
   A crop is one of:
   - `{"pad": N}`: grow the anchor by N. With `"clamp"`, the result is clipped to

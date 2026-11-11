@@ -19,11 +19,12 @@ nav = [
     { "Amazon S3 and compatible" = "destinations-s3.md" },
     { "Backblaze B2" = "destinations-b2.md" },
     { "Proton Drive" = "destinations-proton.md" },
+    { "Custom uploader" = "destinations-custom.md" },
   ] },
   { "History" = "history.md" },
   { "Settings" = "settings.md" },
   { "Keeping it updated" = "updating.md" },
-  { "GNOME, KDE and Cinnamon" = "desktops.md" },
+  { "Your desktop" = "desktops.md" },
   { "Troubleshooting" = "troubleshooting.md" },
   { "Command line" = "cli.md" },
 ]

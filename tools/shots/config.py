@@ -24,10 +24,15 @@ STEP_KINDS = {
     'file-manager': (set(), {'window', 'menu', 'frame'}),
     # The whole physical screen (top bar, wallpaper, the History window) on an empty workspace.
     'desktop': ({'window'}, {'screen', 'window'}),
+    # The About window on the backdrop.
+    'about': (set(), {'window'}),
+    # Not a story step: the frame a record step keeps of its floating bar, named by the step's `bar`.
+    'record-bar': (set(), {'viewer', 'area'}),
 }
 VARIANTS = ('desktop', 'mobile')
-PROVIDERS = ('proton-drive', 'backblaze-b2')
-ANNOTATION_FIELDS = {'arrow': {'from', 'to'}, 'rectangle': {'rect'}, 'highlight': {'rect'}, 'text': {'at', 'text'}}
+PROVIDERS = ('proton-drive', 'backblaze-b2', 'custom-http')
+ANNOTATION_FIELDS = {'arrow': {'from', 'to'}, 'line': {'from', 'to'}, 'rectangle': {'rect'}, 'ellipse': {'rect'},
+                     'highlight': {'rect'}, 'blur': {'rect'}, 'text': {'at', 'text'}, 'step': {'at'}, 'pen': {'points'}}
 
 
 class ConfigError(ValueError):
@@ -133,10 +138,15 @@ def validate_shots(cfg, media_ids=None):
             continue
         if sid in steps:
             errors.append(f'{where}: duplicate id {sid}')
-        if kind not in STEP_KINDS:
-            errors.append(f'{where}: kind must be one of {sorted(STEP_KINDS)}')
+        if kind not in STEP_KINDS or kind == 'record-bar':
+            errors.append(f'{where}: kind must be one of {sorted(set(STEP_KINDS) - {"record-bar"})}')
             continue
         steps[sid] = step
+        if kind == 'record' and 'bar' in step:
+            if not isinstance(step['bar'], str) or not NAME.match(step['bar']) or step['bar'] in steps:
+                errors.append(f'{where}: bar must be a new step name for the floating bar\'s frame')
+            else:
+                steps[step['bar']] = {'id': step['bar'], 'kind': 'record-bar'}
         required, _ = STEP_KINDS[kind]
         missing = required - set(step)
         if missing:
@@ -172,6 +182,12 @@ def validate_shots(cfg, media_ids=None):
                     errors.append(f'{where}.annotate[{i}]: {shape["kind"]} needs {sorted(needed - set(shape))}')
                 if 'rect' in shape:
                     _fraction_box(shape['rect'], f'{where}.annotate[{i}].rect', errors)
+                if 'points' in shape:
+                    points = shape['points']
+                    if not (isinstance(points, list) and 1 <= len(points) <= 2000
+                            and all(_pair(point, f'{where}.annotate[{i}].points', errors, integers=False)
+                                    and all(0 <= v <= 1 for v in point) for point in points)):
+                        errors.append(f'{where}.annotate[{i}].points: 1-2000 [fx, fy] fractions of the image')
                 for key in ('from', 'to', 'at'):
                     if key in shape and not (_pair(shape[key], f'{where}.annotate[{i}].{key}', errors, integers=False)
                                              and all(0 <= v <= 1 for v in shape[key])):
@@ -180,6 +196,10 @@ def validate_shots(cfg, media_ids=None):
             errors.append(f'{where}: provider must be one of {sorted(PROVIDERS)}')
         if kind == 'settings' and 'view' in step and step['view'] not in ('settings', 'updates'):
             errors.append(f'{where}: view must be settings or updates')
+        if kind == 'settings' and 'scroll' in step and not (isinstance(step['scroll'], int) and 0 < step['scroll'] <= 700):
+            errors.append(f'{where}: scroll must be 1-700 pixels')
+        if kind == 'history' and step.get('view', 'list') not in ('list', 'gallery'):
+            errors.append(f'{where}: view must be list or gallery')
         if kind == 'file-upload' and not re.fullmatch(r'[a-z0-9][a-z0-9.-]{0,60}\.(jpg|png)', str(step['filename'])):
             errors.append(f'{where}: filename must be a plain lowercase .jpg or .png name')
     names = set()

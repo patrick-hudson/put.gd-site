@@ -290,6 +290,31 @@ def extension_ready(host):
     return info.get('State') in ('ACTIVE', 'ENABLED') and info.get('Path', '').startswith('/usr/share/')
 
 
+def extension_known(host):
+    """The Shell found the package's extension at this login. put.gd turns it on itself when it
+    starts (one logout finishes GNOME setup), so before that it is INITIALIZED, not ACTIVE."""
+    info = host.agent('ext-info', EXTENSION, check=False).get('info', {})
+    return info.get('State') in ('ACTIVE', 'ENABLED', 'INITIALIZED') and info.get('Path', '').startswith('/usr/share/')
+
+
+def enable_extensions(host, uuids):
+    """Turn on Shell extensions the story needs, as `gnome-extensions enable` does. The lab leaves
+    put.gd's extension and the tray's in disabled-extensions between runs, and put.gd respects that
+    off switch rather than undoing it. Both lists were saved first, so the restore puts them back."""
+    import ast
+    lists = {}
+    for key in ('enabled-extensions', 'disabled-extensions'):
+        text = host.agent('gsettings', 'get', 'org.gnome.shell', key)['value']
+        lists[key] = list(ast.literal_eval(text.removeprefix('@as ').strip() or '[]'))
+    disabled = [u for u in lists['disabled-extensions'] if u not in uuids]
+    enabled = lists['enabled-extensions'] + [u for u in uuids if u not in lists['enabled-extensions']]
+    for key, old, value in (('disabled-extensions', lists['disabled-extensions'], disabled),
+                            ('enabled-extensions', lists['enabled-extensions'], enabled)):
+        if value != old:
+            if not host.agent('gsettings', 'set', 'org.gnome.shell', key, repr(value), check=False).get('ok'):
+                raise Stop(f'could not set org.gnome.shell {key}')
+
+
 def prepare_run(host, media_paths, story_cfg):
     host.run_dir = host.run('mktemp -d /tmp/site-shots-XXXXXX').strip()
     host.run(f'chmod 700 {host.run_dir} && mkdir -m 700 {host.run_dir}/media {host.run_dir}/pids {host.run_dir}/logs')
@@ -327,6 +352,8 @@ def start_resident(host):
 
 def configure_app(host, reference):
     start_resident(host)
+    wait_for(lambda: extension_ready(host), 60, 'put.gd to turn on its Shell extension')
+    log(f'GNOME setup: {json.dumps(host.cli("desktop.setup", check=False).get("result"))[:200]}')
     template = host.cli('settings.developmentTemplate', check=False).get('result', {})
     template = template.get('document', template)
     current = host.cli('settings.get')['result']
@@ -334,8 +361,10 @@ def configure_app(host, reference):
     host.run(f'mkdir -p -m 700 {archive}')
     patch = {'profiles': [demo_profile(template, reference)],
              'captureDefaults': {'destination': 'upload', 'profileId': DEMO['id'], 'publicationMode': 'default'},
+             # Every action the build has (Capture monitor arrived after the first story) follows the default.
+             # Repeat last region holds only a shortcut.
              'actions': {action: {'destination': 'default', 'profileId': None}
-                         for action in ('region', 'window', 'desktop', 'clipboard', 'edit', 'record')},
+                         for action, value in current['document']['actions'].items() if 'destination' in value},
              'archive': {'keepUploads': True, 'root': archive, 'folders': {'images': None, 'videos': None, 'text': None, 'other': None}},
              'preferences': {'notifications': False, 'launchAtLogin': False, 'appearance': {'theme': 'dark'},
                              'updates': {'check': False}}}
@@ -575,8 +604,8 @@ def main():
                                    edid.monitors_xml(hidpi['monitorConnector']))
                 else:
                     relogin(host, 'load the put.gd Shell extension from the package')
-                if not extension_ready(host):
-                    raise Stop(f'the put.gd Shell extension is not active after a fresh login: '
+                if not extension_known(host):
+                    raise Stop(f'the Shell did not find the put.gd extension after a fresh login: '
                                f'{host.agent("ext-info", EXTENSION, check=False)}')
                 client.close()
                 wait_for(lambda: bool(wall.tile_handshake(args.wall, wall.find_tile(args.wall, cfg['address'])['id'])), 60,
@@ -585,11 +614,15 @@ def main():
             ident = identity(host)
             log(f'put.gd {ident["version"]} ({ident["commit"][:12]}) on {ident["desktop"]}')
             state['gsettings'] = {}
+            # put.gd adds its extension to enabled-extensions when it starts, and enable_extensions edits both
+            # lists; the restore puts them back as they were.
             for schema, key in (('org.gnome.desktop.interface', 'color-scheme'), ('org.gnome.desktop.notifications', 'show-banners'),
+                                ('org.gnome.shell', 'enabled-extensions'), ('org.gnome.shell', 'disabled-extensions'),
                                 *(('org.gnome.desktop.background', k) for k in cfg['wallpaper'])):
                 state['gsettings'][f'{schema} {key}'] = host.agent('gsettings', 'get', schema, key)['value']
             save_state(host, state)
             host.agent('gsettings', 'set', 'org.gnome.desktop.notifications', 'show-banners', 'false')  # Do Not Disturb
+            enable_extensions(host, [EXTENSION] + cfg.get('extensions', []))
             reference = new_reference()
             state['keyringReference'] = reference
             save_state(host, state)
