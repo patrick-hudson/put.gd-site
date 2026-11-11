@@ -46,7 +46,7 @@ If you chose public links for a private bucket, the test fails and says what to 
 - **Public bucket:** `https://fNNN.backblazeb2.com/file/<bucket>/<name>`, or your link domain followed by the file name. These never expire.
 - **Private bucket:** the same address with a token on the end. Without the token, Backblaze refuses the file.
 
-When a private link expires, the file stays in the bucket until you delete it from [History](history.md). You can't refresh an expired link yet.
+When a private link expires, the file stays in the bucket until you delete it from [History](history.md). To get a fresh link without uploading again, [renew it from History](history.md#when-a-link-expires).
 
 ## Good to know
 

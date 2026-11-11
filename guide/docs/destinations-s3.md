@@ -6,7 +6,7 @@ Connect your own bucket so that put.gd uploads to it and gives you a link for ea
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-light.avif 1368w, /_site/shots/storage-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.avif 1368w, /_site/shots/storage-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-light.webp 1368w, /_site/shots/storage-light@2x.webp 2736w">
-  <img src="/_site/shots/storage-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.webp 1368w, /_site/shots/storage-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with an S3 bucket: S3 service, bucket, region, folder, upload access request and link domain.">
+  <img src="/_site/shots/storage-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.webp 1368w, /_site/shots/storage-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with an S3 bucket: S3 service, bucket, region, folder, upload access request, who can open files and link domain.">
 </picture>
 
 1. In **Destinations**, click **Add destination** and choose **Amazon S3 / S3-compatible**.
@@ -14,21 +14,29 @@ Connect your own bucket so that put.gd uploads to it and gives you a link for ea
 3. Enter the **Bucket**: only its name, without a URL or folder path.
 4. Choose the **Region**. You can also type one that isn't listed.
 5. Enter a **Folder in bucket** if you want one. Left empty, files go to the bucket root.
-6. Under **Links**, choose an **Upload access request**, and enter a **Link domain** if you have one.
+6. Under **Links**, choose an **Upload access request** and **Who can open files**, and enter a **Link domain** if you have one.
 7. Scroll to **Credentials** and enter your **Access key ID** and **Secret access key**. Fill in **Session token** only if your key came with one.
 8. Choose **Credential storage**, then click **Save to keychain** or **Use for this session**.
 9. Click **Test upload and link**.
 
 ## Links
 
-**Upload access request** decides what each upload asks for:
+**Who can open files** decides what kind of link you get:
 
-- **Use bucket policy** (the default) sends no ACL. Your bucket's policy decides who can open files.
-- **Request public read** asks S3 to make each new file public. The bucket must have ACLs turned on.
+- **Public bucket: links that never expire** is the default. Anyone can open the file at its address for as long as it exists.
+- **Private bucket: links that expire** signs each link so that it works for a limited time. Choose how long in **Links last**, from 1 to 7 days. The bucket stays private, and the link opens the file for anyone who has it until then.
 
-**Link domain** is the start of each link, such as `https://demo.put.gd`, with an example shown below the field. Left empty, links use the destination's own address.
+For a public bucket, two more rows apply:
 
-Neither setting changes your bucket's policy or your domain's settings, so test the resulting link.
+- **Upload access request** is **Use bucket policy** (the default), which sends no ACL so that your bucket's policy decides who can open files, or **Request public read**, which asks S3 to make each new file public. The bucket must then have ACLs turned on.
+- **Link domain** is the start of each link, such as `https://demo.put.gd`, with an example shown below the field. Left empty, links use the destination's own address.
+
+Links that expire always use the bucket's own address, and never ask for a public ACL. Temporary credentials can end a link sooner than the time you chose. When a link expires the file stays in your bucket, and you can [renew the link from History](history.md#when-a-link-expires).
+
+None of these settings changes your bucket's policy or your domain's settings, so test the resulting link.
+
+!!! note "In nightly builds for now"
+    Links that expire arrive in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
 
 ## Credentials
 
@@ -41,7 +49,7 @@ Keys never enter settings or history.
 
 **Test upload and link** runs only when you click it, and it uses a small made-up text file.
 
-Success means the test file uploaded, opened through a public link, and was removed again. If a step fails, the message says what to check next.
+Success means the test file uploaded, opened through the kind of link you chose, and was removed again. With links that expire, the test also checks that the file can't be opened without its link. If a step fails, the message says what to check next.
 
 ## Minimum bucket permissions
 

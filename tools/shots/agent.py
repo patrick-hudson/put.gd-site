@@ -70,7 +70,9 @@ def environment(kind):
         runtime.mkdir(mode=0o700, parents=True, exist_ok=True)
         if len(str(runtime / 'putgd' / 'session.sock').encode()) > 107:
             fail('run directory path is too long for the put.gd socket')
-        env.update(XDG_RUNTIME_DIR=str(runtime), PIPEWIRE_RUNTIME_DIR=RUNTIME, QT_QPA_PLATFORM='wayland')
+        # The runtime dir is private, so name the session's sound server: the recording bar's microphone uses it.
+        env.update(XDG_RUNTIME_DIR=str(runtime), PIPEWIRE_RUNTIME_DIR=RUNTIME, PULSE_SERVER=f'unix:{RUNTIME}/pulse/native',
+                   QT_QPA_PLATFORM='wayland')
     elif kind != 'session':
         fail(f'unknown environment {kind}')
     return env

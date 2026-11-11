@@ -46,6 +46,7 @@ When the app's look changes, refresh the page from the release the screenshots c
 python3 tools/tokens.py --tag vYY.MDD.N-nightly   # colours
 tools/fonts.sh vYY.MDD.N-nightly                  # fonts
 python3 tools/shots/capture.py                    # screenshots; see tools/shots/README.md
+python3 tools/guide_pictures.py                   # the user guide's picture blocks, from the new sizes
 uv run --with pillow python tools/og.py           # link preview from the desktop shot
 ```
 
@@ -90,7 +91,8 @@ python3 -m http.server 4411 --directory public          # then open /userguide/i
 Pages are Markdown under `guide/docs/`; add a page to `nav` in `guide/zensical.toml` and
 `tools/test_userguide.py` checks that every page is in the nav, has one title and a picture, and that
 its links and pictures resolve. Every picture is a lab screenshot referenced from `/_site/shots/` (nothing is
-copied); `guide/README.md` lists the exact blocks to paste.
+copied); `guide/README.md` lists the exact blocks to paste, and `tools/guide_pictures.py` rewrites
+them all from `public/_site/shots/shots.json` after a capture run.
 The build is strict: a broken link fails the deploy. The deploy publishes the index at the bare
 `userguide` key and the rest under `userguide/`; `/userguide/` with a slash works once the router
 rule in `cloudfront/download-redirect.js` is applied with `terraform -chdir=infra apply`.

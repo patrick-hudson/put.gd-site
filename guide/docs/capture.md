@@ -1,6 +1,6 @@
 # Capture
 
-This page shows you how to capture a region, a window or the whole desktop, how to upload your clipboard, and how to choose where the results go.
+This page shows you how to capture a region, a window, one monitor or the whole desktop, how to upload your clipboard, and how to choose where the results go.
 
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-light.avif 975w, /_site/shots/capture-light@2x.avif 1950w">
@@ -10,6 +10,9 @@ This page shows you how to capture a region, a window or the whole desktop, how 
 </picture>
 
 Every action is a button across the top of the put.gd window and an entry in the tray menu. The put.gd window closes during a screen capture to keep itself out of the picture. You can change any key in [shortcuts](settings.md#shortcuts).
+
+!!! note "In nightly builds for now"
+    **Capture monitor**, **Repeat last region** and **Capture delay** arrive in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
 
 ## Capture region
 
@@ -23,16 +26,45 @@ Every action is a button across the top of the put.gd window and an entry in the
 3. Close the menu if it is still open. The selector appears over a frozen picture of your screen.
 4. Drag across the area you want.
 
+### Repeat last region
+
+Choose **Repeat last region** in the tray menu, or right-click the **Capture region** button. put.gd captures the same rectangle as your last region capture, with nothing to drag. It has no key until you set one.
+
+The result goes wherever **Capture region** sends its captures. put.gd forgets the rectangle when it quits, and tells you when there is nothing to repeat or your monitors have changed since.
+
 ## Capture window
 
 1. Click the window you want. put.gd does not capture its own windows.
 2. Press ++ctrl+shift+2++, or choose **Capture window**.
 
-Support varies by desktop. See [GNOME, KDE and Cinnamon](desktops.md).
+Support varies by desktop. See [your desktop](desktops.md).
+
+## Capture monitor
+
+1. Move the pointer onto the monitor you want.
+2. Choose **Capture monitor**. It has no key until you set one.
+
+You get that one monitor at its full size. With several monitors, this is the choice between a region and the very wide picture **Capture desktop** makes.
 
 ## Capture desktop
 
 Press ++ctrl+shift+3++, or choose **Capture desktop**. You get all your enabled monitors, panels included.
+
+## Capture after a delay
+
+A delay gives you time to open a menu, hover over a button or hold a key before the capture.
+
+1. Open **Capture delay** in the tray menu, or right-click a capture button in the window and open **Capture delay** there.
+2. Choose **3 seconds**, **5 seconds** or **10 seconds**.
+3. Start a region, window, monitor or desktop capture, or **Repeat last region**, from the tray or the window.
+
+A small pill at the top of the screen counts down. It never appears in the picture. Click it to cancel.
+
+- For a region, you drag the area first and the countdown runs afterwards. With **Screenshot first**, the countdown runs first.
+- A window or monitor capture takes the window that is active, or the monitor under the pointer, when the countdown ends.
+- A capture started with a key is always immediate.
+
+The delay stays until you set it back to **None**.
 
 ## Upload clipboard
 
@@ -55,16 +87,16 @@ Go to **Settings → Capture**, or choose **Change output…** in the tray menu.
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.avif 1368w, /_site/shots/capture-settings-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.avif 1368w, /_site/shots/capture-settings-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.webp 1368w, /_site/shots/capture-settings-light@2x.webp 2736w">
-  <img src="/_site/shots/capture-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.webp 1368w, /_site/shots/capture-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture: Destination, Sharing, After uploading, Different output for some actions, and Region selection.">
+  <img src="/_site/shots/capture-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.webp 1368w, /_site/shots/capture-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture: Destination, Sharing, After uploading, Different output for some actions, Region selection and Screen recording.">
 </picture>
 
 - **Destination** is where uploads go. **No destination** turns uploads off. To add one, see [Set up a destination](destinations.md).
-- **Sharing** is **Destination default**, **Create a share link** or **Keep private**.
-- **After uploading** is **Copy each link as it finishes**, or **Copy a list when uploads finish**.
-- **Different output for some actions** sends one action somewhere else. Choose **Add an exception…**, pick the action, then set its own **Destination** and **Sharing**. It keeps them when the main choice changes. **Remove** ends the exception. Your shortcuts stay as they are.
-- **Region selection → While selecting** is **Live desktop**, which keeps the screen updating while you drag, or **Screenshot first**.
+- **Sharing** decides whether an upload gets a link.
+- **Different output for some actions** sends one action somewhere else.
 
-**Keep a local copy** is further down the same page, under **Local copies**, not in **Settings → General**. Files go to the **Save to** folder, which starts as `put.gd` inside your Documents folder.
+[Settings → Capture](settings.md#capture) explains every row.
+
+**Keep a local copy** is further down the same page, under **Local copies**. Files go to the **Save to** folder, which starts as `put.gd` inside your Documents folder.
 
 | Destination | Keep a local copy | What happens |
 | --- | --- | --- |

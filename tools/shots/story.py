@@ -17,6 +17,7 @@ from PIL import ImageStat
 
 MAGENTA = 'FF00FF'
 SETTINGS_RAIL = (100, 141, 38)  # first row's centre from the window's corner, then the row pitch
+SCROLLBAR = (7, 150)  # a page's scrollbar handle: in from the window's right edge, down from its top
 DESTINATION_ROW = (108, 154)  # the first destination's centre in the Destinations list
 # Empty destination forms for the guide, as Settings creates them (the providers' own defaults).
 PROVIDERS = {
@@ -25,7 +26,17 @@ PROVIDERS = {
     'backblaze-b2': ('Backblaze B2', {'apiUrl': 'https://api.backblazeb2.com', 'bucket': 'my-bucket', 'objectPrefix': '', 'linkMode': 'public',
                                       'linkValidityDays': 7, 'publicUrlBase': None, 'connectTimeoutMs': 10000,
                                       'requestTimeoutMs': 600000}),
+    # A made-up server, filled in as an imported .sxcu would: the token is a secret row with no value.
+    'custom-http': ('Custom uploader', {'accepts': ['image', 'text', 'file'], 'allowInsecureHttp': False, 'arguments': [],
+                                        'body': 'multipart', 'connectTimeoutMs': 10000, 'data': '', 'dataSecret': False,
+                                        'deletionUrl': '{json:deletion_url}', 'errorMessage': '{json:error}', 'fileFormName': 'file',
+                                        'headers': [{'name': 'Authorization', 'secret': True}], 'parameters': [],
+                                        'requestMethod': 'POST', 'requestTimeoutMs': 600000,
+                                        'requestUrl': 'https://files.example.com/api/upload', 'responseUrl': '{json:url}',
+                                        'secrets': [], 'thumbnailUrl': ''}),
 }
+# The keychain entry each provider's destination names (never written: these forms hold no values).
+REFERENCES = {'custom-http': 'putgd/http/{pid}'}
 DONE_STATES = {'completed', 'failed', 'partial', 'cancelled', 'interrupted'}
 
 
@@ -40,6 +51,8 @@ def annotation(spec, size):
     for key in ('from', 'to', 'at'):
         if key in shape:
             shape[key] = [round(shape[key][0] * width), round(shape[key][1] * height)]
+    if 'points' in shape:
+        shape['points'] = [[round(x * width), round(y * height)] for x, y in shape['points']]
     if 'rect' in shape:
         fx, fy, fw, fh = shape['rect']
         shape['rect'] = [round(fx * width), round(fy * height), round(fw * width), round(fh * height)]
@@ -335,12 +348,23 @@ class Story:
         if encoders == []:
             fmt = 'webm'
         rect = [round(v / self.scale) for v in area]  # put.gd takes desktop coordinates
-        rid = find_id(self.cli('recording.prepare', {'target': {'kind': 'region', 'rect': rect}, 'format': fmt}))
-        deadline = time.monotonic() + 30
-        while self.cli('recording.inspect', {'id': rid}).get('state') != 'ready':
-            if time.monotonic() > deadline:
-                raise StoryError('recording never became ready')
-            time.sleep(0.5)
+        request = {'target': {'kind': 'region', 'rect': rect}, 'format': fmt}
+        if step.get('microphone'):
+            request['audio'] = {'system': False, 'microphone': True}
+        rid = self.prepare_recording(request)
+        if step.get('bar'):
+            # The floating bar, ready to record, beside the area it will record. A bar follows the
+            # theme it started with, so the dark one is cancelled and a light one prepared.
+            self.anchors[step['bar']] = {'viewer': player, 'area': area}
+            for theme in ('dark', 'light'):
+                if theme == 'light':
+                    self.cli('operation.cancel', {'id': rid})
+                    time.sleep(2.0)
+                    self.set_theme(theme)
+                    rid = self.prepare_recording(request)
+                time.sleep(2.0)
+                self.park()
+                self.keep(step['bar'], theme)
         self.cli('recording.start', {'id': rid})
         time.sleep(step['seconds'])
         self.cli('recording.stop', {'id': rid})
@@ -382,6 +406,22 @@ class Story:
         self.uploads.append(op)
         self.wait_operation(op, timeout=600)
 
+    def prepare_recording(self, request, attempts=8):
+        for attempt in range(attempts):
+            try:
+                rid = find_id(self.cli('recording.prepare', request))
+                break
+            except StoryError:
+                if attempt == attempts - 1:
+                    raise
+                time.sleep(1.5)  # the cancelled session is still closing
+        deadline = time.monotonic() + 30
+        while self.cli('recording.inspect', {'id': rid}).get('state') != 'ready':
+            if time.monotonic() > deadline:
+                raise StoryError('recording never became ready')
+            time.sleep(0.5)
+        return rid
+
     def file_upload(self, step):
         path = f"{self.host.run_dir}/upload/{step['filename']}"
         self.host.run(f"mkdir -p -m 700 {self.host.run_dir}/upload && cp {self.media[step['media']]} {path}")
@@ -422,7 +462,12 @@ class Story:
         items = listing.get('records') or []
         if len(items) < 5:
             raise StoryError(f'History holds {len(items)} items; the story should leave 5 or 6')
-        self.cli('ui.history', {'action': 'select', 'ids': [items[0]['id']]})
+        view = step.get('view', 'list')
+        if view != 'list':
+            self.cli('ui.history', {'action': 'clearSelection'})
+            self.cli('ui.history', {'action': 'setView', 'view': view})
+        else:
+            self.cli('ui.history', {'action': 'select', 'ids': [items[0]['id']]})
         time.sleep(2.0)
         self.anchors[step['id']] = {'window': box}
         for theme in ('dark', 'light'):
@@ -430,12 +475,16 @@ class Story:
             self.park()
             self.keep(step['id'], theme)
         self.set_theme('dark')
+        if view != 'list':
+            self.cli('ui.history', {'action': 'setView', 'view': 'list'})
+            self.cli('ui.history', {'action': 'select', 'ids': [items[0]['id']]})
+            time.sleep(1.0)
 
     def destinations(self, step):
         self.page(step, 'destinations')
 
     def settings(self, step):
-        self.page(step, step.get('view', 'settings'), step.get('row'))
+        self.page(step, step.get('view', 'settings'), step.get('row'), step.get('scroll'))
 
     def destination(self, step):
         """A provider's destination form as Add destination shows it: a profile with the
@@ -447,7 +496,7 @@ class Story:
         order = [p['id'] for p in profiles]
         if pid not in order:
             profiles.append({'id': pid, 'label': label, 'provider': provider, 'settings': defaults,
-                             'credentials': {'mode': 'keychain', 'reference': f'putgd/{pid}'}})
+                             'credentials': {'mode': 'keychain', 'reference': REFERENCES.get(provider, 'putgd/{pid}').format(pid=pid)}})
             self.patch({'profiles': profiles})
             order.append(pid)
         self.reorder([pid] + [i for i in order if i != pid])
@@ -472,9 +521,10 @@ class Story:
         self.cli('settings.reorderProfiles', {'order': order, 'expectedRevision': revision})
         time.sleep(1.0)
 
-    def page(self, step, view, row=None):
+    def page(self, step, view, row=None, scroll=None):
         """A page of the main window, as History left it. `row` picks a Settings category
-        by a real click in its rail (the first row is what the page opens on)."""
+        by a real click in its rail (the first row is what the page opens on). `scroll` then
+        drags the page's scrollbar down by that many (logical) pixels."""
         self.cli('ui.show', {'view': view})
         time.sleep(2.0)
         self.park()
@@ -486,6 +536,11 @@ class Story:
             for _ in range(2):
                 self.input.click(window[0] + x, window[1] + y + row * pitch)
                 time.sleep(1.0)
+            self.park()
+        if scroll:
+            x, y = window[0] + window[2] - SCROLLBAR[0] * self.scale, window[1] + SCROLLBAR[1] * self.scale
+            self.drag((x, y), (x, y + scroll * self.scale))
+            time.sleep(1.0)
             self.park()
         self.anchors[step['id']] = {'window': window}
         for theme in ('dark', 'light'):
@@ -555,6 +610,24 @@ class Story:
         self.anchors[step['id']] = {'window': window, 'menu': boxes[-1][1], 'frame': [x0, y0, x1 - x0, y1 - y0]}
         self.set_theme('dark')
 
+    def about(self, step):
+        """The About window, on its own on the backdrop."""
+        self.cli('ui.show', {'view': 'about'})
+        time.sleep(2.5)
+        self.park()
+        window = self.locate(settle=10.0)
+        self.anchors[step['id']] = {'window': window}
+        for theme in ('dark', 'light'):
+            self.set_theme(theme)
+            self.park()
+            self.keep(step['id'], theme)
+        self.set_theme('dark')
+        self.input.click(window[0] + window[2] // 2, window[1] + 20 * self.scale)  # focus it by its header
+        time.sleep(0.4)
+        self.input.key('esc')
+        time.sleep(1.0)
+        self.park()
+
     def wallpaper(self):
         for key, value in self.host.cfg['wallpaper'].items():
             self.host.agent('gsettings', 'set', 'org.gnome.desktop.background', key, value.strip("'"))
@@ -608,7 +681,7 @@ class Story:
         handlers = {'region-capture': self.region_capture, 'edit': self.edit, 'record': self.record,
                     'file-upload': self.file_upload, 'history': self.history, 'destinations': self.destinations,
                     'destination': self.destination, 'settings': self.settings, 'tray': self.tray,
-                    'file-manager': self.file_manager,
+                    'file-manager': self.file_manager, 'about': self.about,
                     'desktop': self.desktop}
         self.set_theme('dark')
         for step in self.cfg['story']:

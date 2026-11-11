@@ -1,6 +1,6 @@
 # Install put.gd
 
-By the end of this page, put.gd is installed and running in your tray. There is no stable release yet, so every download here is the newest nightly build.
+By the end of this page, put.gd is installed and running in your tray.
 
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/desktop-light.avif 1920w, /_site/shots/desktop-light@2x.avif 3840w">
@@ -20,7 +20,9 @@ This works on x86_64 Linux.
     curl -fsSL https://app.put.gd/install | sh
     ```
 
-The installer checks the download against the release's checksums before it installs anything. It asks for your password only to run `apt install` or `dnf install`. If no package matches your system, it installs the AppImage instead.
+The installer picks the package for your system: Ubuntu 24.04 or 26.04, Linux Mint 22, Debian 13, Fedora 44, or Arch and Arch-based distributions such as EndeavourOS, CachyOS and Omarchy. On anything else it installs the AppImage.
+
+It checks the download against the release's checksums before it installs anything, and asks for your password only to run `apt`, `dnf` or `pacman`. On Arch it adds put.gd's signed repository, and pacman checks the package. On Omarchy it first asks to run Omarchy's own system update.
 
 On Fedora it also installs the H.264 encoder that recording needs. If the `fedora-cisco-openh264` repository is turned off, it prints the commands for you to run.
 
@@ -30,13 +32,37 @@ To install the AppImage without a password, run this instead. The file goes to `
 curl -fsSL https://app.put.gd/install | sh -s -- --appimage
 ```
 
+## Stable or nightly
+
+The installer gives you the stable release. A nightly build comes out every day with everything finished since, and it is what the pictures in this guide show.
+
+Until the next stable release, you need a nightly for:
+
+- [Budgie and Hyprland](desktops.md), and the Arch package. On Arch the installer already picks the nightly.
+- The [custom uploader](destinations-custom.md) destination.
+- [Capture monitor, Repeat last region and Capture delay](capture.md#capture-monitor).
+- The [microphone and click highlights](record.md#record-your-voice) in recordings.
+- The editor's [line, ellipse, pen, step number and pixelate tools](edit.md#tools), and **Copy image**.
+- [Links that expire](destinations-s3.md#links) on S3, and [renewing an expired link](history.md#when-a-link-expires).
+- Setting up GNOME with a single logout.
+
+To install the nightly:
+
+```bash
+curl -fsSL https://app.put.gd/install | sh -s -- --channel nightly
+```
+
+To change channel later, see [Keeping it updated](updating.md#switch-between-nightly-and-stable).
+
 ## Or download it yourself
+
+Each package comes as a stable release and a nightly build.
 
 === "Ubuntu and Mint"
 
     1. Download the package for your release:
-        - [Ubuntu 24.04 or Linux Mint 22](https://app.put.gd/dl/nightly/ubuntu24.04)
-        - [Ubuntu or Kubuntu 26.04](https://app.put.gd/dl/nightly/ubuntu26.04)
+        - Ubuntu 24.04 or Linux Mint 22: [stable](https://app.put.gd/dl/stable/ubuntu24.04) or [nightly](https://app.put.gd/dl/nightly/ubuntu24.04)
+        - Ubuntu or Kubuntu 26.04: [stable](https://app.put.gd/dl/stable/ubuntu26.04) or [nightly](https://app.put.gd/dl/nightly/ubuntu26.04)
     2. Open a terminal in your download folder.
     3. Install the package:
 
@@ -46,7 +72,7 @@ curl -fsSL https://app.put.gd/install | sh -s -- --appimage
 
 === "Debian"
 
-    1. Download the [package for Debian 13](https://app.put.gd/dl/nightly/debian13).
+    1. Download the package for Debian 13: [stable](https://app.put.gd/dl/stable/debian13) or [nightly](https://app.put.gd/dl/nightly/debian13).
     2. Open a terminal in your download folder.
     3. Install the package:
 
@@ -56,7 +82,7 @@ curl -fsSL https://app.put.gd/install | sh -s -- --appimage
 
 === "Fedora"
 
-    1. Download the [package for Fedora 44](https://app.put.gd/dl/nightly/fedora44).
+    1. Download the package for Fedora 44: [stable](https://app.put.gd/dl/stable/fedora44) or [nightly](https://app.put.gd/dl/nightly/fedora44).
     2. Open a terminal in your download folder.
     3. Install the package:
 
@@ -72,11 +98,19 @@ curl -fsSL https://app.put.gd/install | sh -s -- --appimage
 
         If the `fedora-cisco-openh264` repository is turned off, first run `sudo dnf config-manager setopt fedora-cisco-openh264.enabled=1`.
 
+=== "Arch"
+
+    Use the [one-line installer](#install-with-one-line). It adds put.gd's signed pacman repository, so put.gd then updates with the rest of your system:
+
+    ```bash
+    sudo pacman -Syu
+    ```
+
 === "AppImage"
 
     For any distribution with glibc 2.39 or newer.
 
-    1. Download the [AppImage](https://app.put.gd/dl/nightly/appimage).
+    1. Download the AppImage: [stable](https://app.put.gd/dl/stable/appimage) or [nightly](https://app.put.gd/dl/nightly/appimage).
     2. Open a terminal in your download folder.
     3. Make the file executable and start it:
 
@@ -85,7 +119,7 @@ curl -fsSL https://app.put.gd/install | sh -s -- --appimage
         ```
 
 ??? note "Check a download yourself"
-    Download [SHA256SUMS](https://app.put.gd/dl/nightly/checksums) into the same folder, then run:
+    Download the checksums for the [stable](https://app.put.gd/dl/stable/checksums) or [nightly](https://app.put.gd/dl/nightly/checksums) release into the same folder as `SHA256SUMS`, then run:
 
     ```bash
     sha256sum --check --ignore-missing SHA256SUMS
@@ -95,25 +129,35 @@ curl -fsSL https://app.put.gd/install | sh -s -- --appimage
 
 After a package install, start put.gd from your applications menu or run `putgd`. Closing its window keeps it running in the tray. Click the tray icon to open History again.
 
-## Turn on the GNOME extension
+## On GNOME, log out once
 
-On GNOME 50, put.gd captures through an extension for GNOME Shell. The DEB and RPM include it, but GNOME only finds it after a new login, so do these in order:
+On GNOME 50, put.gd captures through an extension for GNOME Shell.
 
-1. Log out and back in.
-2. Run:
+=== "Nightly"
 
-    ```bash
-    gnome-extensions enable putgd@put.gd
-    ```
+    put.gd sets the extension up itself, whichever way you installed it.
 
-It works right away, with no second logout. If you run the command before logging out, it can say `Extension "putgd@put.gd" doesn't exist`, even though the package installed it.
+    1. Start put.gd.
+    2. When it asks, log out and back in.
+    3. Start put.gd again, unless you turned on **Launch at login**.
 
-The AppImage doesn't include the extension: follow the [AppImage steps for GNOME](desktops.md#gnome).
+=== "Stable"
+
+    The DEB and RPM include the extension, but GNOME only finds it after a new login.
+
+    1. Log out and back in.
+    2. Turn the extension on:
+
+        ```bash
+        gnome-extensions enable putgd@put.gd
+        ```
+
+    The AppImage doesn't include the extension: follow the [AppImage steps for GNOME](desktops.md#gnome).
 
 ## Right-click upload
 
-The DEB and RPM also add **Upload with put.gd** to your file manager's right-click menu. See [Upload from your file manager](file-manager.md).
+The packages also add **Upload with put.gd** to your file manager's right-click menu. See [Upload from your file manager](file-manager.md).
 
-On GNOME, Files only picks up the entry when it starts, and it keeps running after you close its last window. The first time put.gd runs after installing, its notification says: "Upload with put.gd is in your right-click menu. Restart Files if it's missing; that closes its windows." If your desktop's notifications can show buttons, it offers **Restart Files**.
+Files only picks up the entry when it starts, and it keeps running after you close its last window. If the entry is missing, log out and back in.
 
 [Next: your first capture](quickstart.md)

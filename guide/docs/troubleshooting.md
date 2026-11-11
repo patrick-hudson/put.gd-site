@@ -47,11 +47,19 @@ The reply was lost, so the file may or may not have arrived. History shows **Upl
 
 In History, click **Retry upload** on the item's row. put.gd checks what arrived before uploading again. Don't clear temporary files first; the retry needs them.
 
+A [custom uploader](destinations-custom.md) is the exception: its server names each file, so put.gd can't check. Look on the server first, because a retry there can leave a second copy.
+
+## A link has expired
+
+Links from a private S3 or Backblaze B2 bucket stop working after the time set on the destination. The file is still in your bucket.
+
+In History, select the item and click **Refresh and copy link**. See [when a link expires](history.md#when-a-link-expires).
+
 ## Upload with put.gd is missing from the right-click menu
 
 The file manager may not have loaded the entry yet, or it may sit in a submenu; see [where it appears](file-manager.md).
 
-- **Files** keeps running after its last window closes, so the entry may appear only after a restart. Restart it; put.gd's first-run notice offers **Restart Files** if your notifications can show buttons. That closes all Files windows.
+- **Files** keeps running after its last window closes, so the entry may appear only after it restarts. Log out and back in. With the AppImage, put.gd's first-run notice also offers **Restart Files** if your notifications can show buttons. That closes all Files windows.
 - **PCManFM and PCManFM-Qt** load their entries at the first file menu they show. Restart one that has already shown a menu.
 - **With the AppImage**, check that **Settings → General → File manager → File manager menu** is on.
 
@@ -66,20 +74,48 @@ A notification names the problem and every file affected. Nothing was uploaded.
 
 ## Nothing captures on GNOME
 
-GNOME needs put.gd's Shell extension, turned on in your current login.
+GNOME needs put.gd's Shell extension, loaded in your current login.
 
-1. Log out and back in. This is needed after installing or updating.
-2. Turn it on:
+1. Start put.gd. If it asks you to log out, log out and back in, then start put.gd again.
+2. Capture again.
 
-    ```bash
-    gnome-extensions enable putgd@put.gd
-    ```
+If put.gd names something else in the way, such as extensions being turned off in the Extensions app, fix that and capture again.
 
-3. Capture again. With the AppImage, [install the extension first](desktops.md#gnome).
+On the stable release, also turn the extension on after logging back in. With the stable AppImage, [install the extension first](desktops.md#gnome).
+
+```bash
+gnome-extensions enable putgd@put.gd
+```
+
+## Capture window is unavailable on Budgie
+
+Budgie's Wayland session needs labwc 0.20 or newer to capture one window, and Fedora 44 and Ubuntu 26.04 ship an older one. The **Capture window** button shows a warning and its tooltip names what is missing.
+
+Use **Capture region** instead.
+
+## Captures are refused on Hyprland
+
+With Hyprland's permission enforcement on, Hyprland hands put.gd an empty picture until you allow it. put.gd's message gives the rule to add.
+
+For the package, add these to your Hyprland configuration, then restart Hyprland:
+
+```lua
+hl.permission({ binary = [[/usr/bin/putgd]], type = "screencopy", mode = "allow" })
+hl.permission({ binary = [[/usr/bin/putgd-record]], type = "screencopy", mode = "allow" })
+```
+
+The AppImage runs from a different temporary folder each time, so approve it at Hyprland's prompt on each run.
 
 ## Recording will not start
 
 put.gd's message names what is missing: an [encoder](record.md#if-recording-will-not-start), the [GNOME extension](#nothing-captures-on-gnome) or disk space.
+
+## The recording bar says No microphone
+
+put.gd found no microphone it can open. Hover over the box for the reason.
+
+1. Plug a microphone in. The bar offers it within a second or two.
+2. If it is still missing, make it your system's input device in your desktop's sound settings, or choose it in [**Settings → Capture → Screen recording → Microphone**](settings.md#capture).
 
 ## Get help
 
@@ -87,7 +123,7 @@ put.gd's message names what is missing: an [encoder](record.md#if-recording-will
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.avif 1368w, /_site/shots/advanced-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.avif 1368w, /_site/shots/advanced-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.webp 1368w, /_site/shots/advanced-light@2x.webp 2736w">
-  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: limits, thumbnail cache, history retention, Diagnostics and the configuration file.">
+  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: history retention, Resource limits, Diagnostics and Desktop support details.">
 </picture>
 
 1. In **Settings → Advanced → Diagnostics**, tick **Keep detailed debug logs for 24 hours**.

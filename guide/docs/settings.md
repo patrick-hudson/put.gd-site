@@ -30,12 +30,12 @@ If saving fails, your changes stay in the window and **Retry saving** appears.
 
 These rows control [uploading from your file manager](file-manager.md).
 
-- **Add Upload with put.gd to the right-click menu** is always on with the DEB or RPM, because the package adds it for everyone. With the AppImage it is a switch, and turning it off removes only the entries the AppImage wrote.
+- **Add Upload with put.gd to the right-click menu** is always on with a package, because the package adds it for everyone. With the AppImage it is a switch, and turning it off removes only the entries the AppImage wrote.
 - **Folders** is **Upload as a .zip** (the default), which makes one file and one link, or **Upload each file**, which gives each file its own link.
 
 ### Updates
 
-**Check for updates once a day**, **Channel**, **Status** with **Check now**, and **Other channel** on a DEB or RPM are covered in [Keeping it updated](updating.md). Nothing installs automatically.
+**Check for updates once a day**, **Channel**, **Status** with **Check now**, and **Other channel** on a package are covered in [Keeping it updated](updating.md). Nothing installs automatically.
 
 ## Capture
 
@@ -43,16 +43,26 @@ These rows control [uploading from your file manager](file-manager.md).
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.avif 1368w, /_site/shots/capture-settings-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.avif 1368w, /_site/shots/capture-settings-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.webp 1368w, /_site/shots/capture-settings-light@2x.webp 2736w">
-  <img src="/_site/shots/capture-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.webp 1368w, /_site/shots/capture-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture: Destination, Sharing, After uploading, Different output for some actions, and Region selection.">
+  <img src="/_site/shots/capture-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.webp 1368w, /_site/shots/capture-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture: Destination, Sharing, After uploading, Different output for some actions, Region selection and Screen recording.">
 </picture>
 
 - **Destination** is your [default destination](destinations.md#choose-the-default-destination), or **No destination**.
 - **Sharing** is **Destination default**, **Create a share link** or **Keep private**.
 - **After uploading** is **Copy each link as it finishes** or **Copy a list when uploads finish**.
-- **Different output for some actions** holds your exceptions. Click **Add an exception…** and pick an action, then set its **Destination** and **Sharing**.
+- **Different output for some actions** holds your exceptions, and reads **None** until you add one. Open it, click **Add an exception…** and pick an action, then set its **Destination** and **Sharing**.
+
+Further down the same page:
+
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-light.avif 1368w, /_site/shots/recording-settings-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-dark.avif 1368w, /_site/shots/recording-settings-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-light.webp 1368w, /_site/shots/recording-settings-light@2x.webp 2736w">
+  <img src="/_site/shots/recording-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-dark.webp 1368w, /_site/shots/recording-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture, further down: Region selection, Screen recording with Frame rate, Microphone and Draw a ring at each click, and Local copies.">
+</picture>
+
 - **Region selection** sets **While selecting**: **Live desktop** (the default), or **Screenshot first** so open menus and tooltips are included. Recording always selects over the live desktop.
-- **Screen recording** sets the **Frame rate**: 30 frames per second (the default) or 60.
-- **Local copies** has **Keep a local copy**, off by default, which saves files to the **Save to** folder, normally `put.gd` in Documents.
+- **Screen recording** sets the **Frame rate**: 30 frames per second (the default) or 60. **Microphone** chooses which microphone [recordings use](record.md#record-your-voice), and starts as **System default**. **Draw a ring at each click** [shows your clicks](record.md#show-your-clicks) in recordings, and is off by default.
+- **Local copies** has **Keep a local copy**, off by default, which saves files to the **Save to** folder, normally `put.gd` in Documents. **Different folders by file type** gives images, videos, text and other files their own folders.
 
 Under **File names**, **Naming** is **Keep original names**, **Random names** or **Custom template**. Templates can use `{name}`, `{ext}`, `{yyyy}`, `{MM}`, `{dd}`, `{HH}`, `{mm}`, `{ss}` and `{uuid}`. **When a name exists** applies to uploads; local files always get a suffix.
 
@@ -62,7 +72,7 @@ Under **File names**, **Naming** is **Keep original names**, **Random names** or
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-light.avif 1368w, /_site/shots/settings-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-dark.avif 1368w, /_site/shots/settings-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-light.webp 1368w, /_site/shots/settings-light@2x.webp 2736w">
-  <img src="/_site/shots/settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-dark.webp 1368w, /_site/shots/settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Shortcuts, with global shortcuts for capturing, recording and uploading.">
+  <img src="/_site/shots/settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-dark.webp 1368w, /_site/shots/settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Shortcuts: a key for each capture, for recording and for uploading the clipboard, with Repeat last region and Capture monitor not set.">
 </picture>
 
 1. Click the field next to an action.
@@ -70,6 +80,8 @@ Under **File names**, **Naming** is **Keep original names**, **Random names** or
 3. Release all keys.
 
 ++esc++ cancels. The **×** in the field turns the shortcut off.
+
+**Capture region**, **Capture window** and **Capture desktop** start as ++ctrl+shift+1++, ++ctrl+shift+2++ and ++ctrl+shift+3++. The other actions, including **Repeat last region** and **Capture monitor**, read **Not set** until you give them a key.
 
 A row with no status line works as you set it. Otherwise it reports the problem, such as **Conflict** or **Unsupported shortcut**. Your desktop holds these shortcuts, so choose another combination.
 
@@ -81,10 +93,11 @@ Capture shortcuts also work while a menu is open, in put.gd or another app. On X
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.avif 1368w, /_site/shots/advanced-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.avif 1368w, /_site/shots/advanced-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.webp 1368w, /_site/shots/advanced-light@2x.webp 2736w">
-  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: limits, thumbnail cache, history retention, Diagnostics and the configuration file.">
+  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: history retention, Resource limits, Diagnostics and Desktop support details.">
 </picture>
 
 - **Keep history for** defaults to **Forever**. **Keep files for retry** defaults to 7 days.
+- **Desktop support details** lists what your desktop offers put.gd: capture, shortcuts, the tray, recording and click rings.
 - **Resource limits** opens the limits for uploads, images, the clipboard, memory and the **Thumbnail cache**, which defaults to 256 MB. **Reset resource and history limits…** restores these limits and nothing else.
 - **Diagnostics** holds **Keep detailed debug logs for 24 hours**, **Clear logs…**, **Last unclean exit** and **Diagnostics package**. Logs and packages stay on this computer unless you choose to upload a package.
 - **Configuration file** shows the file's path. **Reload from file…** replaces this window's settings with the file and asks first if that discards edits.
