@@ -82,7 +82,7 @@ Each package comes as a stable release and a nightly build.
 
 === "Fedora"
 
-    1. Download the package for Fedora 44: [stable](https://app.put.gd/dl/stable/fedora44) or [nightly](https://app.put.gd/dl/nightly/fedora44).
+    1. Download the package for your Fedora release. Fedora 44: [stable](https://app.put.gd/dl/stable/fedora44) or [nightly](https://app.put.gd/dl/nightly/fedora44). Fedora 45: [stable](https://app.put.gd/dl/stable/fedora45) or [nightly](https://app.put.gd/dl/nightly/fedora45).
     2. Open a terminal in your download folder.
     3. Install the package:
 

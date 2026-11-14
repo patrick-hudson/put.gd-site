@@ -22,7 +22,7 @@ spec.loader.exec_module(update_kvs)
 
 NOW = dt.datetime(2026, 10, 20, 18, 32, 24, tzinfo=dt.timezone.utc)
 DL = "https://github.com/patrick-hudson/put.gd-desktop/releases/download"
-PACKAGES = ["ubuntu24.04-x86_64.deb", "ubuntu26.04-x86_64.deb", "debian13-x86_64.deb", "fedora44-x86_64.rpm", "archlinux-x86_64.pkg.tar.zst", "x86_64.AppImage"]
+PACKAGES = ["ubuntu24.04-x86_64.deb", "ubuntu26.04-x86_64.deb", "debian13-x86_64.deb", "fedora44-x86_64.rpm", "fedora45-x86_64.rpm", "archlinux-x86_64.pkg.tar.zst", "x86_64.AppImage"]
 
 
 def release(tag, published, prerelease=True, draft=False, extra=(), sums=True):
@@ -103,13 +103,13 @@ class FeedTest(unittest.TestCase):
         self.assertEqual(rel["version"], "26.1020.588-nightly")
         self.assertEqual(rel["publishedAt"], "2026-10-20T05:55:50Z")
         self.assertEqual(rel["notesUrl"], "https://github.com/patrick-hudson/put.gd-desktop/releases/tag/v26.1020.588-nightly")
-        self.assertEqual(list(rel["assets"]), ["ubuntu24.04", "ubuntu26.04", "debian13", "fedora44", "archlinux", "appimage"])
+        self.assertEqual(list(rel["assets"]), ["ubuntu24.04", "ubuntu26.04", "debian13", "fedora44", "fedora45", "archlinux", "appimage"])
         appimage = rel["assets"]["appimage"]
         self.assertEqual(appimage, {
             "name": "putgd-26.1020.588-nightly-x86_64.AppImage",
             "url": f"{DL}/v26.1020.588-nightly/putgd-26.1020.588-nightly-x86_64.AppImage",
-            "size": 1005,
-            "sha256": f"{5:064x}",
+            "size": 1006,
+            "sha256": f"{6:064x}",
         })
         for asset in rel["assets"].values():
             self.assertEqual(set(asset), {"name", "url", "size", "sha256"})
@@ -176,7 +176,7 @@ class PermalinkTest(unittest.TestCase):
         self.assertEqual(data["nightly"]["tag"], "v26.1020.588-nightly")
         keys = update_kvs.wanted(data)
         self.assertFalse(any(key.startswith("stable/") for key in keys))
-        self.assertEqual(len(keys), 8)
+        self.assertEqual(len(keys), 9)
         for package in (*update_kvs.PACKAGES, "release", "checksums"):
             self.assertIn(f"nightly/{package}", keys)
 

@@ -2,7 +2,7 @@
 //
 // Permanent download links:
 //   /dl/stable/ubuntu24.04   -> 302 to the current stable DEB for Ubuntu 24.04
-//   /dl/nightly/fedora44     -> 302 to the newest nightly RPM
+//   /dl/nightly/fedora44     -> 302 to the newest nightly Fedora 44 RPM (fedora45 likewise)
 //   /dl/stable/checksums     -> 302 to that release's SHA256SUMS
 //   /dl/stable               -> 302 to the release page
 //
