@@ -124,7 +124,7 @@ class Render(unittest.TestCase):
     def test_committed_page_has_every_marker_the_renderer_fills(self):
         page = (HERE.parent / "public/index.html").read_text()
         _, vals = render.values({"nightly": dict(NIGHTLY, assets={k: ASSET for k in
-                                 ["ubuntu24.04", "ubuntu26.04", "debian13", "fedora44", "archlinux", ".AppImage"]})},
+                                 ["ubuntu24.04", "ubuntu26.04", "debian13", "fedora44", "fedora45", "archlinux", ".AppImage"]})},
                                 {"shots": [], "media": []})
         marked = {m[0] for m in render.MARK.findall(page)}
         self.assertEqual(set(vals) - marked, set())
