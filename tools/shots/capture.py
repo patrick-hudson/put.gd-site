@@ -651,6 +651,9 @@ def main():
             story = Story(host, client, pointer, shots_cfg, remote_media, run_dir / 'frames', log)
             try:
                 story.run(set(args.steps.split(',')) if args.steps else None)
+            except Exception as error:
+                log(f'story failed: {error!r}')  # logged here, since a refused lock release below can replace it
+                raise
             finally:
                 story.leave_workspace()
             run = {'screen': story.screen, 'anchors': story.anchors, 'frames': story.frames, 'release': tag,

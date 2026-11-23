@@ -62,7 +62,7 @@ Further down the same page:
 
 - **Region selection** sets **While selecting**: **Live desktop** (the default), or **Screenshot first** so open menus and tooltips are included. Recording always selects over the live desktop.
 - **Capture delay** sets **Wait before capturing**, the same choice as at the bottom of the window. **Also delay captures started by a hotkey** is off by default. See [capture after a delay](capture.md#capture-after-a-delay).
-- **Capture style**, from the next nightly build, puts screenshots on a backdrop. See [Style your screenshots](style.md).
+- **Capture style** puts screenshots on a backdrop. See [Style your screenshots](style.md).
 - **Scrolling capture** sets **Maximum height (px)**, **Start with auto-scroll** and **Auto-scroll goes to the top first**. See [Capture a scrolling page](scrolling.md).
 - **Text recognition** holds the languages for [Copy text](copy-text.md#other-languages), your [redaction list](sensitive-text.md#your-own-words-and-patterns), and **Check captures for sensitive text before uploading**. See [Check for private details](sensitive-text.md).
 - **Screen recording** sets the **Frame rate**: 30 frames per second (the default) or 60. **Microphone** chooses which microphone [recordings use](record.md#record-your-voice), and starts as **System default**. **Draw a ring at each click** [shows your clicks](record.md#show-your-clicks) in recordings, and is off by default.
@@ -97,7 +97,7 @@ Capture hotkeys also work while a menu is open, in put.gd or another app. On X11
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-light.avif 1368w, /_site/shots/error-log-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-dark.avif 1368w, /_site/shots/error-log-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-light.webp 1368w, /_site/shots/error-log-light@2x.webp 2736w">
-  <img src="/_site/shots/error-log-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-dark.webp 1368w, /_site/shots/error-log-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Error log with no errors yet: a filter for actions, a search box and Open problems only.">
+  <img src="/_site/shots/error-log-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-dark.webp 1368w, /_site/shots/error-log-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Error log: two upload errors to demo.put.gd, both Resolved, with the action filter, a search box and Open problems only.">
 </picture>
 
 **Settings → Error log** keeps every error put.gd reported, newest first: when it happened, what was being done, the file, the destination and a short message.
@@ -113,11 +113,12 @@ An entry whose problem went away later, such as a retry that worked, says **Reso
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.avif 1368w, /_site/shots/advanced-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.avif 1368w, /_site/shots/advanced-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.webp 1368w, /_site/shots/advanced-light@2x.webp 2736w">
-  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: History, Resource limits and Diagnostics.">
+  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: History, Resource limits, Performance with Unhinged mode, and Diagnostics.">
 </picture>
 
 - **Keep history for** defaults to **Forever**. **Keep files for retry** defaults to 7 days.
 - **Desktop support details** lists what your desktop offers put.gd: capture, hotkeys, the tray, recording and click rings.
 - **Resource limits** opens the limits for uploads, images, the clipboard, memory and the **Thumbnail cache**, which defaults to 256 MB. **Reset resource and history limits…** restores these limits and nothing else.
+- **Performance** has **Unhinged mode**, off by default. Turned on, put.gd may use more of the processor to read text, encode recordings and make previews, so that work finishes sooner while your other apps may slow down. Its memory limits stay.
 - **Diagnostics** holds **Keep detailed debug logs for 24 hours**, **Clear logs…**, **Last unclean exit** and **Diagnostics package**. Logs and packages stay on this computer unless you choose to upload a package.
 - **Configuration file** shows the file's path. **Reload from file…** replaces this window's settings with the file and asks first if that discards edits.

@@ -3,14 +3,14 @@
 Put each screenshot on a backdrop, with padding, rounded corners and a soft shadow, so it looks finished when you paste the link into a chat or a document.
 
 <picture class="shot">
-  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.avif 1368w, /_site/shots/capture-settings-light@2x.avif 2736w">
-  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.avif 1368w, /_site/shots/capture-settings-dark@2x.avif 2736w">
-  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.webp 1368w, /_site/shots/capture-settings-light@2x.webp 2736w">
-  <img src="/_site/shots/capture-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.webp 1368w, /_site/shots/capture-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture: Capture output with Destination, Sharing, After uploading and Different output for some actions, then Region selection and Capture delay.">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-light.avif 1368w, /_site/shots/style-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-dark.avif 1368w, /_site/shots/style-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-light.webp 1368w, /_site/shots/style-light@2x.webp 2736w">
+  <img src="/_site/shots/style-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-dark.webp 1368w, /_site/shots/style-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture → Capture style with Style screenshots on: Look set to Amber, Padding, Rounded corners, Soft shadow and the Preview.">
 </picture>
 
-!!! note "In the next nightly build"
-    Capture style is described in the desktop app's documentation but isn't in a nightly build yet. It arrives in the first nightly after 26.1122.6439, then in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
+!!! note "In nightly builds for now"
+    Capture style arrives in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
 
 1. Open **Settings → Capture** and scroll to **Capture style**.
 2. Turn on **Style screenshots**.

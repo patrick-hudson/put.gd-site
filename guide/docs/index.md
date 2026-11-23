@@ -45,17 +45,11 @@ Until the next stable release, you need a nightly for:
 - The editor's [line, ellipse, pen, step number and pixelate tools](edit.md#tools), and **Copy image**.
 - [Links that expire](destinations-s3.md#links) on S3, and [renewing an expired link](history.md#when-a-link-expires).
 - Setting up GNOME with a single logout.
-- [Capture scrolling region](scrolling.md), and [Copy text from region](copy-text.md) with QR codes.
+- [Capture scrolling region](scrolling.md), [Copy text from region](copy-text.md) with QR codes, and [Capture style](style.md).
 - [Checking captures for private details](sensitive-text.md) before they upload, and the editor's **Quick redact** and **Copy text** tools.
 - The new recording review, with [cuts, moving covers and skimming](record.md#the-review-window).
-- The [Cloudflare R2](destinations-r2.md) destination.
-- [**Settings → Error log**](settings.md#error-log), and the [QR code](history.md#show-a-link-as-a-qr-code) of a link in History.
-
-A few features are finished but newer than the latest nightly, 26.1122.6439. They arrive in the next nightly:
-
-- [Capture style](style.md).
-- The [Nextcloud and WebDAV](destinations-nextcloud.md) and [SFTP](destinations-sftp.md) destinations.
-- **Redact and upload** as one button in the [check for private details](sensitive-text.md#when-it-finds-something).
+- The [Cloudflare R2](destinations-r2.md), [Nextcloud and WebDAV](destinations-nextcloud.md) and [SFTP](destinations-sftp.md) destinations.
+- [**Settings → Error log**](settings.md#error-log), **Unhinged mode** under [Settings → Advanced](settings.md#advanced), and the [QR code](history.md#show-a-link-as-a-qr-code) of a link in History.
 
 To install the nightly:
 

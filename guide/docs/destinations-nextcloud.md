@@ -3,14 +3,14 @@
 Upload to a folder in your Nextcloud and get a share link for each file, or upload to any WebDAV server.
 
 <picture class="shot">
-  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-light.avif 1368w, /_site/shots/storage-light@2x.avif 2736w">
-  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.avif 1368w, /_site/shots/storage-dark@2x.avif 2736w">
-  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-light.webp 1368w, /_site/shots/storage-light@2x.webp 2736w">
-  <img src="/_site/shots/storage-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.webp 1368w, /_site/shots/storage-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page, where Add destination below the list offers Nextcloud and WebDAV. This picture shows an S3 destination.">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-light.avif 1368w, /_site/shots/nextcloud-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-dark.avif 1368w, /_site/shots/nextcloud-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-light.webp 1368w, /_site/shots/nextcloud-light@2x.webp 2736w">
+  <img src="/_site/shots/nextcloud-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-dark.webp 1368w, /_site/shots/nextcloud-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a new Nextcloud destination, signed out: Server, Sign in and Use an app password instead, and the Folder put.gd.">
 </picture>
 
-!!! note "In the next nightly build"
-    Nextcloud and WebDAV is described in the desktop app's documentation but isn't in a nightly build yet. It arrives in the first nightly after 26.1122.6439, then in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
+!!! note "In nightly builds for now"
+    Nextcloud and WebDAV arrives in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
 
 ## Nextcloud
 

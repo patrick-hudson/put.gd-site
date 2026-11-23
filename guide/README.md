@@ -209,14 +209,58 @@ needs no hand edit. `tools/test_userguide.py` fails while a block is out of date
 </picture>
 ```
 
-**error-log** — Settings → Error log with no errors yet: a filter for actions, a search box and Open problems only.
+**nextcloud** — The Destinations page with a new Nextcloud destination, signed out: Server, Sign in and Use an app password instead, and the Folder put.gd.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-light.avif 1368w, /_site/shots/nextcloud-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-dark.avif 1368w, /_site/shots/nextcloud-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-light.webp 1368w, /_site/shots/nextcloud-light@2x.webp 2736w">
+  <img src="/_site/shots/nextcloud-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-dark.webp 1368w, /_site/shots/nextcloud-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a new Nextcloud destination, signed out: Server, Sign in and Use an app password instead, and the Folder put.gd.">
+</picture>
+```
+
+**sftp** — The Destinations page with a new SFTP destination: Server, User, Folder on server with the line saying how ssh will connect, and Link address.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-light.avif 1368w, /_site/shots/sftp-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-dark.avif 1368w, /_site/shots/sftp-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-light.webp 1368w, /_site/shots/sftp-light@2x.webp 2736w">
+  <img src="/_site/shots/sftp-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-dark.webp 1368w, /_site/shots/sftp-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a new SFTP destination: Server, User, Folder on server with the line saying how ssh will connect, and Link address.">
+</picture>
+```
+
+**style** — Settings → Capture → Capture style with Style screenshots on: Look set to Amber, Padding, Rounded corners, Soft shadow and the Preview.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-light.avif 1368w, /_site/shots/style-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-dark.avif 1368w, /_site/shots/style-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-light.webp 1368w, /_site/shots/style-light@2x.webp 2736w">
+  <img src="/_site/shots/style-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-dark.webp 1368w, /_site/shots/style-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture → Capture style with Style screenshots on: Look set to Amber, Padding, Rounded corners, Soft shadow and the Preview.">
+</picture>
+```
+
+**sensitive** — The Sensitive text found panel: the capture shows a card number and 2 keys or tokens, with a preview that covers them, and the buttons Cancel, Open in editor, Upload anyway and Redact and upload.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-light.avif 672w, /_site/shots/sensitive-light@2x.avif 1344w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-dark.avif 672w, /_site/shots/sensitive-dark@2x.avif 1344w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-light.webp 672w, /_site/shots/sensitive-light@2x.webp 1344w">
+  <img src="/_site/shots/sensitive-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-dark.webp 672w, /_site/shots/sensitive-dark@2x.webp 1344w" width="672" height="371" loading="lazy" alt="The Sensitive text found panel: the capture shows a card number and 2 keys or tokens, with a preview that covers them, and the buttons Cancel, Open in editor, Upload anyway and Redact and upload.">
+</picture>
+```
+
+**error-log** — Settings → Error log: two upload errors to demo.put.gd, both Resolved, with the action filter, a search box and Open problems only.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-light.avif 1368w, /_site/shots/error-log-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-dark.avif 1368w, /_site/shots/error-log-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-light.webp 1368w, /_site/shots/error-log-light@2x.webp 2736w">
-  <img src="/_site/shots/error-log-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-dark.webp 1368w, /_site/shots/error-log-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Error log with no errors yet: a filter for actions, a search box and Open problems only.">
+  <img src="/_site/shots/error-log-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-dark.webp 1368w, /_site/shots/error-log-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Error log: two upload errors to demo.put.gd, both Resolved, with the action filter, a search box and Open problems only.">
 </picture>
 ```
 
@@ -264,14 +308,14 @@ needs no hand edit. `tools/test_userguide.py` fails while a block is out of date
 </picture>
 ```
 
-**advanced** — Settings → Advanced: History, Resource limits and Diagnostics.
+**advanced** — Settings → Advanced: History, Resource limits, Performance with Unhinged mode, and Diagnostics.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.avif 1368w, /_site/shots/advanced-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.avif 1368w, /_site/shots/advanced-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.webp 1368w, /_site/shots/advanced-light@2x.webp 2736w">
-  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: History, Resource limits and Diagnostics.">
+  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: History, Resource limits, Performance with Unhinged mode, and Diagnostics.">
 </picture>
 ```
 

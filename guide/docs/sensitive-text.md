@@ -3,10 +3,10 @@
 Have put.gd read each capture before it uploads, and warn you or cover it when it shows a card number, a key, your name or other private text.
 
 <picture class="shot">
-  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-light.avif 1368w, /_site/shots/text-settings-light@2x.avif 2736w">
-  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-dark.avif 1368w, /_site/shots/text-settings-dark@2x.avif 2736w">
-  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-light.webp 1368w, /_site/shots/text-settings-light@2x.webp 2736w">
-  <img src="/_site/shots/text-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-dark.webp 1368w, /_site/shots/text-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture, further down: Text recognition with three languages, Always suggest redacting and Patterns (regular expressions). The check for sensitive text is below these.">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-light.avif 672w, /_site/shots/sensitive-light@2x.avif 1344w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-dark.avif 672w, /_site/shots/sensitive-dark@2x.avif 1344w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-light.webp 672w, /_site/shots/sensitive-light@2x.webp 1344w">
+  <img src="/_site/shots/sensitive-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-dark.webp 672w, /_site/shots/sensitive-dark@2x.webp 1344w" width="672" height="371" loading="lazy" alt="The Sensitive text found panel: the capture shows a card number and 2 keys or tokens, with a preview that covers them, and the buttons Cancel, Open in editor, Upload anyway and Redact and upload.">
 </picture>
 
 !!! note "In nightly builds for now"
@@ -47,6 +47,13 @@ Not checked: **Capture region & edit**, recordings, other kinds of file, and ret
 The check takes about a quarter to half a second for a region on our test machines. A screen full of small text takes longer.
 
 ## Your own words and patterns
+
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-light.avif 1368w, /_site/shots/text-settings-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-dark.avif 1368w, /_site/shots/text-settings-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-light.webp 1368w, /_site/shots/text-settings-light@2x.webp 2736w">
+  <img src="/_site/shots/text-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-dark.webp 1368w, /_site/shots/text-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture, further down: Text recognition with three languages, Always suggest redacting and Patterns (regular expressions). The check for sensitive text is below these.">
+</picture>
 
 **My redaction list** covers words you choose, such as a host name, a client or a project name. Add them in **Settings → Capture → Text recognition**:
 

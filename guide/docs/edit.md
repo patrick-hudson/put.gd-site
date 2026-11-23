@@ -57,7 +57,7 @@ You can also drag a mark with any drawing tool. To draw a new mark on top of one
 **Quick redact**, a menu in the **Redact** tool's side panel, finds private text for you and covers it with ordinary Redact marks:
 
 - **Email addresses**, **Phone numbers**, **IP addresses** and **Card numbers**.
-- **Keys and tokens**: keys from about 25 services, passwords in connection addresses, webhook addresses and the values of settings named like secrets. Hover over it to see the list.
+- **Keys and tokens**: keys from about 25 services, passwords in connection addresses and in commands such as `mysql -p…`, a password shown beside its label in a form or a password manager, Wi-Fi passphrases, session cookies, webhook addresses and the values of settings named like secrets. Hover over it to see the list.
 - **My username and name**: your login name and real name, as a terminal prompt or a home folder path shows them.
 - **My redaction list**: the words and patterns you keep in [**Settings → Capture → Text recognition**](sensitive-text.md#your-own-words-and-patterns).
 - **All of these**, and **Remove suggestions**, which takes away every suggestion still there and leaves marks you drew.

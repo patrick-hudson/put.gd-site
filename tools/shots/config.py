@@ -26,6 +26,9 @@ STEP_KINDS = {
     'desktop': ({'window'}, {'screen', 'window'}),
     # The About window on the backdrop.
     'about': (set(), {'window'}),
+    # The sensitive text panel: an image with a made-up key and card number uploaded from the
+    # clipboard with the check on, then cancelled.
+    'sensitive': ({'filename'}, {'window'}),
     # Not a story step: the frame a record step keeps of its floating bar, named by the step's `bar`.
     'record-bar': (set(), {'viewer', 'area'}),
 }
@@ -200,6 +203,10 @@ def validate_shots(cfg, media_ids=None):
             errors.append(f'{where}: scroll must be 1-700 pixels')
         if kind == 'history' and step.get('view', 'list') not in ('list', 'gallery'):
             errors.append(f'{where}: view must be list or gallery')
+        if kind == 'sensitive' and not re.fullmatch(r'[a-z0-9][a-z0-9.-]{0,60}\.png', str(step['filename'])):
+            errors.append(f'{where}: filename must be a plain lowercase .png name')
+        if kind == 'settings' and not all(isinstance(step.get(k, {}), dict) for k in ('preferences', 'restore')):
+            errors.append(f'{where}: preferences and restore must be objects')
         if kind == 'file-upload' and not re.fullmatch(r'[a-z0-9][a-z0-9.-]{0,60}\.(jpg|png)', str(step['filename'])):
             errors.append(f'{where}: filename must be a plain lowercase .jpg or .png name')
     names = set()

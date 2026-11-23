@@ -45,6 +45,11 @@ PROVIDERS = {
 REFERENCES = {'custom-http': 'putgd/http/{pid}', 'cloudflare-r2': 'putgd/r2/{pid}', 'nextcloud': 'putgd/nextcloud/{pid}'}
 # An SFTP destination signs in with the agent and key files until a password is stored: no keychain entry.
 CREDENTIALS = {'sftp': {'mode': 'session', 'reference': None}}
+DEMO_KEY = '~/.ssh/putgd-site-demo'
+# The made-up secrets the sensitive text panel finds: AWS's documentation example keys and a
+# card number from Stripe's test cards. None of them works anywhere.
+SENSITIVE_LINES = ['$ cat .env', 'APP_ENV=staging', 'AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE',
+                   'AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY', 'BILLING_TEST_CARD=4242 4242 4242 4242']
 DONE_STATES = {'completed', 'failed', 'partial', 'cancelled', 'interrupted'}
 
 
@@ -447,6 +452,64 @@ class Story:
         self.wait_operation(op)
         self.park()
 
+    def sensitive(self, step):
+        """The panel put.gd shows when a capture holds a key or a card number: an image of a
+        made-up .env file, copied as a file and uploaded from the clipboard with the check on
+        and the panel as the one window on the backdrop. Cancel then uploads nothing."""
+        import tempfile
+        from PIL import Image, ImageDraw, ImageFont
+        image = Image.new('RGB', (1500, 60 + 56 * len(SENSITIVE_LINES)), '#1e1e1e')
+        draw = ImageDraw.Draw(image)
+        try:
+            font = ImageFont.truetype('DejaVuSansMono.ttf', 34)
+        except OSError:
+            font = ImageFont.load_default(size=34)
+        for i, line in enumerate(SENSITIVE_LINES):
+            draw.text((36, 30 + 56 * i), line, fill='#e8e8e8', font=font)
+        path = f"{self.host.run_dir}/upload/{step['filename']}"
+        with tempfile.TemporaryDirectory() as tmp:
+            local = os.path.join(tmp, step['filename'])
+            image.save(local)
+            self.host.run(f'mkdir -p -m 700 {self.host.run_dir}/upload')
+            self.host.put(local, path)
+        self.patch({'preferences': {'sensitiveTextCheck': {'enabled': True, 'kinds': {'card': 'warn', 'key': 'warn'}}}})
+        try:
+            self.focus_backdrop()
+            self.host.agent('send', 'backdrop', f'clip {path}')
+            time.sleep(1.0)
+            op = find_id(self.cli('action.invoke', {'action': 'clipboard', 'sensitiveText': 'prompt'}))
+            deadline, sensitive = time.monotonic() + 120, None
+            while time.monotonic() < deadline:
+                result = self.cli('operation.inspect', {'id': op})
+                sensitive = result.get('sensitive') or (result.get('operation') or {}).get('sensitive')
+                if sensitive and sensitive.get('prompt') is not None:
+                    break
+                state = result.get('state') or (result.get('operation') or {}).get('state')
+                if state in DONE_STATES:
+                    raise StoryError(f'the check found nothing to ask about: {json.dumps(result)[:400]}')
+                time.sleep(1.0)
+            else:
+                raise StoryError('no sensitive text panel within 120 s')
+            self.log(f'  found {json.dumps(sensitive.get("found"))}')
+            time.sleep(2.0)
+            self.park()
+            self.anchors[step['id']] = {'window': self.locate()}
+            for theme in ('dark', 'light'):
+                self.set_theme(theme)
+                self.park()
+                self.keep(step['id'], theme)
+            self.set_theme('dark')
+            self.cli('operation.decide', {'id': op, 'choice': 'cancel', 'prompt': sensitive['prompt']})
+            deadline = time.monotonic() + 60
+            while time.monotonic() < deadline:
+                result = self.cli('operation.inspect', {'id': op})
+                if (result.get('state') or (result.get('operation') or {}).get('state')) in DONE_STATES:
+                    break
+                time.sleep(1.0)
+        finally:
+            self.patch({'preferences': {'sensitiveTextCheck': {'enabled': False, 'kinds': {'card': 'warn', 'key': 'warn'}}}})
+        self.park()
+
     def main_window(self, view, size):
         self.cli('ui.show', {'view': view})
         time.sleep(2.5)
@@ -498,13 +561,37 @@ class Story:
         self.page(step, 'destinations')
 
     def settings(self, step):
-        self.page(step, step.get('view', 'settings'), step.get('row'), step.get('scroll'))
+        """A Settings page. `preferences` is patched in first (to show a section switched on) and
+        `restore` afterwards, so the later steps see the settings as before."""
+        if step.get('preferences'):
+            self.patch({'preferences': step['preferences']})
+            time.sleep(1.0)
+        try:
+            if step.get('window'):
+                self.main_window(step.get('view', 'settings'), step['window'])  # the size the other pages have after History
+            self.page(step, step.get('view', 'settings'), step.get('row'), step.get('scroll'))
+        finally:
+            if step.get('restore'):
+                self.patch({'preferences': step['restore']})
 
     def destination(self, step):
         """A provider's destination form as Add destination shows it: a profile with the
         provider's defaults and no account or bucket, moved to the top of the list and clicked."""
         provider = step['provider']
         label, defaults = PROVIDERS[provider]
+        if step.get('keyFile'):
+            # A throwaway key for the SSH key row, made for the shot and removed after it.
+            self.host.run(f'mkdir -p -m 700 ~/.ssh && rm -f {DEMO_KEY} {DEMO_KEY}.pub && '
+                          f'ssh-keygen -q -t ed25519 -N "" -C putgd-site-demo -f {DEMO_KEY}')
+            home = self.host.run('printf %s "$HOME"').strip()
+            defaults = dict(defaults, keyFile=DEMO_KEY.replace('~', home, 1))  # settings take an absolute path
+        try:
+            self._destination(step, provider, label, defaults)
+        finally:
+            if step.get('keyFile'):
+                self.host.run(f'rm -f {DEMO_KEY} {DEMO_KEY}.pub')
+
+    def _destination(self, step, provider, label, defaults):
         pid = f'shot-{provider}'
         profiles = [dict(p) for p in self.cli('settings.get')['document']['profiles']]
         order = [p['id'] for p in profiles]
@@ -701,7 +788,7 @@ class Story:
                     'file-upload': self.file_upload, 'history': self.history, 'destinations': self.destinations,
                     'destination': self.destination, 'settings': self.settings, 'tray': self.tray,
                     'file-manager': self.file_manager, 'about': self.about,
-                    'desktop': self.desktop}
+                    'desktop': self.desktop, 'sensitive': self.sensitive}
         self.set_theme('dark')
         for step in self.cfg['story']:
             if steps and step['id'] not in steps:

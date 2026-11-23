@@ -3,14 +3,14 @@
 Upload to a folder on your own server over SFTP, signing in the same way `ssh` does in your terminal.
 
 <picture class="shot">
-  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-light.avif 1368w, /_site/shots/storage-light@2x.avif 2736w">
-  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.avif 1368w, /_site/shots/storage-dark@2x.avif 2736w">
-  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-light.webp 1368w, /_site/shots/storage-light@2x.webp 2736w">
-  <img src="/_site/shots/storage-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/storage-dark.webp 1368w, /_site/shots/storage-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page, where Add destination below the list offers SFTP. This picture shows an S3 destination.">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-light.avif 1368w, /_site/shots/sftp-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-dark.avif 1368w, /_site/shots/sftp-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-light.webp 1368w, /_site/shots/sftp-light@2x.webp 2736w">
+  <img src="/_site/shots/sftp-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-dark.webp 1368w, /_site/shots/sftp-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a new SFTP destination: Server, User, Folder on server with the line saying how ssh will connect, and Link address.">
 </picture>
 
-!!! note "In the next nightly build"
-    SFTP is described in the desktop app's documentation but isn't in a nightly build yet. It arrives in the first nightly after 26.1122.6439, then in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
+!!! note "In nightly builds for now"
+    SFTP arrives in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
 
 put.gd connects with your own OpenSSH client, so your `~/.ssh/config`, host aliases, jump hosts, SSH agent, security keys and `known_hosts` work as they do in a terminal. The packages bring the client with them. With the AppImage, install it yourself if `ssh` is missing.
 
