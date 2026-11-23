@@ -66,14 +66,14 @@ needs no hand edit. `tools/test_userguide.py` fails while a block is out of date
 </picture>
 ```
 
-**tray** — The put.gd tray menu on GNOME: the current output, Change output, Capture region, Repeat last region, Capture window, Capture monitor, Capture desktop, Capture delay, Capture region & edit, Edit image, Record screen and Upload clipboard, then History, Destinations and Settings, then About put.gd and Quit put.gd.
+**tray** — The put.gd tray menu on GNOME: the capture actions from Capture region to Capture scrolling region, then Capture region & edit, Edit image and Record screen, then Copy text from region and Upload clipboard, then Capture delay and Capture output, then Open put.gd, Settings and Quit put.gd.
 
 ```html
 <picture class="shot">
-  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-light.avif 389w, /_site/shots/tray-light@2x.avif 778w">
-  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-dark.avif 389w, /_site/shots/tray-dark@2x.avif 778w">
-  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-light.webp 389w, /_site/shots/tray-light@2x.webp 778w">
-  <img src="/_site/shots/tray-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-dark.webp 389w, /_site/shots/tray-dark@2x.webp 778w" width="389" height="746" loading="lazy" alt="The put.gd tray menu on GNOME: the current output, Change output, Capture region, Repeat last region, Capture window, Capture monitor, Capture desktop, Capture delay, Capture region &amp; edit, Edit image, Record screen and Upload clipboard, then History, Destinations and Settings, then About put.gd and Quit put.gd.">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-light.avif 489w, /_site/shots/tray-light@2x.avif 978w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-dark.avif 489w, /_site/shots/tray-dark@2x.avif 978w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-light.webp 489w, /_site/shots/tray-light@2x.webp 978w">
+  <img src="/_site/shots/tray-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-dark.webp 489w, /_site/shots/tray-dark@2x.webp 978w" width="489" height="752" loading="lazy" alt="The put.gd tray menu on GNOME: the capture actions from Capture region to Capture scrolling region, then Capture region &amp; edit, Edit image and Record screen, then Copy text from region and Upload clipboard, then Capture delay and Capture output, then Open put.gd, Settings and Quit put.gd.">
 </picture>
 ```
 
@@ -147,10 +147,10 @@ needs no hand edit. `tools/test_userguide.py` fails while a block is out of date
 
 ```html
 <picture class="shot">
-  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-light.avif 920w, /_site/shots/record-light@2x.avif 1840w">
-  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-dark.avif 920w, /_site/shots/record-dark@2x.avif 1840w">
-  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-light.webp 920w, /_site/shots/record-light@2x.webp 1840w">
-  <img src="/_site/shots/record-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-dark.webp 920w, /_site/shots/record-dark@2x.webp 1840w" width="920" height="768" loading="lazy" alt="The recording review window with a timeline and trim handles.">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-light.avif 1488w, /_site/shots/record-light@2x.avif 2976w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-dark.avif 1488w, /_site/shots/record-dark@2x.avif 2976w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-light.webp 1488w, /_site/shots/record-light@2x.webp 2976w">
+  <img src="/_site/shots/record-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-dark.webp 1488w, /_site/shots/record-dark@2x.webp 2976w" width="1488" height="948" loading="lazy" alt="The recording review window with a timeline and trim handles.">
 </picture>
 ```
 
@@ -198,58 +198,124 @@ needs no hand edit. `tools/test_userguide.py` fails while a block is out of date
 </picture>
 ```
 
-**general** — Settings → General: Launch at login, Unlock saved credentials, Show desktop notifications, Theme, File manager and Updates.
+**r2** — The Destinations page with a new Cloudflare R2 destination: Account ID, Jurisdiction, Bucket, Folder in bucket, who can open files and the access key fields.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/r2-light.avif 1368w, /_site/shots/r2-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/r2-dark.avif 1368w, /_site/shots/r2-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/r2-light.webp 1368w, /_site/shots/r2-light@2x.webp 2736w">
+  <img src="/_site/shots/r2-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/r2-dark.webp 1368w, /_site/shots/r2-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a new Cloudflare R2 destination: Account ID, Jurisdiction, Bucket, Folder in bucket, who can open files and the access key fields.">
+</picture>
+```
+
+**nextcloud** — The Destinations page with a new Nextcloud destination, signed out: Server, Sign in and Use an app password instead, and the Folder put.gd.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-light.avif 1368w, /_site/shots/nextcloud-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-dark.avif 1368w, /_site/shots/nextcloud-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-light.webp 1368w, /_site/shots/nextcloud-light@2x.webp 2736w">
+  <img src="/_site/shots/nextcloud-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-dark.webp 1368w, /_site/shots/nextcloud-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a new Nextcloud destination, signed out: Server, Sign in and Use an app password instead, and the Folder put.gd.">
+</picture>
+```
+
+**sftp** — The Destinations page with a new SFTP destination: Server, User, Folder on server with the line saying how ssh will connect, and Link address.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-light.avif 1368w, /_site/shots/sftp-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-dark.avif 1368w, /_site/shots/sftp-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-light.webp 1368w, /_site/shots/sftp-light@2x.webp 2736w">
+  <img src="/_site/shots/sftp-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-dark.webp 1368w, /_site/shots/sftp-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a new SFTP destination: Server, User, Folder on server with the line saying how ssh will connect, and Link address.">
+</picture>
+```
+
+**style** — Settings → Capture → Capture style with Style screenshots on: Look set to Amber, Padding, Rounded corners, Soft shadow and the Preview.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-light.avif 1368w, /_site/shots/style-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-dark.avif 1368w, /_site/shots/style-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-light.webp 1368w, /_site/shots/style-light@2x.webp 2736w">
+  <img src="/_site/shots/style-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-dark.webp 1368w, /_site/shots/style-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture → Capture style with Style screenshots on: Look set to Amber, Padding, Rounded corners, Soft shadow and the Preview.">
+</picture>
+```
+
+**sensitive** — The Sensitive text found panel: the capture shows a card number and 2 keys or tokens, with a preview that covers them, and the buttons Cancel, Open in editor, Upload anyway and Redact and upload.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-light.avif 672w, /_site/shots/sensitive-light@2x.avif 1344w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-dark.avif 672w, /_site/shots/sensitive-dark@2x.avif 1344w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-light.webp 672w, /_site/shots/sensitive-light@2x.webp 1344w">
+  <img src="/_site/shots/sensitive-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-dark.webp 672w, /_site/shots/sensitive-dark@2x.webp 1344w" width="672" height="371" loading="lazy" alt="The Sensitive text found panel: the capture shows a card number and 2 keys or tokens, with a preview that covers them, and the buttons Cancel, Open in editor, Upload anyway and Redact and upload.">
+</picture>
+```
+
+**error-log** — Settings → Error log: two upload errors to demo.put.gd, both Resolved, with the action filter, a search box and Open problems only.
+
+```html
+<picture class="shot">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-light.avif 1368w, /_site/shots/error-log-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-dark.avif 1368w, /_site/shots/error-log-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-light.webp 1368w, /_site/shots/error-log-light@2x.webp 2736w">
+  <img src="/_site/shots/error-log-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/error-log-dark.webp 1368w, /_site/shots/error-log-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Error log: two upload errors to demo.put.gd, both Resolved, with the action filter, a search box and Open problems only.">
+</picture>
+```
+
+**general** — Settings → General: Startup and notifications, Appearance, File manager and Updates.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/general-light.avif 1368w, /_site/shots/general-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/general-dark.avif 1368w, /_site/shots/general-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/general-light.webp 1368w, /_site/shots/general-light@2x.webp 2736w">
-  <img src="/_site/shots/general-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/general-dark.webp 1368w, /_site/shots/general-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → General: Launch at login, Unlock saved credentials, Show desktop notifications, Theme, File manager and Updates.">
+  <img src="/_site/shots/general-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/general-dark.webp 1368w, /_site/shots/general-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → General: Startup and notifications, Appearance, File manager and Updates.">
 </picture>
 ```
 
-**capture-settings** — Settings → Capture: Destination, Sharing, After uploading, Different output for some actions, Region selection and Screen recording.
+**capture-settings** — Settings → Capture: Capture output with Destination, Sharing, After uploading and Different output for some actions, then Region selection and Capture delay.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.avif 1368w, /_site/shots/capture-settings-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.avif 1368w, /_site/shots/capture-settings-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-light.webp 1368w, /_site/shots/capture-settings-light@2x.webp 2736w">
-  <img src="/_site/shots/capture-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.webp 1368w, /_site/shots/capture-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture: Destination, Sharing, After uploading, Different output for some actions, Region selection and Screen recording.">
+  <img src="/_site/shots/capture-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-settings-dark.webp 1368w, /_site/shots/capture-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture: Capture output with Destination, Sharing, After uploading and Different output for some actions, then Region selection and Capture delay.">
 </picture>
 ```
 
-**recording-settings** — Settings → Capture, further down: Region selection, Screen recording with Frame rate, Microphone and Draw a ring at each click, and Local copies.
+**text-settings** — Settings → Capture, further down: Text recognition with three languages, Always suggest redacting and Patterns (regular expressions).
 
 ```html
 <picture class="shot">
-  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-light.avif 1368w, /_site/shots/recording-settings-light@2x.avif 2736w">
-  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-dark.avif 1368w, /_site/shots/recording-settings-dark@2x.avif 2736w">
-  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-light.webp 1368w, /_site/shots/recording-settings-light@2x.webp 2736w">
-  <img src="/_site/shots/recording-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/recording-settings-dark.webp 1368w, /_site/shots/recording-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture, further down: Region selection, Screen recording with Frame rate, Microphone and Draw a ring at each click, and Local copies.">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-light.avif 1368w, /_site/shots/text-settings-light@2x.avif 2736w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-dark.avif 1368w, /_site/shots/text-settings-dark@2x.avif 2736w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-light.webp 1368w, /_site/shots/text-settings-light@2x.webp 2736w">
+  <img src="/_site/shots/text-settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/text-settings-dark.webp 1368w, /_site/shots/text-settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture, further down: Text recognition with three languages, Always suggest redacting and Patterns (regular expressions).">
 </picture>
 ```
 
-**settings** — Settings → Shortcuts: a key for each capture, for recording and for uploading the clipboard, with Repeat last region and Capture monitor not set.
+**settings** — Settings → Hotkeys: a key for each action, with Capture region, Capture window and Capture desktop set and the rest Not set.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-light.avif 1368w, /_site/shots/settings-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-dark.avif 1368w, /_site/shots/settings-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-light.webp 1368w, /_site/shots/settings-light@2x.webp 2736w">
-  <img src="/_site/shots/settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-dark.webp 1368w, /_site/shots/settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Shortcuts: a key for each capture, for recording and for uploading the clipboard, with Repeat last region and Capture monitor not set.">
+  <img src="/_site/shots/settings-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/settings-dark.webp 1368w, /_site/shots/settings-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Hotkeys: a key for each action, with Capture region, Capture window and Capture desktop set and the rest Not set.">
 </picture>
 ```
 
-**advanced** — Settings → Advanced: history retention, Resource limits, Diagnostics and Desktop support details.
+**advanced** — Settings → Advanced: History, Resource limits, Performance with Unhinged mode, and Diagnostics.
 
 ```html
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.avif 1368w, /_site/shots/advanced-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.avif 1368w, /_site/shots/advanced-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.webp 1368w, /_site/shots/advanced-light@2x.webp 2736w">
-  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: history retention, Resource limits, Diagnostics and Desktop support details.">
+  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: History, Resource limits, Performance with Unhinged mode, and Diagnostics.">
 </picture>
 ```
 

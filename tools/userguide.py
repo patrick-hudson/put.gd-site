@@ -27,7 +27,7 @@ PUBLIC = ROOT / "public"
 BASE = "/userguide/"
 HEADER = re.compile(r'<header class="top">.*?</header>', re.S)
 FOOTER = re.compile(r'<footer class="foot">.*?</footer>', re.S)
-GUIDE_LINK = '<a href="/userguide">User guide</a>'
+GUIDE_LINK = '<a href="https://app.put.gd/userguide">User guide</a>'
 DRAWER = ('\n    <label class="guide-drawer md-icon" for="__drawer" aria-label="Menu">'
           '{% include ".icons/material/menu.svg" %}</label>')
 SEARCH = ('\n    <label class="guide-search md-icon" for="__search" aria-label="Search">'
@@ -45,7 +45,7 @@ def chrome(home: str, channel: str | None, values: dict[str, str]) -> tuple[str,
         raise ValueError("public/index.html has no User guide link in its primary navigation")
     header = header.replace('<header class="top">', '<header class="top" data-md-component="header">', 1)
     header = header.replace('href="#install"', 'href="https://app.put.gd/#install"')
-    header = header.replace(GUIDE_LINK, '<a href="/userguide" aria-current="page">User guide</a>')
+    header = header.replace(GUIDE_LINK, '<a href="https://app.put.gd/userguide" aria-current="page">User guide</a>')
     header = header.replace('<div class="wrap top-row">', '<div class="wrap top-row">' + DRAWER, 1)
     header = header.replace("</nav>", "</nav>" + SEARCH, 1)
     footer = render.render(FOOTER.search(home)[0], channel, values)

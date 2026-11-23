@@ -12,14 +12,19 @@ A destination is the place put.gd uploads your files to, such as a storage bucke
 1. Open the put.gd window and choose **Destinations**.
 2. Click **Add destination**, below the list.
 3. Choose your storage service, then follow its page to fill in the form:
-    - [**Amazon S3 / S3-compatible**](destinations-s3.md): your own bucket on Amazon S3, Cloudflare R2 or a similar service.
-    - [**Proton Drive**](destinations-proton.md): a folder in your Proton account, shared through Proton's own page.
+    - [**Amazon S3 / S3-compatible**](destinations-s3.md): your own bucket on Amazon S3 or a similar service.
+    - [**Cloudflare R2**](destinations-r2.md): an R2 bucket, from its account ID or its S3 API address.
     - [**Backblaze B2**](destinations-b2.md): a Backblaze bucket with public or expiring links.
+    - [**Proton Drive**](destinations-proton.md): a folder in your Proton account, shared through Proton's own page.
+    - [**Nextcloud** or **WebDAV**](destinations-nextcloud.md): a folder on your Nextcloud, with a share link for each file, or on any WebDAV server.
+    - [**SFTP**](destinations-sftp.md): a folder on your own server, through your own SSH setup.
     - [**Custom uploader (HTTP)**](destinations-custom.md): your own server, or any service that gives you a ShareX `.sxcu` file.
-4. Click **Test upload and link**. On Proton Drive the button is **Check account and folder**.
+4. Click **Test upload and link**. On Proton Drive the button is **Check account and folder**, and on SFTP without a link address it is **Test upload**.
 5. Click **Make default…** to send your captures there.
 
-Valid fields save by themselves. Keys are the exception: each form has its own button for them.
+Valid fields save by themselves. Keys are the exception: each form has its own button for them. A destination you haven't finished never stops another one from saving.
+
+The list shows each destination's state: **Ready to test**, **Connected** once a test passes, **Test failed**, or **Needs testing** after an upload was refused for its sign-in, permissions or a missing bucket. **Connected** stays across restarts, until you change where or how the destination connects.
 
 ## Choose the default destination
 
@@ -41,7 +46,7 @@ Local copies are a separate choice. Turn on **Keep a local copy** to keep saving
 Select a destination and click **⋯** beside its name:
 
 - **Rename destination** changes the name shown in put.gd. It doesn't rename a bucket, change keys or move uploaded files.
-- **Storage service** switches between **Amazon S3 / compatible**, **Proton Drive**, **Backblaze B2** and **Custom uploader (HTTP)**.
+- **Storage service** switches to another service, such as from **Amazon S3 / compatible** to **Backblaze B2**.
 - **Remove destination…** is covered below.
 - **Move up** and **Move down** change the order.
 
@@ -59,4 +64,4 @@ The new order saves right away and also sets the order of the **Destination** li
 2. Open its **⋯** menu and choose **Remove destination…**.
 3. Click **Remove destination** to confirm.
 
-Your history, your local copies and the files already in storage all stay. If the default or an exception used this destination, that choice is cleared, so check **Settings → Capture** afterwards.
+Your history, your local copies and the files already in storage all stay. The confirmation says how many History items were uploaded there, and History marks them **Destination removed**. If the default or an exception used this destination, that choice is cleared, so check **Settings → Capture** afterwards.

@@ -16,10 +16,11 @@ import imaging
 from PIL import ImageStat
 
 MAGENTA = 'FF00FF'
-SETTINGS_RAIL = (100, 141, 38)  # first row's centre from the window's corner, then the row pitch
-SCROLLBAR = (7, 150)  # a page's scrollbar handle: in from the window's right edge, down from its top
-DESTINATION_ROW = (108, 154)  # the first destination's centre in the Destinations list
-# Empty destination forms for the guide, as Settings creates them (the providers' own defaults).
+SETTINGS_RAIL = (100, 187, 38)  # (below the action bar's two rows) first row's centre from the window's corner, then the row pitch
+SCROLLBAR = (7, 196)  # a page's scrollbar handle: in from the window's right edge, down from its top
+DESTINATION_ROW = (108, 200)  # the first destination's centre in the Destinations list
+# Destination forms for the guide, as Settings creates them (the providers' own defaults), with example
+# values where a service refuses an empty field. None of them names a real account or server.
 PROVIDERS = {
     'proton-drive': ('Proton Drive', {'accountRootUid': '', 'folderUid': '', 'shareByDefault': True, 'linkExpirationDays': 0,
                                       'sharePasswordReference': None, 'requestTimeoutMs': 120000}),
@@ -34,9 +35,21 @@ PROVIDERS = {
                                         'requestMethod': 'POST', 'requestTimeoutMs': 600000,
                                         'requestUrl': 'https://files.example.com/api/upload', 'responseUrl': '{json:url}',
                                         'secrets': [], 'thumbnailUrl': ''}),
+    'cloudflare-r2': ('Cloudflare R2', {'accountId': '0123456789abcdef0123456789abcdef', 'jurisdiction': 'default', 'bucket': 'my-bucket', 'objectPrefix': '', 'linkMode': 'presigned',
+                                        'linkValidityDays': 7, 'publicUrlBase': None, 'connectTimeoutMs': 5000, 'requestTimeoutMs': 60000,
+                                        'lowSpeedBytesPerSecond': 1, 'lowSpeedTimeSeconds': 30}),
+    'nextcloud': ('Nextcloud', {'server': 'https://cloud.example.com', 'folder': 'put.gd', 'allowInsecureHttp': False, 'accountName': ''}),
+    'sftp': ('SFTP', {'server': 'files.example.com', 'user': 'alice', 'folder': 'shots', 'publicUrlBase': None, 'hostKeyFingerprint': None}),
 }
 # The keychain entry each provider's destination names (never written: these forms hold no values).
-REFERENCES = {'custom-http': 'putgd/http/{pid}'}
+REFERENCES = {'custom-http': 'putgd/http/{pid}', 'cloudflare-r2': 'putgd/r2/{pid}', 'nextcloud': 'putgd/nextcloud/{pid}'}
+# An SFTP destination signs in with the agent and key files until a password is stored: no keychain entry.
+CREDENTIALS = {'sftp': {'mode': 'session', 'reference': None}}
+DEMO_KEY = '~/.ssh/putgd-site-demo'
+# The made-up secrets the sensitive text panel finds: AWS's documentation example keys and a
+# card number from Stripe's test cards. None of them works anywhere.
+SENSITIVE_LINES = ['$ cat .env', 'APP_ENV=staging', 'AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE',
+                   'AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY', 'BILLING_TEST_CARD=4242 4242 4242 4242']
 DONE_STATES = {'completed', 'failed', 'partial', 'cancelled', 'interrupted'}
 
 
@@ -101,7 +114,11 @@ class Story:
         magenta (at least `floor` of the screen) and the window's box is stable."""
         self.backdrop(MAGENTA)
         deadline, last, box, frame = time.monotonic() + settle, None, None, None
-        while time.monotonic() < deadline:
+        grabs = 0
+        # Two grabs at least: over a slow VNC a 4K grab can take most of `settle`, and a
+        # stable window needs one grab to compare with the next.
+        while time.monotonic() < deadline or grabs < 2:
+            grabs += 1
             frame = self.grab()
             if imaging.color_fraction(frame, imaging.LOCATE_COLOR) >= floor:
                 box = imaging.foreground_box(frame)
@@ -117,6 +134,8 @@ class Story:
             if frame is not None and len(frame.getcolors(4) or []) == 1:
                 raise StoryError('the VNC picture shows one flat colour and never turned magenta: the screencast feeding '
                                  'the VNC server looks frozen (check the wall tile)')
+            if frame is not None:
+                frame.save(os.path.join(self.frames_dir, f'locate-failed-{int(time.time())}.png'))
             raise StoryError('no stable window on a visible backdrop (did the app open? is the backdrop covering the screen?)')
         stray = imaging.outside_fraction(frame, [box])
         if stray > 0.0005:
@@ -243,7 +262,7 @@ class Story:
                 raise StoryError('the backdrop gave no activation token')
             time.sleep(0.3)
         self.host.agent('spawn', name, 'viewer', '--activate', '--', *argv)
-        deadline = time.monotonic() + 25
+        deadline = time.monotonic() + 60  # a 4K grab over the lab's VNC can take seconds
         while True:
             time.sleep(2.0)
             if not self.host.agent('alive', name)['alive']:
@@ -433,6 +452,64 @@ class Story:
         self.wait_operation(op)
         self.park()
 
+    def sensitive(self, step):
+        """The panel put.gd shows when a capture holds a key or a card number: an image of a
+        made-up .env file, copied as a file and uploaded from the clipboard with the check on
+        and the panel as the one window on the backdrop. Cancel then uploads nothing."""
+        import tempfile
+        from PIL import Image, ImageDraw, ImageFont
+        image = Image.new('RGB', (1500, 60 + 56 * len(SENSITIVE_LINES)), '#1e1e1e')
+        draw = ImageDraw.Draw(image)
+        try:
+            font = ImageFont.truetype('DejaVuSansMono.ttf', 34)
+        except OSError:
+            font = ImageFont.load_default(size=34)
+        for i, line in enumerate(SENSITIVE_LINES):
+            draw.text((36, 30 + 56 * i), line, fill='#e8e8e8', font=font)
+        path = f"{self.host.run_dir}/upload/{step['filename']}"
+        with tempfile.TemporaryDirectory() as tmp:
+            local = os.path.join(tmp, step['filename'])
+            image.save(local)
+            self.host.run(f'mkdir -p -m 700 {self.host.run_dir}/upload')
+            self.host.put(local, path)
+        self.patch({'preferences': {'sensitiveTextCheck': {'enabled': True, 'kinds': {'card': 'warn', 'key': 'warn'}}}})
+        try:
+            self.focus_backdrop()
+            self.host.agent('send', 'backdrop', f'clip {path}')
+            time.sleep(1.0)
+            op = find_id(self.cli('action.invoke', {'action': 'clipboard', 'sensitiveText': 'prompt'}))
+            deadline, sensitive = time.monotonic() + 120, None
+            while time.monotonic() < deadline:
+                result = self.cli('operation.inspect', {'id': op})
+                sensitive = result.get('sensitive') or (result.get('operation') or {}).get('sensitive')
+                if sensitive and sensitive.get('prompt') is not None:
+                    break
+                state = result.get('state') or (result.get('operation') or {}).get('state')
+                if state in DONE_STATES:
+                    raise StoryError(f'the check found nothing to ask about: {json.dumps(result)[:400]}')
+                time.sleep(1.0)
+            else:
+                raise StoryError('no sensitive text panel within 120 s')
+            self.log(f'  found {json.dumps(sensitive.get("found"))}')
+            time.sleep(2.0)
+            self.park()
+            self.anchors[step['id']] = {'window': self.locate()}
+            for theme in ('dark', 'light'):
+                self.set_theme(theme)
+                self.park()
+                self.keep(step['id'], theme)
+            self.set_theme('dark')
+            self.cli('operation.decide', {'id': op, 'choice': 'cancel', 'prompt': sensitive['prompt']})
+            deadline = time.monotonic() + 60
+            while time.monotonic() < deadline:
+                result = self.cli('operation.inspect', {'id': op})
+                if (result.get('state') or (result.get('operation') or {}).get('state')) in DONE_STATES:
+                    break
+                time.sleep(1.0)
+        finally:
+            self.patch({'preferences': {'sensitiveTextCheck': {'enabled': False, 'kinds': {'card': 'warn', 'key': 'warn'}}}})
+        self.park()
+
     def main_window(self, view, size):
         self.cli('ui.show', {'view': view})
         time.sleep(2.5)
@@ -484,19 +561,43 @@ class Story:
         self.page(step, 'destinations')
 
     def settings(self, step):
-        self.page(step, step.get('view', 'settings'), step.get('row'), step.get('scroll'))
+        """A Settings page. `preferences` is patched in first (to show a section switched on) and
+        `restore` afterwards, so the later steps see the settings as before."""
+        if step.get('preferences'):
+            self.patch({'preferences': step['preferences']})
+            time.sleep(1.0)
+        try:
+            if step.get('window'):
+                self.main_window(step.get('view', 'settings'), step['window'])  # the size the other pages have after History
+            self.page(step, step.get('view', 'settings'), step.get('row'), step.get('scroll'))
+        finally:
+            if step.get('restore'):
+                self.patch({'preferences': step['restore']})
 
     def destination(self, step):
         """A provider's destination form as Add destination shows it: a profile with the
         provider's defaults and no account or bucket, moved to the top of the list and clicked."""
         provider = step['provider']
         label, defaults = PROVIDERS[provider]
+        if step.get('keyFile'):
+            # A throwaway key for the SSH key row, made for the shot and removed after it.
+            self.host.run(f'mkdir -p -m 700 ~/.ssh && rm -f {DEMO_KEY} {DEMO_KEY}.pub && '
+                          f'ssh-keygen -q -t ed25519 -N "" -C putgd-site-demo -f {DEMO_KEY}')
+            home = self.host.run('printf %s "$HOME"').strip()
+            defaults = dict(defaults, keyFile=DEMO_KEY.replace('~', home, 1))  # settings take an absolute path
+        try:
+            self._destination(step, provider, label, defaults)
+        finally:
+            if step.get('keyFile'):
+                self.host.run(f'rm -f {DEMO_KEY} {DEMO_KEY}.pub')
+
+    def _destination(self, step, provider, label, defaults):
         pid = f'shot-{provider}'
         profiles = [dict(p) for p in self.cli('settings.get')['document']['profiles']]
         order = [p['id'] for p in profiles]
         if pid not in order:
             profiles.append({'id': pid, 'label': label, 'provider': provider, 'settings': defaults,
-                             'credentials': {'mode': 'keychain', 'reference': REFERENCES.get(provider, 'putgd/{pid}').format(pid=pid)}})
+                             'credentials': CREDENTIALS.get(provider) or {'mode': 'keychain', 'reference': REFERENCES.get(provider, 'putgd/{pid}').format(pid=pid)}})
             self.patch({'profiles': profiles})
             order.append(pid)
         self.reorder([pid] + [i for i in order if i != pid])
@@ -659,7 +760,12 @@ class Story:
             time.sleep(0.8)
             self.park(self.screen[0] - 1, self.screen[1] - 1)
             frame = self.keep(step['id'], theme)
-            box = imaging.changed_box(before, frame, min_run=8 * self.scale)
+            # Below the top bar only: its clock can tick between the two frames.
+            size = before.size
+            box = imaging.changed_box(before.crop((0, bar, size[0], size[1])), frame.crop((0, bar, size[0], size[1])),
+                                      min_run=8 * self.scale)
+            if box:
+                box = [box[0], box[1] + bar, box[2], box[3]]
             if not box or box[3] < 160 * self.scale or box[2] > box[3]:
                 raise StoryError(f'no menu opened under the tray icon (changed area {box})')
             boxes.append(box)
@@ -682,7 +788,7 @@ class Story:
                     'file-upload': self.file_upload, 'history': self.history, 'destinations': self.destinations,
                     'destination': self.destination, 'settings': self.settings, 'tray': self.tray,
                     'file-manager': self.file_manager, 'about': self.about,
-                    'desktop': self.desktop}
+                    'desktop': self.desktop, 'sensitive': self.sensitive}
         self.set_theme('dark')
         for step in self.cfg['story']:
             if steps and step['id'] not in steps:

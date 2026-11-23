@@ -9,7 +9,7 @@ By the end of this page you will have hidden private details, added marks to an 
   <img src="/_site/shots/edit-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/edit-dark.webp 1609w, /_site/shots/edit-dark@2x.webp 3218w" width="1609" height="1020" loading="lazy" alt="The image editor with the Step number tool chosen: numbered steps, a box, a highlight, an arrow, a text label and a redaction on a photo.">
 </picture>
 
-1. Choose **Capture region & edit** at the top of the put.gd window or in the tray menu. It has no key until you set one in [shortcuts](settings.md#shortcuts).
+1. Choose **Capture region & edit** at the top of the put.gd window or in the tray menu. It has no key until you set one in [hotkeys](settings.md#hotkeys).
 2. Drag across the area you want to edit. To cancel, press ++esc++.
 3. Make your changes in the editor.
 4. Choose **Upload**, or press ++ctrl+enter++.
@@ -36,6 +36,8 @@ By the end of this page you will have hidden private details, added marks to an 
 | **Step number** | ++n++ | Drops a numbered disc at each click, counting up from 1 |
 | **Redact** | ++x++ | Covers an area with solid black and removes those pixels from the image |
 | **Blur** | ++b++ | Blurs an area, with a slider for strength. **Pixelate** draws square blocks instead |
+| **Style** | ++s++ | Puts the image on a backdrop. See [Style your screenshots](style.md) |
+| **Copy text** | ++g++ | Reads the text in the image so you can copy it. See [Copy text from the screen](copy-text.md#in-the-editor) |
 
 Hold ++shift++ to keep a line or arrow level, upright or at 45°, and to draw a square or a circle.
 
@@ -50,12 +52,31 @@ You can also drag a mark with any drawing tool. To draw a new mark on top of one
     Use **Redact** for passwords, tokens, names and anything else private. Redact changes only
     this edited image, so your original file and any earlier uploads stay as they were.
 
+## Quick redact
+
+**Quick redact**, a menu in the **Redact** tool's side panel, finds private text for you and covers it with ordinary Redact marks:
+
+- **Email addresses**, **Phone numbers**, **IP addresses** and **Card numbers**.
+- **Keys and tokens**: keys from about 25 services, passwords in connection addresses and in commands such as `mysql -p…`, a password shown beside its label in a form or a password manager, Wi-Fi passphrases, session cookies, webhook addresses and the values of settings named like secrets. Hover over it to see the list.
+- **My username and name**: your login name and real name, as a terminal prompt or a home folder path shows them.
+- **My redaction list**: the words and patterns you keep in [**Settings → Capture → Text recognition**](sensitive-text.md#your-own-words-and-patterns).
+- **All of these**, and **Remove suggestions**, which takes away every suggestion still there and leaves marks you drew.
+
+The result says how many it added, such as "Added 3 suggested redactions". Move, resize or delete a suggestion with **Select** (++v++). One ++ctrl+z++ undoes the whole run.
+
+!!! warning "Quick redact only suggests"
+    Recognition can miss text, and a page with no matches can still hold some. Check the image yourself before you upload.
+
+To have every capture checked before it uploads, see [Check for private details before uploading](sensitive-text.md).
+
+## Undo and zoom
+
 To undo, press ++ctrl+z++. To redo, press ++ctrl+shift+z++ or ++ctrl+y++.
 
 To zoom, press ++ctrl+1++ for 100%, which is the best way to check the edges of a redaction. Press ++ctrl+0++ to fit the window, or hold ++ctrl++ and scroll.
 
 !!! note "In nightly builds for now"
-    **Line**, **Ellipse**, **Pen**, **Step number**, **Pixelate**, **Copy image** and the snapping highlighter arrive in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
+    **Line**, **Ellipse**, **Pen**, **Step number**, **Pixelate**, **Style**, **Copy text**, **Quick redact**, **Copy image** and the snapping highlighter arrive in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
 
 ## Finish your edit
 

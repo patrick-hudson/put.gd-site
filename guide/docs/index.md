@@ -22,7 +22,7 @@ This works on x86_64 Linux.
 
 The installer picks the package for your system: Ubuntu 24.04 or 26.04, Linux Mint 22, Debian 13, Fedora 44, or Arch and Arch-based distributions such as EndeavourOS, CachyOS and Omarchy. On anything else it installs the AppImage.
 
-It checks the download against the release's checksums before it installs anything, and asks for your password only to run `apt`, `dnf` or `pacman`. On Arch it adds put.gd's signed repository, and pacman checks the package. On Omarchy it first asks to run Omarchy's own system update.
+It checks the download against the release's checksums before it installs anything, and asks for your password only to run `apt`, `dnf` or `pacman`. On Arch it adds put.gd's signed repository, and pacman checks the package. On Omarchy it first asks to run Omarchy's own system update. On an Arch-based system that hasn't caught up with the OpenSSL version the package needs yet, it installs the AppImage instead and says why.
 
 On Fedora it also installs the H.264 encoder that recording needs. If the `fedora-cisco-openh264` repository is turned off, it prints the commands for you to run.
 
@@ -45,6 +45,11 @@ Until the next stable release, you need a nightly for:
 - The editor's [line, ellipse, pen, step number and pixelate tools](edit.md#tools), and **Copy image**.
 - [Links that expire](destinations-s3.md#links) on S3, and [renewing an expired link](history.md#when-a-link-expires).
 - Setting up GNOME with a single logout.
+- [Capture scrolling region](scrolling.md), [Copy text from region](copy-text.md) with QR codes, and [Capture style](style.md).
+- [Checking captures for private details](sensitive-text.md) before they upload, and the editor's **Quick redact** and **Copy text** tools.
+- The new recording review, with [cuts, moving covers and skimming](record.md#the-review-window).
+- The [Cloudflare R2](destinations-r2.md), [Nextcloud and WebDAV](destinations-nextcloud.md) and [SFTP](destinations-sftp.md) destinations.
+- [**Settings → Error log**](settings.md#error-log), **Unhinged mode** under [Settings → Advanced](settings.md#advanced), and the [QR code](history.md#show-a-link-as-a-qr-code) of a link in History.
 
 To install the nightly:
 

@@ -3,10 +3,10 @@
 put.gd supports GNOME 50, KDE Plasma, Cinnamon, Budgie and Hyprland. By the end of this page, you know what to set up on yours and what to expect.
 
 <picture class="shot">
-  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-light.avif 389w, /_site/shots/tray-light@2x.avif 778w">
-  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-dark.avif 389w, /_site/shots/tray-dark@2x.avif 778w">
-  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-light.webp 389w, /_site/shots/tray-light@2x.webp 778w">
-  <img src="/_site/shots/tray-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-dark.webp 389w, /_site/shots/tray-dark@2x.webp 778w" width="389" height="746" loading="lazy" alt="The put.gd tray menu on GNOME: the current output, Change output, Capture region, Repeat last region, Capture window, Capture monitor, Capture desktop, Capture delay, Capture region &amp; edit, Edit image, Record screen and Upload clipboard, then History, Destinations and Settings, then About put.gd and Quit put.gd.">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-light.avif 489w, /_site/shots/tray-light@2x.avif 978w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-dark.avif 489w, /_site/shots/tray-dark@2x.avif 978w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-light.webp 489w, /_site/shots/tray-light@2x.webp 978w">
+  <img src="/_site/shots/tray-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-dark.webp 489w, /_site/shots/tray-dark@2x.webp 978w" width="489" height="752" loading="lazy" alt="The put.gd tray menu on GNOME: the capture actions from Capture region to Capture scrolling region, then Capture region &amp; edit, Edit image and Record screen, then Copy text from region and Upload clipboard, then Capture delay and Capture output, then Open put.gd, Settings and Quit put.gd.">
 </picture>
 
 This GNOME tray menu lists everything you can do from the tray. On every desktop, click the tray icon to open History, or right-click it for this menu. The pictures in this guide are all from GNOME, because that is what our lab captures them on.
@@ -34,6 +34,8 @@ To see what your own desktop supports, open **Settings → Advanced → Desktop 
         ```bash
         gnome-extensions enable putgd@put.gd
         ```
+
+**After an update.** When an update brings a new extension, log out and back in once. Until then, anything that needs the new extension, such as **Copy text from region** or scrolling capture, says so.
 
 **Tray.** The icon sits in the top bar, through GNOME's AppIndicator extension. Without that there is no tray icon, but notifications still appear.
 
@@ -63,7 +65,7 @@ Budgie 10.10 on Wayland, as in Fedora 44 and Ubuntu Budgie 26.04, is supported i
 
 **Capture window.** This needs labwc 0.20 or newer. Fedora 44 and Ubuntu 26.04 ship an older one, so the **Capture window** button shows a warning there. Capture a region instead.
 
-**Shortcuts.** A key Budgie already uses, such as ++print-screen++, is reported as a conflict in **Settings → Shortcuts** and left alone.
+**Hotkeys.** A key Budgie already uses, such as ++print-screen++, is reported as a conflict in **Settings → Hotkeys** and left alone.
 
 **Locked or blanked screen.** Captures are refused while the screen is locked, blanked or powered off.
 
@@ -73,7 +75,7 @@ Budgie 10.10 on Wayland, as in Fedora 44 and Ubuntu Budgie 26.04, is supported i
 
 Hyprland is supported in [nightly builds](index.md#stable-or-nightly) and tested on Omarchy. Other Hyprland setups use the same code but haven't been tested.
 
-**Shortcuts.** put.gd adds its keys while it runs and writes nothing to your Hyprland configuration. A key that another bind already uses is reported as a conflict. Shortcuts need Hyprland's Lua configuration; with the older `hyprland.conf`, use the tray.
+**Hotkeys.** put.gd adds its keys while it runs and writes nothing to your Hyprland configuration. A key that another bind already uses is reported as a conflict. Hotkeys need Hyprland's Lua configuration; with the older `hyprland.conf`, use the tray.
 
 **Capture permissions.** If you turned on Hyprland's permission enforcement, a capture is refused until you allow put.gd. See [troubleshooting](troubleshooting.md#captures-are-refused-on-hyprland).
 

@@ -62,20 +62,22 @@ The test and deleting from History use `s3:DeleteObject` and `s3:GetBucketVersio
 
 ## S3-compatible services
 
-Set **S3 service** to **Cloudflare R2** or **Other S3-compatible**, then open **Advanced connection settings**:
+Set **S3 service** to **Other S3-compatible**, then open **Advanced connection settings**:
 
 - **Use a custom endpoint** lets you enter your service's address.
 - **Addressing** is **Automatic**, **Bucket in hostname** or **Bucket in URL path**. Bucket names with dots can't use the hostname.
 - **Storage class** applies to new uploads. Classes can differ in cost and access.
 
-The service must support conditional writes, which stop an upload replacing another file. The test tells you if it doesn't.
+Enter the service's own S3 address, not one that redirects to it.
 
-For Cloudflare R2, use the endpoint `https://<account-id>.r2.cloudflarestorage.com`, the region `auto`, **Use bucket policy**, and your r2.dev or custom domain as the **Link domain**. For Backblaze, use the [Backblaze B2](destinations-b2.md) destination instead.
+The service should support conditional writes, which stop an upload replacing another file. The test tells you if it refuses them. Garage and Zenko CloudServer accept them but ignore them: put.gd still checks each name before it uploads, but if another app uploads the same name at the same moment, one file can replace the other. If several apps upload to the same folder there, choose **Random names** under **Settings → Capture → File names**.
+
+For Cloudflare R2, use the [Cloudflare R2](destinations-r2.md) destination. An S3 destination that already points at R2 keeps working, and offers **Move to Cloudflare R2**. For Backblaze, use the [Backblaze B2](destinations-b2.md) destination.
 
 ## Unlocking saved credentials
 
 put.gd reads saved keys once when it starts. If your keyring is locked, your desktop asks you to unlock it then. To stop that, turn off **Unlock saved credentials when put.gd starts** in **Settings → General**.
 
-If the keys aren't loaded, click **Unlock saved credentials** on the destination. Uploads and shortcuts never unlock the keyring themselves.
+If the keys aren't loaded, click **Unlock saved credentials** on the destination. Uploads and hotkeys never unlock the keyring themselves.
 
 **Current key** shows only the first four characters of a saved access key ID. **Show** reveals the saved secret key after unlocking, and **Hide** clears it from the form.

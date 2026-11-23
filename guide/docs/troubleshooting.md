@@ -2,6 +2,8 @@
 
 Find your problem below. If you are still stuck, [get help](#get-help).
 
+Every error put.gd reported is kept in [**Settings → Error log**](settings.md#error-log), with the whole message and buttons for what to do next. Start there when a notification went by too fast.
+
 ## The link was not copied
 
 Something else used the clipboard during the upload, so put.gd left it alone.
@@ -17,11 +19,11 @@ Press ++esc++ or click outside the menu, then capture again.
 
 To capture the menu itself, set **While selecting** to **Screenshot first** in [**Settings → Capture**](settings.md#capture).
 
-## A shortcut does nothing
+## A hotkey does nothing
 
 The desktop may not have given put.gd that key.
 
-1. Open [**Settings → Shortcuts**](settings.md#shortcuts) and read the action's row.
+1. Open [**Settings → Hotkeys**](settings.md#hotkeys) and read the action's row.
 2. If it reports a problem, record a different combination.
 3. On GNOME, check [the extension](#nothing-captures-on-gnome).
 
@@ -51,9 +53,31 @@ A [custom uploader](destinations-custom.md) is the exception: its server names e
 
 ## A link has expired
 
-Links from a private S3 or Backblaze B2 bucket stop working after the time set on the destination. The file is still in your bucket.
+Links from a private S3, Cloudflare R2 or Backblaze B2 bucket stop working after the time set on the destination. The file is still in your bucket.
 
 In History, select the item and click **Refresh and copy link**. See [when a link expires](history.md#when-a-link-expires).
+
+## A Nextcloud upload has no link
+
+The file is in your Nextcloud, but the share link couldn't be made. Your Nextcloud may require a password on public links, have them turned off, or have been unreachable.
+
+1. Fix the cause, or ask your Nextcloud's admin.
+2. In History, select the item and click **Finish share link**. Nothing uploads again.
+
+## SFTP says the server's key is unknown or changed
+
+- **Unknown.** put.gd hasn't seen this server before. Click **Test upload** in Destinations, compare the key it shows with the one from your server's admin, then click **Trust key**. See [the first connection](destinations-sftp.md#the-first-connection).
+- **Changed.** This can mean someone is intercepting the connection. Ask your server's admin whether the key was replaced before you trust the new one. If the old key is in your own `known_hosts`, the message gives the command that removes it.
+
+## Copy text doesn't work
+
+The **Copy text** button and the tray entry say why.
+
+- **It needs the Tesseract English data.** Install `tesseract-ocr-eng` on Ubuntu, Mint and Debian, `tesseract-langpack-eng` on Fedora, or `tesseract-data-eng` on Arch. The packages normally bring it.
+- **This system cannot confine the recognition helper.** put.gd reads text only in a locked-down helper, which needs Linux 6.2 or newer with Landlock turned on. Update your kernel.
+- **It needs the putgd-ocr helper.** Reinstall put.gd.
+- **The data for a language is not installed.** Install that language's package, or choose another in **Settings → Capture → Text recognition**. See [other languages](copy-text.md#other-languages).
+- **The image is too large.** Select a smaller area.
 
 ## Upload with put.gd is missing from the right-click menu
 
@@ -123,7 +147,7 @@ put.gd found no microphone it can open. Hover over the box for the reason.
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.avif 1368w, /_site/shots/advanced-light@2x.avif 2736w">
   <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.avif 1368w, /_site/shots/advanced-dark@2x.avif 2736w">
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-light.webp 1368w, /_site/shots/advanced-light@2x.webp 2736w">
-  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: history retention, Resource limits, Diagnostics and Desktop support details.">
+  <img src="/_site/shots/advanced-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/advanced-dark.webp 1368w, /_site/shots/advanced-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Advanced: History, Resource limits, Performance with Unhinged mode, and Diagnostics.">
 </picture>
 
 1. In **Settings → Advanced → Diagnostics**, tick **Keep detailed debug logs for 24 hours**.
@@ -133,6 +157,6 @@ put.gd found no microphone it can open. Hover over the box for the reason.
 5. To keep the package on this computer, untick **Also upload to … and copy a link** if it appears, then click **Save package**.
 6. Attach the file to [a new issue](https://github.com/patrick-hudson/put.gd-desktop/issues).
 
-For one failed upload, click **Save diagnostics…** on its History item instead.
+For one failed upload, click **Save diagnostics…** on its History item, or **Save diagnostics for this operation** on its [Error log](settings.md#error-log) entry, instead.
 
 The package never holds credentials, tokens, signed links, screenshots, file contents or clipboard text.
