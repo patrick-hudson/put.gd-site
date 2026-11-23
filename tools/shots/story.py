@@ -16,10 +16,11 @@ import imaging
 from PIL import ImageStat
 
 MAGENTA = 'FF00FF'
-SETTINGS_RAIL = (100, 141, 38)  # first row's centre from the window's corner, then the row pitch
-SCROLLBAR = (7, 150)  # a page's scrollbar handle: in from the window's right edge, down from its top
-DESTINATION_ROW = (108, 154)  # the first destination's centre in the Destinations list
-# Empty destination forms for the guide, as Settings creates them (the providers' own defaults).
+SETTINGS_RAIL = (100, 187, 38)  # (below the action bar's two rows) first row's centre from the window's corner, then the row pitch
+SCROLLBAR = (7, 196)  # a page's scrollbar handle: in from the window's right edge, down from its top
+DESTINATION_ROW = (108, 200)  # the first destination's centre in the Destinations list
+# Destination forms for the guide, as Settings creates them (the providers' own defaults), with example
+# values where a service refuses an empty field. None of them names a real account or server.
 PROVIDERS = {
     'proton-drive': ('Proton Drive', {'accountRootUid': '', 'folderUid': '', 'shareByDefault': True, 'linkExpirationDays': 0,
                                       'sharePasswordReference': None, 'requestTimeoutMs': 120000}),
@@ -34,9 +35,16 @@ PROVIDERS = {
                                         'requestMethod': 'POST', 'requestTimeoutMs': 600000,
                                         'requestUrl': 'https://files.example.com/api/upload', 'responseUrl': '{json:url}',
                                         'secrets': [], 'thumbnailUrl': ''}),
+    'cloudflare-r2': ('Cloudflare R2', {'accountId': '0123456789abcdef0123456789abcdef', 'jurisdiction': 'default', 'bucket': 'my-bucket', 'objectPrefix': '', 'linkMode': 'presigned',
+                                        'linkValidityDays': 7, 'publicUrlBase': None, 'connectTimeoutMs': 5000, 'requestTimeoutMs': 60000,
+                                        'lowSpeedBytesPerSecond': 1, 'lowSpeedTimeSeconds': 30}),
+    'nextcloud': ('Nextcloud', {'server': 'https://cloud.example.com', 'folder': 'put.gd', 'allowInsecureHttp': False, 'accountName': ''}),
+    'sftp': ('SFTP', {'server': 'files.example.com', 'user': 'alice', 'folder': 'shots', 'publicUrlBase': None, 'hostKeyFingerprint': None}),
 }
 # The keychain entry each provider's destination names (never written: these forms hold no values).
-REFERENCES = {'custom-http': 'putgd/http/{pid}'}
+REFERENCES = {'custom-http': 'putgd/http/{pid}', 'cloudflare-r2': 'putgd/r2/{pid}', 'nextcloud': 'putgd/nextcloud/{pid}'}
+# An SFTP destination signs in with the agent and key files until a password is stored: no keychain entry.
+CREDENTIALS = {'sftp': {'mode': 'session', 'reference': None}}
 DONE_STATES = {'completed', 'failed', 'partial', 'cancelled', 'interrupted'}
 
 
@@ -101,7 +109,11 @@ class Story:
         magenta (at least `floor` of the screen) and the window's box is stable."""
         self.backdrop(MAGENTA)
         deadline, last, box, frame = time.monotonic() + settle, None, None, None
-        while time.monotonic() < deadline:
+        grabs = 0
+        # Two grabs at least: over a slow VNC a 4K grab can take most of `settle`, and a
+        # stable window needs one grab to compare with the next.
+        while time.monotonic() < deadline or grabs < 2:
+            grabs += 1
             frame = self.grab()
             if imaging.color_fraction(frame, imaging.LOCATE_COLOR) >= floor:
                 box = imaging.foreground_box(frame)
@@ -117,6 +129,8 @@ class Story:
             if frame is not None and len(frame.getcolors(4) or []) == 1:
                 raise StoryError('the VNC picture shows one flat colour and never turned magenta: the screencast feeding '
                                  'the VNC server looks frozen (check the wall tile)')
+            if frame is not None:
+                frame.save(os.path.join(self.frames_dir, f'locate-failed-{int(time.time())}.png'))
             raise StoryError('no stable window on a visible backdrop (did the app open? is the backdrop covering the screen?)')
         stray = imaging.outside_fraction(frame, [box])
         if stray > 0.0005:
@@ -243,7 +257,7 @@ class Story:
                 raise StoryError('the backdrop gave no activation token')
             time.sleep(0.3)
         self.host.agent('spawn', name, 'viewer', '--activate', '--', *argv)
-        deadline = time.monotonic() + 25
+        deadline = time.monotonic() + 60  # a 4K grab over the lab's VNC can take seconds
         while True:
             time.sleep(2.0)
             if not self.host.agent('alive', name)['alive']:
@@ -496,7 +510,7 @@ class Story:
         order = [p['id'] for p in profiles]
         if pid not in order:
             profiles.append({'id': pid, 'label': label, 'provider': provider, 'settings': defaults,
-                             'credentials': {'mode': 'keychain', 'reference': REFERENCES.get(provider, 'putgd/{pid}').format(pid=pid)}})
+                             'credentials': CREDENTIALS.get(provider) or {'mode': 'keychain', 'reference': REFERENCES.get(provider, 'putgd/{pid}').format(pid=pid)}})
             self.patch({'profiles': profiles})
             order.append(pid)
         self.reorder([pid] + [i for i in order if i != pid])
@@ -659,7 +673,12 @@ class Story:
             time.sleep(0.8)
             self.park(self.screen[0] - 1, self.screen[1] - 1)
             frame = self.keep(step['id'], theme)
-            box = imaging.changed_box(before, frame, min_run=8 * self.scale)
+            # Below the top bar only: its clock can tick between the two frames.
+            size = before.size
+            box = imaging.changed_box(before.crop((0, bar, size[0], size[1])), frame.crop((0, bar, size[0], size[1])),
+                                      min_run=8 * self.scale)
+            if box:
+                box = [box[0], box[1] + bar, box[2], box[3]]
             if not box or box[3] < 160 * self.scale or box[2] > box[3]:
                 raise StoryError(f'no menu opened under the tray icon (changed area {box})')
             boxes.append(box)

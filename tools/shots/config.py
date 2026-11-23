@@ -30,7 +30,7 @@ STEP_KINDS = {
     'record-bar': (set(), {'viewer', 'area'}),
 }
 VARIANTS = ('desktop', 'mobile')
-PROVIDERS = ('proton-drive', 'backblaze-b2', 'custom-http')
+PROVIDERS = ('proton-drive', 'backblaze-b2', 'custom-http', 'cloudflare-r2', 'nextcloud', 'sftp')
 ANNOTATION_FIELDS = {'arrow': {'from', 'to'}, 'line': {'from', 'to'}, 'rectangle': {'rect'}, 'ellipse': {'rect'},
                      'highlight': {'rect'}, 'blur': {'rect'}, 'text': {'at', 'text'}, 'step': {'at'}, 'pen': {'points'}}
 

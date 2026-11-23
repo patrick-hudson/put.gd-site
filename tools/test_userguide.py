@@ -20,7 +20,7 @@ HOME = '''<header class="top">
     <nav aria-label="Primary">
       <a href="#install">Install</a>
       <a href="https://app.put.gd/changelog">Changelog</a>
-      <a href="/userguide">User guide</a>
+      <a href="https://app.put.gd/userguide">User guide</a>
     </nav>
   </div>
 </header>
@@ -39,7 +39,7 @@ def nav_pages(nav) -> list[str]:
 class Chrome(unittest.TestCase):
     def test_header_marks_the_guide_current_and_adds_search_and_menu(self):
         header, footer = guide.chrome(HOME, "nightly", {"version": "put.gd 1.2 nightly"})
-        self.assertIn('<a href="/userguide" aria-current="page">User guide</a>', header)
+        self.assertIn('<a href="https://app.put.gd/userguide" aria-current="page">User guide</a>', header)
         self.assertIn('href="https://app.put.gd/#install"', header)
         self.assertIn('for="__search"', header)
         self.assertIn('{% include "partials/search.html" %}', header)

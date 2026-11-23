@@ -22,7 +22,7 @@ The request carries nothing that identifies you, and your computer does the comp
 
 ## Which version you have
 
-Choose **About put.gd** in the tray menu. The version is under the name, and **Build details** has more to quote in a bug report. The version is also at the bottom right of the main window.
+Open the menu (☰) in the put.gd window and choose **About put.gd**. The version is under the name, and **Build details** has more to quote in a bug report. The version is also at the bottom right of the main window.
 
 <picture class="shot">
   <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 528px" srcset="/_site/shots/about-light.avif 528w, /_site/shots/about-light@2x.avif 1056w">

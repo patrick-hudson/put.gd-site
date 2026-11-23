@@ -1,9 +1,9 @@
 {
   "shots": {
     "history": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -28,9 +28,9 @@
       }
     },
     "capture": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -55,9 +55,9 @@
       }
     },
     "edit": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -82,36 +82,36 @@
       }
     },
     "record": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
-            920,
-            768
+            1488,
+            948
           ],
           "2x": [
-            1840,
-            1536
+            2976,
+            1896
           ]
         },
         "light-desktop": {
           "1x": [
-            920,
-            768
+            1488,
+            948
           ],
           "2x": [
-            1840,
-            1536
+            2976,
+            1896
           ]
         }
       }
     },
     "storage": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -136,9 +136,9 @@
       }
     },
     "settings": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -163,9 +163,9 @@
       }
     },
     "general": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -190,9 +190,9 @@
       }
     },
     "capture-settings": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -217,9 +217,9 @@
       }
     },
     "advanced": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -244,9 +244,9 @@
       }
     },
     "updates": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -271,9 +271,9 @@
       }
     },
     "proton": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -298,9 +298,9 @@
       }
     },
     "b2": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -325,9 +325,9 @@
       }
     },
     "desktop": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -352,9 +352,9 @@
       }
     },
     "file-manager": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -379,36 +379,36 @@
       }
     },
     "tray": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
-            389,
-            746
+            489,
+            752
           ],
           "2x": [
-            778,
-            1492
+            978,
+            1504
           ]
         },
         "light-desktop": {
           "1x": [
-            389,
-            746
+            489,
+            752
           ],
           "2x": [
-            778,
-            1492
+            978,
+            1504
           ]
         }
       }
     },
     "gallery": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -432,10 +432,10 @@
         }
       }
     },
-    "recording-settings": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+    "text-settings": {
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -460,9 +460,63 @@
       }
     },
     "custom": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        }
+      }
+    },
+    "r2": {
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1122.6439-nightly",
+      "sizes": {
+        "dark-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        },
+        "light-desktop": {
+          "1x": [
+            1368,
+            928
+          ],
+          "2x": [
+            2736,
+            1856
+          ]
+        }
+      }
+    },
+    "error-log": {
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
+      "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -487,9 +541,9 @@
       }
     },
     "about": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [
@@ -514,9 +568,9 @@
       }
     },
     "record-bar": {
-      "commit": "4f80bcfffc047087d69a5e469a08d9f6397249f3",
+      "commit": "28e9f91060cd10a69921268eefc89e2b6fe4a50e",
       "desktop": "GNOME 50.6 (Wayland), Fedora Linux 44",
-      "version": "26.1111.4633-nightly",
+      "version": "26.1122.6439-nightly",
       "sizes": {
         "dark-desktop": {
           "1x": [

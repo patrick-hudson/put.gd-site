@@ -9,7 +9,7 @@ Record an area of your screen, with your voice if you like, tidy up the clip, th
   <img src="/_site/shots/record-bar-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-bar-dark.webp 1278w, /_site/shots/record-bar-dark@2x.webp 2556w" width="1278" height="747" loading="lazy" alt="An area of a video outlined and ready to record, with the floating bar below it: Ready to record, System audio, Microphone with its level meter, the format, Start recording and Cancel.">
 </picture>
 
-1. Click **Record screen** at the top of the put.gd window or in the tray menu. You can also assign a key in [**Settings → Shortcuts**](settings.md#shortcuts); it has none by default.
+1. Click **Record screen** at the top of the put.gd window or in the tray menu. You can also assign a key in [**Settings → Hotkeys**](settings.md#hotkeys); it has none by default.
 2. Drag the area to record. ++esc++ cancels.
 3. On the floating bar, choose a format, and tick **System audio** or **Microphone** if you want sound.
 4. Click **Start recording**.
@@ -34,7 +34,7 @@ You drag the area on every supported desktop. GNOME needs the put.gd Shell exten
 
 The format and the sound choices lock when recording begins, though the review window can still change the format.
 
-While recording, use **Pause** and **Resume**, then **Stop recording**. Your shortcut also starts and stops the recording. **Cancel** closes the bar; once recording, it becomes **Discard…** and asks first.
+While recording, use **Pause** and **Resume**, then **Stop recording**. Your hotkey also starts and stops the recording. **Cancel** closes the bar; once recording, it becomes **Discard…** and asks first.
 
 If the bar has no room outside the recorded area, it shrinks to a small handle in the corner. The handle appears in the clip.
 
@@ -58,25 +58,36 @@ On KDE Plasma you also see the rings on your screen while recording. Not every d
 ## The review window
 
 <picture class="shot">
-  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-light.avif 920w, /_site/shots/record-light@2x.avif 1840w">
-  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-dark.avif 920w, /_site/shots/record-dark@2x.avif 1840w">
-  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-light.webp 920w, /_site/shots/record-light@2x.webp 1840w">
-  <img src="/_site/shots/record-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-dark.webp 920w, /_site/shots/record-dark@2x.webp 1840w" width="920" height="768" loading="lazy" alt="The recording review window with a timeline and trim handles.">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-light.avif 1488w, /_site/shots/record-light@2x.avif 2976w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-dark.avif 1488w, /_site/shots/record-dark@2x.avif 2976w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-light.webp 1488w, /_site/shots/record-light@2x.webp 2976w">
+  <img src="/_site/shots/record-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-dark.webp 1488w, /_site/shots/record-dark@2x.webp 2976w" width="1488" height="948" loading="lazy" alt="The recording review window with a timeline and trim handles.">
 </picture>
 
-Stopping always opens this private review.
+!!! note "In nightly builds for now"
+    Cuts, skimming, snapping and moving covers arrive in the next stable release. On the stable release you trim with **Start here** and **End here** and cover with **+ Add mask**. See [stable or nightly](index.md#stable-or-nightly).
 
-- **Play it back** with the play button at the top or ++space++. The preview is silent; audio stays in the file.
-- **Trim** by dragging the two handles on the timeline, or use **Start here** and **End here** at the playhead. **Keep** shows the part that stays, and **Reset** keeps the whole clip.
-- **Cover something** with **+ Add mask**: choose **Add redaction** for a solid cover or **Add blur**, then drag on the picture. Drag the ends of its bar on the timeline to set when it shows.
-- **Check the output** at the bottom left: the destination, the sharing choice and the format.
+Stopping always opens this private review. Nothing is saved or uploaded until you choose. A clip that needs no changes can go straight to **Upload**.
+
+- **Play it back** with ++space++, or click the timeline to move the playhead. ++comma++ and ++period++, or the arrow keys, step one frame. The preview is silent; the sound stays in the file.
+- **Skim** by moving the pointer along the timeline while paused. The picture follows without moving the playhead. Press ++s++ to turn skimming off.
+- **Trim the ends** by dragging the bracket at either end of the timeline, or press ++i++ and ++o++ at the playhead.
+- **Cut out the middle** by dragging across the timeline to select a stretch, then choosing **Cut** or pressing ++c++. The cut stays on the timeline, hatched, and playback skips it. Select it and choose **Restore** to put it back, or **Play across** to see the join.
+- **Cover part of the picture** with **Redact** (++x++) or **Blur** (++b++): drag a box on the picture. With time selected first, the cover lasts only for that stretch. Otherwise it covers the whole clip.
+- **Move or resize a cover** by clicking it, then dragging inside it or one of its eight handles. On the timeline, drag its bar to change when it shows, or set **Shows from** and **Until** in the side panel.
+- **Zoom the timeline** with ++ctrl++ and the scroll wheel, or ++equal++ and ++minus++. ++shift+z++ fits the whole clip again.
+- **Undo** with ++ctrl+z++, up to 200 steps.
+
+Edges snap to the playhead, the clip's ends and other edits. Press ++n++ to turn snapping off, or hold ++ctrl++ while you drag. The **Edits** list in the side panel shows every trim, cut and cover; click one to go to it.
+
+**Format** switches between MP4, WebM, GIF and WebP, and turning off the sound there removes it from the file. GIF and WebP count only the time you keep, so a cut can bring a long clip under their limit.
 
 !!! warning "Blur can sometimes be undone"
-    Use a redaction, not blur, for passwords, names and anything else private.
+    Use **Redact**, not blur, for passwords, names and anything else private. Before you upload sensitive footage, use **Save a copy…** and watch the saved file, especially the frames next to each cut and at each cover's start and end.
 
 When you are done:
 
-- **Upload** closes the window and uploads in the background. The result appears in [History](history.md).
+- **Upload** (++ctrl+enter++) closes the window and uploads in the background. The result appears in [History](history.md).
 - **Save a copy…** writes a file and keeps the window open, so you can still upload.
 - **Discard…** asks first, then deletes the recording and your edits. Copies you saved stay.
 

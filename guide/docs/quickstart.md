@@ -3,10 +3,10 @@
 In about two minutes you will capture part of your screen and have a link to it on your clipboard.
 
 <picture class="shot">
-  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-light.avif 389w, /_site/shots/tray-light@2x.avif 778w">
-  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-dark.avif 389w, /_site/shots/tray-dark@2x.avif 778w">
-  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-light.webp 389w, /_site/shots/tray-light@2x.webp 778w">
-  <img src="/_site/shots/tray-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 389px" srcset="/_site/shots/tray-dark.webp 389w, /_site/shots/tray-dark@2x.webp 778w" width="389" height="746" loading="lazy" alt="The put.gd tray menu on GNOME: the current output, Change output, Capture region, Repeat last region, Capture window, Capture monitor, Capture desktop, Capture delay, Capture region &amp; edit, Edit image, Record screen and Upload clipboard, then History, Destinations and Settings, then About put.gd and Quit put.gd.">
+  <source media="(prefers-color-scheme: light)" type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-light.avif 489w, /_site/shots/tray-light@2x.avif 978w">
+  <source type="image/avif" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-dark.avif 489w, /_site/shots/tray-dark@2x.avif 978w">
+  <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-light.webp 489w, /_site/shots/tray-light@2x.webp 978w">
+  <img src="/_site/shots/tray-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 489px" srcset="/_site/shots/tray-dark.webp 489w, /_site/shots/tray-dark@2x.webp 978w" width="489" height="752" loading="lazy" alt="The put.gd tray menu on GNOME: the capture actions from Capture region to Capture scrolling region, then Capture region &amp; edit, Edit image and Record screen, then Copy text from region and Upload clipboard, then Capture delay and Capture output, then Open put.gd, Settings and Quit put.gd.">
 </picture>
 
 !!! note "Set up a destination first"
@@ -41,8 +41,8 @@ explains how.
 
 ## If something is different
 
-- **The shortcut does nothing.** Open **Settings → Shortcuts**. A row with a problem says so, and
-  you can choose another key. See [shortcuts](settings.md#shortcuts).
+- **The hotkey does nothing.** Open **Settings → Hotkeys**. A row with a problem says so, and
+  you can choose another key. See [hotkeys](settings.md#hotkeys).
 - **No link on the clipboard.** Uploads set to **Keep private** create no link. The sharing choice
   is in **Settings → Capture**.
 

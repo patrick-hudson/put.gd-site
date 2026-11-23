@@ -39,14 +39,14 @@ squashfs-root/usr/bin/putgd-cli capabilities
 
 ## Capture, record and upload the clipboard
 
-`action` can be `region`, `window`, `monitor`, `desktop`, `repeat`, `clipboard`, `edit` or `record`.
+`action` can be `region`, `window`, `monitor`, `desktop`, `repeat`, `clipboard`, `edit`, `scroll`, `text` or `record`. `scroll` starts a [scrolling capture](scrolling.md), and sent again while one runs it is **Done**. `text` [copies the text](copy-text.md) in a region you select and stores nothing.
 
 ```bash
 putgd-cli action.invoke '{"action":"clipboard"}'
 putgd-cli action.invoke '{"action":"record","mode":"toggle"}'
 ```
 
-`monitor` captures the monitor the pointer is on, and `repeat` captures your last region again. The screen captures also take `delaySeconds` of 3, 5 or 10. The reply still comes at once, and `operation.cancel` stops the countdown:
+`monitor` captures the monitor the pointer is on, and `repeat` captures your last region again. `region`, `window`, `monitor`, `desktop`, `repeat`, `edit` and `text` also take `delaySeconds` of 3, 5 or 10. The reply still comes at once, and `operation.cancel` stops the countdown:
 
 ```bash
 putgd-cli action.invoke '{"action":"window","delaySeconds":5}'
@@ -136,7 +136,11 @@ putgd-cli diagnostics.bundle --since 7d
 | Editor | `editor.open`, `editor.inspect`, `editor.apply`, `editor.copy`, `editor.cancel` |
 | Recording | `recording.prepare`, `recording.microphones`, `recording.windows`, `recording.stop`, `recording.upload`, `recording.inspect` |
 | History | `history.detail`, `history.counts`, `history.openLink`, `delete.prepare`, `delete.confirm` |
-| Destinations | `setup.testDestination`, `setup.inspect` |
+| Text and QR codes | `text.recognize`, `text.inspect`, `text.cancel`, `history.copyText`, `history.qr` |
+| Scrolling capture | `scroll.prepare`, `scroll.start`, `scroll.autoScroll`, `scroll.stop`, `scroll.cancel`, `scroll.inspect` |
+| Private details | `operation.decide` answers the [sensitive text](sensitive-text.md) panel for a capture |
+| Destinations | `setup.testDestination`, `setup.inspect`, `setup.trustHostKey`, `setup.createFolder`, `setup.connectAccount`, `setup.signOut` |
+| Error log | `errors.list`, `errors.inspect`, `errors.act`, `errors.clear` |
 | App | `desktop.setup`, `update.status`, `update.check`, `ui.quit` |
 
 `history.copyLink` renews an [expired link](history.md#when-a-link-expires) before copying it. `recording.prepare` records the microphone when you pass `"audio":{"microphone":true}`.
