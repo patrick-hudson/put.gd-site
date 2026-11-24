@@ -35,9 +35,6 @@ Links that expire always use the bucket's own address, and never ask for a publi
 
 None of these settings changes your bucket's policy or your domain's settings, so test the resulting link.
 
-!!! note "In nightly builds for now"
-    Links that expire arrive in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
-
 ## Credentials
 
 - **System keychain** saves the key in your desktop's keychain for next time.

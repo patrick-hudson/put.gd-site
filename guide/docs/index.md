@@ -20,7 +20,7 @@ This works on x86_64 Linux.
     curl -fsSL https://app.put.gd/install | sh
     ```
 
-The installer picks the package for your system: Ubuntu 24.04 or 26.04, Linux Mint 22, Debian 13, Fedora 44, or Arch and Arch-based distributions such as EndeavourOS, CachyOS and Omarchy. On anything else it installs the AppImage.
+The installer picks the package for your system: Ubuntu 24.04 or 26.04, Linux Mint 22, Debian 13, Fedora 44 or 45, or Arch and Arch-based distributions such as EndeavourOS, CachyOS and Omarchy. On anything else it installs the AppImage.
 
 It checks the download against the release's checksums before it installs anything, and asks for your password only to run `apt`, `dnf` or `pacman`. On Arch it adds put.gd's signed repository, and pacman checks the package. On Omarchy it first asks to run Omarchy's own system update. On an Arch-based system that hasn't caught up with the OpenSSL version the package needs yet, it installs the AppImage instead and says why.
 
@@ -34,22 +34,9 @@ curl -fsSL https://app.put.gd/install | sh -s -- --appimage
 
 ## Stable or nightly
 
-The installer gives you the stable release. A nightly build comes out every day with everything finished since, and it is what the pictures in this guide show.
+The installer gives you the stable release, 26.1124. See [what's new](whats-new.md) in it.
 
-Until the next stable release, you need a nightly for:
-
-- [Budgie and Hyprland](desktops.md), and the Arch package. On Arch the installer already picks the nightly.
-- The [custom uploader](destinations-custom.md) destination.
-- [Capture monitor, Repeat last region and Capture delay](capture.md#capture-monitor).
-- The [microphone and click highlights](record.md#record-your-voice) in recordings.
-- The editor's [line, ellipse, pen, step number and pixelate tools](edit.md#tools), and **Copy image**.
-- [Links that expire](destinations-s3.md#links) on S3, and [renewing an expired link](history.md#when-a-link-expires).
-- Setting up GNOME with a single logout.
-- [Capture scrolling region](scrolling.md), [Copy text from region](copy-text.md) with QR codes, and [Capture style](style.md).
-- [Checking captures for private details](sensitive-text.md) before they upload, and the editor's **Quick redact** and **Copy text** tools.
-- The new recording review, with [cuts, moving covers and skimming](record.md#the-review-window).
-- The [Cloudflare R2](destinations-r2.md), [Nextcloud and WebDAV](destinations-nextcloud.md) and [SFTP](destinations-sftp.md) destinations.
-- [**Settings → Error log**](settings.md#error-log), **Unhinged mode** under [Settings → Advanced](settings.md#advanced), and the [QR code](history.md#show-a-link-as-a-qr-code) of a link in History.
+A nightly build comes out every day with everything finished since. The pictures in this guide show a nightly; the stable release looks the same.
 
 To install the nightly:
 
@@ -87,7 +74,7 @@ Each package comes as a stable release and a nightly build.
 
 === "Fedora"
 
-    1. Download the package for your Fedora release. Fedora 44: [stable](https://app.put.gd/dl/stable/fedora44) or [nightly](https://app.put.gd/dl/nightly/fedora44). Fedora 45: [nightly](https://app.put.gd/dl/nightly/fedora45); its first stable package comes with the next stable release.
+    1. Download the package for your Fedora release. Fedora 44: [stable](https://app.put.gd/dl/stable/fedora44) or [nightly](https://app.put.gd/dl/nightly/fedora44). Fedora 45: [stable](https://app.put.gd/dl/stable/fedora45) or [nightly](https://app.put.gd/dl/nightly/fedora45).
     2. Open a terminal in your download folder.
     3. Install the package:
 
@@ -138,26 +125,11 @@ After a package install, start put.gd from your applications menu or run `putgd`
 
 On GNOME 50, put.gd captures through an extension for GNOME Shell.
 
-=== "Nightly"
+put.gd sets the extension up itself, whichever way you installed it.
 
-    put.gd sets the extension up itself, whichever way you installed it.
-
-    1. Start put.gd.
-    2. When it asks, log out and back in.
-    3. Start put.gd again, unless you turned on **Launch at login**.
-
-=== "Stable"
-
-    The DEB and RPM include the extension, but GNOME only finds it after a new login.
-
-    1. Log out and back in.
-    2. Turn the extension on:
-
-        ```bash
-        gnome-extensions enable putgd@put.gd
-        ```
-
-    The AppImage doesn't include the extension: follow the [AppImage steps for GNOME](desktops.md#gnome).
+1. Start put.gd.
+2. When it asks, log out and back in.
+3. Start put.gd again, unless you turned on **Launch at login**.
 
 ## Right-click upload
 

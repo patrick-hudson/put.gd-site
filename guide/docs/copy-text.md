@@ -9,9 +9,6 @@ Copy the words out of something you can see but can't select, such as an error i
   <img src="/_site/shots/capture-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-dark.webp 975w, /_site/shots/capture-dark@2x.webp 1950w" width="975" height="1021" loading="lazy" alt="A region being selected with put.gd. Copy text from region uses the same selector: drag over the text you want.">
 </picture>
 
-!!! note "In nightly builds for now"
-    Copy text arrives in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
-
 1. Choose **Copy text from region** in the tray menu, or **Copy text** at the top of the put.gd window. It has no key until you set one in [hotkeys](settings.md#hotkeys).
 2. Drag a rectangle over the text. To cancel, press ++esc++.
 3. Paste. The text is on your clipboard, and a notification says how much was copied.
@@ -47,6 +44,14 @@ English comes with put.gd. By default put.gd also reads your desktop's language,
 3. Choose up to three: **Language**, **Second language** and **Third language**.
 
 You can also put a language's `.traineddata` file in `~/.local/share/putgd/tessdata/`. put.gd never downloads language data.
+
+### Text in another script
+
+While the languages are left on **Automatic**, put.gd can often tell when lines are in another script, such as Chinese, Japanese, Korean, Russian, Arabic, Hebrew, Hindi, Thai or Greek, and reads them again in that language. It doesn't always manage: a page with only a little such text, or one whose script it can't tell, is read as before.
+
+The AppImage carries those languages. The DEB and RPM recommend their packages, so apt and dnf install them unless you turned recommended packages off. If the language is missing, the notification of the copied text names it, for example "(Chinese data is missing)".
+
+If you often read pages in another language, choose it in **Settings**. It is then used from the start, and the automatic check is off.
 
 ## In the editor
 

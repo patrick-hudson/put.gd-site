@@ -11,9 +11,6 @@ This page shows you how to capture a region, a window, one monitor or the whole 
 
 Every action is a button across the top of the put.gd window and an entry in the tray menu. In the window, **Capture region** comes first, then **Window**, **Monitor**, **Desktop** and **Scrolling region**. Each button's tooltip names its key and where its result goes. The put.gd window closes during a screen capture to keep itself out of the picture. You can change any key in [hotkeys](settings.md#hotkeys).
 
-!!! note "In nightly builds for now"
-    **Capture monitor**, **Repeat last region** and **Capture delay** arrive in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
-
 ## Capture region
 
 1. Press ++ctrl+shift+1++, or choose **Capture region**.

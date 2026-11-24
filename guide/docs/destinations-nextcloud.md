@@ -9,9 +9,6 @@ Upload to a folder in your Nextcloud and get a share link for each file, or uplo
   <img src="/_site/shots/nextcloud-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/nextcloud-dark.webp 1368w, /_site/shots/nextcloud-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a new Nextcloud destination, signed out: Server, Sign in and Use an app password instead, and the Folder put.gd.">
 </picture>
 
-!!! note "In nightly builds for now"
-    Nextcloud and WebDAV arrives in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
-
 ## Nextcloud
 
 1. In **Destinations**, click **Add destination** and choose **Nextcloud**.

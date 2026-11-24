@@ -88,6 +88,13 @@ code { font: 400 0.88em/1 var(--mono); }
 @media (max-width: 1328px) { .shot-desktop { margin-left: var(--gutter); margin-right: var(--gutter); } }
 
 /* Works with */
+/* What's new in the current stable */
+.news { margin-top: var(--section); }
+.news ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px 32px; margin-top: 12px; padding-top: 16px; border-top: 1px solid var(--border); }
+.news h3 { margin: 0; font-size: 15px; line-height: 22px; font-weight: 600; }
+.news li p { margin-top: 4px; font-size: 15px; line-height: 22px; color: var(--text-secondary); }
+.news-more { margin-top: 20px; font-size: 15px; }
+
 .works { margin-top: var(--section); }
 .label { font-size: 13px; line-height: 20px; font-weight: 600; color: var(--text-muted); }
 .works ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 32px; margin-top: 12px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 17px; }

@@ -15,25 +15,7 @@ To see what your own desktop supports, open **Settings → Advanced → Desktop 
 
 ## GNOME
 
-**Install.** GNOME 50 on Wayland needs put.gd's Shell extension. Without it, put.gd can't capture your screen. On a nightly, put.gd sets it up itself: start put.gd and [log out and back in once](index.md#on-gnome-log-out-once) when it asks.
-
-??? note "The AppImage on the stable release"
-    The stable AppImage doesn't include the extension, so install it yourself:
-
-    1. On the [releases page](https://github.com/patrick-hudson/put.gd-desktop/releases), open **Sources and GNOME integration** for your version.
-    2. Download `putgd-gnome50-VERSION.zip`.
-    3. Install it, using its full path:
-
-        ```bash
-        gnome-extensions install /absolute/path/to/putgd-gnome50-VERSION.zip
-        ```
-
-    4. Log out and back in.
-    5. Turn it on:
-
-        ```bash
-        gnome-extensions enable putgd@put.gd
-        ```
+**Install.** GNOME 50 on Wayland needs put.gd's Shell extension. Without it, put.gd can't capture your screen. put.gd sets it up itself: start put.gd and [log out and back in once](index.md#on-gnome-log-out-once) when it asks.
 
 **After an update.** When an update brings a new extension, log out and back in once. Until then, anything that needs the new extension, such as **Copy text from region** or scrolling capture, says so.
 
@@ -61,7 +43,7 @@ To see what your own desktop supports, open **Settings → Advanced → Desktop 
 
 ## Budgie
 
-Budgie 10.10 on Wayland, as in Fedora 44 and Ubuntu Budgie 26.04, is supported in [nightly builds](index.md#stable-or-nightly). Budgie 10.9 runs on X11 and works as Cinnamon does.
+Budgie 10.10 on Wayland, as in Fedora 44 and Ubuntu Budgie 26.04, is supported. Budgie 10.9 runs on X11 and works as Cinnamon does.
 
 **Capture window.** This needs labwc 0.20 or newer. Fedora 44 and Ubuntu 26.04 ship an older one, so the **Capture window** button shows a warning there. Capture a region instead.
 
@@ -73,7 +55,7 @@ Budgie 10.10 on Wayland, as in Fedora 44 and Ubuntu Budgie 26.04, is supported i
 
 ## Hyprland
 
-Hyprland is supported in [nightly builds](index.md#stable-or-nightly) and tested on Omarchy. Other Hyprland setups use the same code but haven't been tested.
+Hyprland is supported and tested on Omarchy. Other Hyprland setups use the same code but haven't been tested.
 
 **Hotkeys.** put.gd adds its keys while it runs and writes nothing to your Hyprland configuration. A key that another bind already uses is reported as a conflict. Hotkeys need Hyprland's Lua configuration; with the older `hyprland.conf`, use the tray.
 

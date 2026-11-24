@@ -9,9 +9,6 @@ Get one tall image of something longer than your screen, such as a web page, a d
   <img src="/_site/shots/capture-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/capture-dark.webp 975w, /_site/shots/capture-dark@2x.webp 1950w" width="975" height="1021" loading="lazy" alt="A region being selected with put.gd. A scrolling capture starts the same way: drag over the content you want.">
 </picture>
 
-!!! note "In nightly builds for now"
-    Scrolling capture arrives in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
-
 1. Choose **Capture scrolling region** in the tray menu, or **Scrolling region** at the top of the put.gd window. It has no key until you set one in [hotkeys](settings.md#hotkeys).
 2. Drag a rectangle over the content that scrolls, and include its scrollbar. The capture starts as soon as you let go.
 3. Scroll down with the mouse wheel, the touchpad, the keys or the scrollbar. The image grows as the page moves.

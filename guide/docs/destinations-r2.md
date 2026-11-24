@@ -9,9 +9,6 @@ Connect an R2 bucket so that put.gd uploads to it and gives you a link for each 
   <img src="/_site/shots/r2-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/r2-dark.webp 1368w, /_site/shots/r2-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a new Cloudflare R2 destination: Account ID, Jurisdiction, Bucket, Folder in bucket, who can open files and the access key fields.">
 </picture>
 
-!!! note "In nightly builds for now"
-    Cloudflare R2 as its own destination arrives in the next stable release. On the stable release, use [Amazon S3 and compatible](destinations-s3.md#s3-compatible-services). See [stable or nightly](index.md#stable-or-nightly).
-
 ## In the Cloudflare dashboard
 
 1. Under **R2 Object Storage**, create the bucket. Its name needs 3 to 63 lowercase letters, digits and hyphens.

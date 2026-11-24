@@ -9,9 +9,6 @@ Put each screenshot on a backdrop, with padding, rounded corners and a soft shad
   <img src="/_site/shots/style-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/style-dark.webp 1368w, /_site/shots/style-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="Settings → Capture → Capture style with Style screenshots on: Look set to Amber, Padding, Rounded corners, Soft shadow and the Preview.">
 </picture>
 
-!!! note "In nightly builds for now"
-    Capture style arrives in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
-
 1. Open **Settings → Capture** and scroll to **Capture style**.
 2. Turn on **Style screenshots**.
 3. Pick a **Look**, and a **Padding** of **Small**, **Medium** or **Large**.
