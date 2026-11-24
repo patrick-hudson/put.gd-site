@@ -52,9 +52,6 @@ Turn on **Settings → Capture → Screen recording → Draw a ring at each clic
 
 On KDE Plasma you also see the rings on your screen while recording. Not every desktop reports clicks for every kind of recording. Where it can't, the switch says why, and recordings start without rings.
 
-!!! note "In nightly builds for now"
-    The microphone and click rings arrive in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
-
 ## The review window
 
 <picture class="shot">
@@ -63,9 +60,6 @@ On KDE Plasma you also see the rings on your screen while recording. Not every d
   <source media="(prefers-color-scheme: light)" type="image/webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-light.webp 1488w, /_site/shots/record-light@2x.webp 2976w">
   <img src="/_site/shots/record-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/record-dark.webp 1488w, /_site/shots/record-dark@2x.webp 2976w" width="1488" height="948" loading="lazy" alt="The recording review window with a timeline and trim handles.">
 </picture>
-
-!!! note "In nightly builds for now"
-    Cuts, skimming, snapping and moving covers arrive in the next stable release. On the stable release you trim with **Start here** and **End here** and cover with **+ Add mask**. See [stable or nightly](index.md#stable-or-nightly).
 
 Stopping always opens this private review. Nothing is saved or uploaded until you choose. A clip that needs no changes can go straight to **Upload**.
 

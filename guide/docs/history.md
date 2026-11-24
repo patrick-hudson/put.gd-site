@@ -14,9 +14,6 @@ By the end of this page you can find anything you captured, copy its link again 
 3. Select an item. Its preview, link and details open on the right.
 4. Click **Copy link**. This never uploads anything again.
 
-!!! note "On the stable release"
-    History looks a little different until the next stable release: **Manage** is called **More**, the counts and day headings are missing, and links can't be renewed yet. See [stable or nightly](index.md#stable-or-nightly).
-
 ## Find an item
 
 Items are grouped by day, with work in progress first. The heading counts what you are looking at, such as **6 items**, or **12 of 168 items** while a search or filter narrows it. Each list on the left shows how many items it holds.
@@ -93,6 +90,8 @@ put.gd deletes a file only while it is still the one it uploaded. A file that wa
 ### When the destination was removed
 
 Removing a destination leaves its files where they are, and History marks them **Destination removed**. **Delete from destination…** then offers **Remove from History only**, which forgets the record and touches no file. Add a destination for the same place again, such as the same bucket or the same server and folder, and deleting works through it.
+
+If one file of a deletion of several failed because its destination was gone, you can delete that file again on its own once the destination is back and the first deletion has finished. The new deletion takes that file over. Retrying the older deletion later leaves the file alone, and the file's own entry in History shows how the new deletion went.
 
 ## Clear local history
 

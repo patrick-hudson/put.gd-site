@@ -9,9 +9,6 @@ Upload to a folder on your own server over SFTP, signing in the same way `ssh` d
   <img src="/_site/shots/sftp-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/sftp-dark.webp 1368w, /_site/shots/sftp-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a new SFTP destination: Server, User, Folder on server with the line saying how ssh will connect, and Link address.">
 </picture>
 
-!!! note "In nightly builds for now"
-    SFTP arrives in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
-
 put.gd connects with your own OpenSSH client, so your `~/.ssh/config`, host aliases, jump hosts, SSH agent, security keys and `known_hosts` work as they do in a terminal. The packages bring the client with them. With the AppImage, install it yourself if `ssh` is missing.
 
 1. In **Destinations**, click **Add destination** and choose **SFTP**.

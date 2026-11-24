@@ -9,9 +9,6 @@ Send your uploads to your own server, or to any service that gives you a ShareX 
   <img src="/_site/shots/custom-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 720px" srcset="/_site/shots/custom-dark.webp 1368w, /_site/shots/custom-dark@2x.webp 2736w" width="1368" height="928" loading="lazy" alt="The Destinations page with a custom uploader: Import .sxcu, Method, Request URL, Body, File form name and a secret Authorization header.">
 </picture>
 
-!!! note "In nightly builds for now"
-    The custom uploader arrives in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
-
 1. In **Destinations**, click **Add destination** and choose **Custom uploader (HTTP)**.
 2. Click **Import .sxcu…** and choose the file your service gave you, or paste its text. The form fills in from it.
 3. Scroll to **Credentials** and choose **Credential storage**, then click **Save to keychain** or **Use for this session**.

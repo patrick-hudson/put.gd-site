@@ -9,9 +9,6 @@ Have put.gd read each capture before it uploads, and warn you or cover it when i
   <img src="/_site/shots/sensitive-dark.webp" sizes="(max-width: 760px) calc(100vw - 32px), 672px" srcset="/_site/shots/sensitive-dark.webp 672w, /_site/shots/sensitive-dark@2x.webp 1344w" width="672" height="371" loading="lazy" alt="The Sensitive text found panel: the capture shows a card number and 2 keys or tokens, with a preview that covers them, and the buttons Cancel, Open in editor, Upload anyway and Redact and upload.">
 </picture>
 
-!!! note "In nightly builds for now"
-    This check arrives in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
-
 1. Open **Settings → Capture** and scroll to **Text recognition**.
 2. Turn on **Check captures for sensitive text before uploading**. It is off until you do.
 3. For each kind of text, choose **Off**, **Warn** or **Redact automatically**.
@@ -35,6 +32,8 @@ For a kind set to **Warn**, nothing uploads yet. A small panel says what it foun
 The panel has no title bar: drag it by its body. If another window hides it, click **Show** on put.gd's notification, where your desktop's notifications have buttons.
 
 If put.gd couldn't finish checking, it asks you anyway and says why. It never uploads a capture it couldn't check without asking.
+
+A page in a script put.gd isn't reading, such as Chinese, Russian or Hebrew on an English system, can come back as random-looking letters that the check mistakes for a key. Adding that language and choosing it in **Settings → Capture → Text recognition** can help (see [other languages](copy-text.md#other-languages)). A row of menu words run together, such as a news site's trending links, can also be taken for a key now and then. Choose **Upload anyway** when nothing in the capture is secret. IP address checks skip `127.0.0.1` and `0.0.0.0`.
 
 After an upload it covered, the notification says what, such as "Covered 1 card number." With **Keep a local copy** on, both the covered image and the original, with `-original` in its name, stay on this computer.
 

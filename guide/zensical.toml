@@ -9,6 +9,7 @@ use_directory_urls = false
 
 nav = [
   { "Install" = "index.md" },
+  { "What's new" = "whats-new.md" },
   { "Your first capture" = "quickstart.md" },
   { "Capture" = "capture.md" },
   { "Capture a scrolling page" = "scrolling.md" },

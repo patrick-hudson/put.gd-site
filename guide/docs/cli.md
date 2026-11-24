@@ -145,7 +145,7 @@ putgd-cli diagnostics.bundle --since 7d
 
 `history.copyLink` renews an [expired link](history.md#when-a-link-expires) before copying it. `recording.prepare` records the microphone when you pass `"audio":{"microphone":true}`.
 
-The [full method list](https://github.com/patrick-hudson/put.gd-desktop/blob/nightly/docs/automation/cli.md) gives every parameter. Some of these arrived after the last stable release; see [stable or nightly](index.md#stable-or-nightly).
+The [full method list](https://github.com/patrick-hudson/put.gd-desktop/blob/nightly/docs/automation/cli.md) gives every parameter.
 
 ## Read the reply
 

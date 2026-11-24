@@ -75,9 +75,6 @@ To undo, press ++ctrl+z++. To redo, press ++ctrl+shift+z++ or ++ctrl+y++.
 
 To zoom, press ++ctrl+1++ for 100%, which is the best way to check the edges of a redaction. Press ++ctrl+0++ to fit the window, or hold ++ctrl++ and scroll.
 
-!!! note "In nightly builds for now"
-    **Line**, **Ellipse**, **Pen**, **Step number**, **Pixelate**, **Style**, **Copy text**, **Quick redact**, **Copy image** and the snapping highlighter arrive in the next stable release. See [stable or nightly](index.md#stable-or-nightly).
-
 ## Finish your edit
 
 - **Upload** (++ctrl+enter++) sends only the edited image to the destination shown at the bottom of the window. Your link, local copy and [History](history.md) entry work as they do for any [capture](capture.md). Pressing ++enter++ alone never uploads.
